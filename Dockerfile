@@ -25,7 +25,7 @@ RUN apk update \
 RUN pip install pipenv
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pipenv install --system --deploy
+RUN pipenv install --system --deploy --pre
 
 # copy project
 COPY . .
