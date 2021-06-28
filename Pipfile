@@ -8,8 +8,14 @@ django = "*"
 gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
+flake8 = "*"
+isort = "*"
+black = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true
