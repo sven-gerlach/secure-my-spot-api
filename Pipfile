@@ -4,13 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
-gunicorn = "*"
-whitenoise = "*"
-dj-database-url = "*"
-flake8 = "*"
-isort = "*"
-black = "*"
+django = "3.1.1"
+gunicorn = "20.0.4"
+whitenoise = "5.2.0"
+dj-database-url = "0.5.0"
+flake8 = "3.8.3"
+isort = "5.4.2"
+black = "19.3b0"
 
 [dev-packages]
 
