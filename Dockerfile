@@ -1,7 +1,7 @@
 # source: https://testdriven.io/blog/deploying-django-to-heroku-with-docker/
 
 # pull official base image
-FROM python:3.8
+FROM python:3.8-alpine
 
 # set work directory
 WORKDIR /app
@@ -13,7 +13,7 @@ ENV DEBUG 0
 
 # install psycopg2
 RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add build-deps gcc libc-dev python3-dev musl-dev \
     && apk add postgresql-dev \
     && pip install psycopg2 \
     && apk del build-deps \
