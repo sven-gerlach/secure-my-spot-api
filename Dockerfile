@@ -1,7 +1,7 @@
 # source: https://testdriven.io/blog/deploying-django-to-heroku-with-docker/
 
 # pull official base image
-FROM python:3.7-stretch
+FROM python:3.8
 
 # set work directory
 WORKDIR /app
