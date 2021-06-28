@@ -1,5 +1,5 @@
 variables:
-  HEROKU_APP_NAME: hello_django
+  HEROKU_APP_NAME: fierce-ridge-78545
 
 stages:
   - deploy
