@@ -13,10 +13,9 @@ ENV DEBUG 0
 
 # install psycopg2
 RUN apk update \
-    && apk add build-deps gcc libc-dev python3-dev musl-dev \
+    && apk add gcc libc-dev python3-dev musl-dev \
     && apk add postgresql-dev \
     && pip install psycopg2 \
-    && apk del build-deps \
     # install bash (alpine ships with ash)
     && apk add --no-cache --upgrade bash
 
