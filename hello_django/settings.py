@@ -19,35 +19,31 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Determine if we are on local dev or production
-if os.getenv('ENV') == 'development':
-  # If we are on development, use the `DB_NAME_DEV` value
-  # from the .env file as the database name
-  DB_NAME = os.getenv('DB_NAME_DEV')
-  DB = {
-      'ENGINE': 'django.db.backends.postgresql',
-      'NAME': DB_NAME,
-  }
-  # Set debug to true
-  DEBUG = True
-  # Only allow locally running client at port 7165 for CORS
-  CORS_ORIGIN_WHITELIST = [
-      'http://localhost:3000',
-  ]
+if os.getenv("ENV") == "development":
+    # If we are on development, use the `DB_NAME_DEV` value
+    # from the .env file as the database name
+    DB_NAME = os.getenv("DB_NAME_DEV")
+    DB = {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DB_NAME,
+    }
+    # Set debug to true
+    DEBUG = True
+    # Only allow locally running client at port 7165 for CORS
+    CORS_ORIGIN_WHITELIST = [
+        "http://localhost:3000",
+    ]
 else:
-  # If we are on production, use the dj_database_url package
-  # to locate the database based on Heroku setup
-  DATABASE_URL = os.environ.get("DATABASE_URL")
-  DB = dj_database_url.config(
-      default=DATABASE_URL,
-      conn_max_age=500,
-      ssl_require=True
-  )
-  # Set debug to false
-  DEBUG = False
-  # Only allow the `CLIENT_ORIGIN` for CORS
-  CORS_ORIGIN_WHITELIST = [
-    os.getenv('CLIENT_ORIGIN')
-  ]
+    # If we are on production, use the dj_database_url package
+    # to locate the database based on Heroku setup
+    DATABASE_URL = os.environ.get("DATABASE_URL")
+    DB = dj_database_url.config(
+        default=DATABASE_URL, conn_max_age=500, ssl_require=True
+    )
+    # Set debug to false
+    DEBUG = False
+    # Only allow the `CLIENT_ORIGIN` for CORS
+    CORS_ORIGIN_WHITELIST = [os.getenv("CLIENT_ORIGIN")]
 
 
 # Quick-start development settings - unsuitable for production
@@ -109,9 +105,7 @@ WSGI_APPLICATION = "hello_django.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': DB
-}
+DATABASES = {"default": DB}
 
 
 # Password validation
