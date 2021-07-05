@@ -18,17 +18,46 @@ import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Determine if we are on local dev or production
+if os.getenv('ENV') == 'development':
+  # If we are on development, use the `DB_NAME_DEV` value
+  # from the .env file as the database name
+  DB_NAME = os.getenv('DB_NAME_DEV')
+  DB = {
+      'ENGINE': 'django.db.backends.postgresql',
+      'NAME': DB_NAME,
+  }
+  # Set debug to true
+  DEBUG = True
+  # Only allow locally running client at port 7165 for CORS
+  CORS_ORIGIN_WHITELIST = [
+      'http://localhost:3000',
+  ]
+else:
+  # If we are on production, use the dj_database_url package
+  # to locate the database based on Heroku setup
+  DATABASE_URL = os.environ.get("DATABASE_URL")
+  db_from_env = dj_database_url.config(
+      default=DATABASE_URL,
+      conn_max_age=500,
+      ssl_require=True
+  )
+  # Set debug to false
+  DEBUG = False
+  # Only allow the `CLIENT_ORIGIN` for CORS
+  CORS_ORIGIN_WHITELIST = [
+    os.getenv('CLIENT_ORIGIN')
+  ]
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-m43umn&0@02j9=h^gfm@avfjkc%_j7_8&@0nb1_s$ck*1d&ejo'
 SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
-
-# SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = os.environ.get("DEBUG", default=0)
+#
+# # SECURITY WARNING: don't run with debug turned on in production!
+# # DEBUG = True
+# DEBUG = os.environ.get("DEBUG", default=0)
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "fierce-ridge-78545.herokuapp.com"]
 
@@ -81,17 +110,8 @@ WSGI_APPLICATION = "hello_django.wsgi.application"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    'default': DB
 }
-
-DATABASE_URL = os.environ.get("DATABASE_URL")
-db_from_env = dj_database_url.config(
-    default=DATABASE_URL, conn_max_age=500, ssl_require=True
-)
-DATABASES["default"].update(db_from_env)
 
 
 # Password validation

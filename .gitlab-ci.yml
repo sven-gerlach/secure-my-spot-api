@@ -1,3 +1,5 @@
+# https://testdriven.io/blog/deploying-django-to-heroku-with-docker/#gitlab-ci
+
 stages:
   - build
   - test
