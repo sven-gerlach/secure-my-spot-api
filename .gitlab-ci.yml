@@ -1,3 +1,5 @@
+# https://testdriven.io/blog/deploying-django-to-heroku-with-docker/#gitlab-ci
+
 stages:
   - build
   - test
@@ -41,6 +43,8 @@ test:
 
 deploy:
   stage: deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
   variables:
     HEROKU_APP_NAME: fierce-ridge-78545
   script:
