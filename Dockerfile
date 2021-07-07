@@ -17,6 +17,7 @@ RUN apk update \
     && apk add postgresql-dev \
     && pip install psycopg2 \
     # install bash (alpine ships with ash)
+    # access bash with "docker exec -it <container-name> /bin/bash"
     && apk add --no-cache --upgrade bash
 
 # source: https://jonathanmeier.io/using-pipenv-with-docker/
