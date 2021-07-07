@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
-
 import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -22,14 +21,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 if os.getenv("ENV") == "development":
     # If we are on development, use the `DB_NAME_DEV` value
     # from the .env file as the database name
-    DB_NAME = os.getenv("DB_NAME_DEV")
     DB = {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": DB_NAME,
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.environ.get("DB_HOST"),
+        "PORT": os.environ.get("DB_PORT"),
     }
     # Set debug to true
     DEBUG = True
-    # Only allow locally running client at port 7165 for CORS
+    # Only allow locally running client at port 3000 for CORS
     CORS_ORIGIN_WHITELIST = [
         "http://localhost:3000",
     ]

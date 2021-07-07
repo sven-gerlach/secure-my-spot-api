@@ -11,6 +11,7 @@ dj-database-url = "0.5.0"
 flake8 = "3.8.3"
 isort = "5.4.2"
 black = "19.3b0"
+psycopg2-binary = "*"
 
 [dev-packages]
 
