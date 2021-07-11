@@ -46,7 +46,7 @@ deploy:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
   variables:
-    HEROKU_APP_NAME: fierce-ridge-78545
+    HEROKU_APP_NAME: secure-my-spot-api
   script:
     - apt-get update -qy
     - apt-get install -y ruby-dev

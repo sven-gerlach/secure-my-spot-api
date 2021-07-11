@@ -58,7 +58,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 # # DEBUG = True
 # DEBUG = os.environ.get("DEBUG", default=0)
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "fierce-ridge-78545.herokuapp.com"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0", "fierce-ridge-78545.herokuapp.com"]
 
 
 # Application definition

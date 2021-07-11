@@ -3,6 +3,9 @@
 # pull official base image
 FROM python:3.8-alpine
 
+# add maintainer / contact details to container in form of key=value metadata
+LABEL maintainer="svengerlach@me.com"
+
 # set work directory
 WORKDIR /app
 
