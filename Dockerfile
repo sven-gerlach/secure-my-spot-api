@@ -10,11 +10,13 @@ LABEL maintainer="svengerlach@me.com"
 WORKDIR /app
 
 # set environment variables
+# prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
+# prevents Python from buffering stdout and stderr (
 ENV PYTHONUNBUFFERED 1
 ENV DEBUG 0
 
-# install psycopg2
+# install psycopg2 (needs to be installed manually rather than through executing the Pipfile
 RUN apk update \
     && apk add gcc libc-dev python3-dev musl-dev \
     && apk add postgresql-dev \
