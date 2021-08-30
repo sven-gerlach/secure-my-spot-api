@@ -1,4 +1,5 @@
-# source: https://testdriven.io/blog/deploying-django-to-heroku-with-docker/
+# https://testdriven.io/blog/deploying-django-to-heroku-with-docker/
+# https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
 
 # pull official base image
 FROM python:3.8-alpine
@@ -35,12 +36,6 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
-## collect static files
-#RUN python manage.py collectstatic --noinput
-
 # add and run as non-root user
 RUN adduser -D myuser
 USER myuser
-
-## run gunicorn
-#CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT

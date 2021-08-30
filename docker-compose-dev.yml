@@ -1,3 +1,6 @@
+# run this yml file from the CLI with: docker-compose -f docker-compose-dev.yml up -d
+# connect to db: docker-compose exec db psql --username=svengerlach --dbname=secure_my_spot_dev
+
 version: '3.7'
 
 services:
