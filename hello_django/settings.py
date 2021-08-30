@@ -41,7 +41,9 @@ else:
     # to locate the database based on Heroku setup
     DATABASE_URL = os.environ.get("DATABASE_URL")
     DB = dj_database_url.config(
-        default=DATABASE_URL, conn_max_age=500, ssl_require=True
+        default=DATABASE_URL,
+        conn_max_age=500,
+        ssl_require=True
     )
     # Set debug to false
     DEBUG = False
@@ -53,10 +55,6 @@ else:
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
-#
-# # SECURITY WARNING: don't run with debug turned on in production!
-# # DEBUG = True
-# DEBUG = os.environ.get("DEBUG", default=0)
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -64,9 +62,6 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "fierce-ridge-78545.herokuapp.com",
 ]
-
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
