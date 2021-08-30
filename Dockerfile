@@ -1,4 +1,5 @@
-# source: https://testdriven.io/blog/deploying-django-to-heroku-with-docker/
+# https://testdriven.io/blog/deploying-django-to-heroku-with-docker/
+# https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
 
 # pull official base image
 FROM python:3.8-alpine
