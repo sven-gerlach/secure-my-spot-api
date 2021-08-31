@@ -64,7 +64,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
     # custom app
-    "app_main",
+    "app",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

@@ -37,12 +37,9 @@ test:
     DATABASE_URL: postgres://runner@postgres:5432/test
   script:
     - python manage.py test
-    - flake8 secure_my_spot --max-line-length=100
-    - flake8 app_main --max-line-length=100
-    - black secure_my_spot --check
-    - black app_main --check
-    - isort secure_my_spot --check
-    - isort app_main --check
+    - flake8 secure_my_spot app --max-line-length=100
+    - black secure_my_spot app --check
+    - isort secure_my_spot app --check
 
 deploy:
   stage: deploy
