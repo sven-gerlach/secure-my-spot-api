@@ -111,6 +111,7 @@ WSGI_APPLICATION = "secure_my_spot.wsgi.application"
 
 DATABASES = {"default": DB}
 
+AUTH_USER_MODEL = 'app.models.user_model'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

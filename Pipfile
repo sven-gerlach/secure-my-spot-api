@@ -12,6 +12,8 @@ flake8 = "3.8.3"
 isort = "5.4.2"
 black = "19.3b0"
 psycopg2-binary = "*"
+pytest = "6.2.5"
+pytest-django = "4.4.0"
 
 [dev-packages]
 
