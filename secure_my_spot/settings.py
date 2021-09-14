@@ -63,14 +63,14 @@ ALLOWED_HOSTS = [
 ]
 
 INSTALLED_APPS = [
-    "app",
-    "rest_framework",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "app",
 ]
 
 MIDDLEWARE = [
@@ -111,7 +111,7 @@ WSGI_APPLICATION = "secure_my_spot.wsgi.application"
 
 DATABASES = {"default": DB}
 
-AUTH_USER_MODEL = 'app.models.user_model'
+AUTH_USER_MODEL = 'app.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
