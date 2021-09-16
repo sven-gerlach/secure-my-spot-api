@@ -13,7 +13,6 @@ https://testdriven.io/blog/django-custom-user-model/
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
-from django.utils import timezone
 
 
 class CustomUserManager(BaseUserManager):
@@ -59,7 +58,10 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+# Use PermissionsMixin to give custom User class
+# access to all of Django's permissions framework
+# Source: https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#custom-users-and-permissions
+class User(AbstractBaseUser, PermissionsMixin):
     """
     A user model that sub-classes the AbstractBaseUser class. This allows for
     ultimate freedom to define fields beyond the ones defined by the
@@ -78,7 +80,7 @@ class User(AbstractBaseUser):
 
     USERNAME_FIELD = "email"
 
-    # this needs to point to the customer user manager
+    # objects needs to point to the customer user manager
     objects = CustomUserManager()
 
     def __str__(self):
@@ -93,6 +95,3 @@ class User(AbstractBaseUser):
         """Returns the first name. Replaces the username in the greeting to the
         user in the header of django.contrib.admin"""
         return f"{self.name}"
-
-
-

@@ -24,8 +24,8 @@ def test_create_user():
 def test_create_superuser():
     """ensure a newly created superuser is in the database"""
     User = get_user_model()
-    user = User.objects.create_superuser(email="super@user.de", password="foo")
-    assert user.email == "super@user.de"
-    assert user.is_active is True
-    assert user.is_staff is True
-    assert user.is_superuser is True
+    admin_user = User.objects.create_superuser(email="super@user.de", password="foo")
+    assert admin_user.email == "super@user.de"
+    assert admin_user.is_active is True
+    assert admin_user.is_staff is True
+    assert admin_user.is_superuser is True
