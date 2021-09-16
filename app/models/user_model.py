@@ -48,7 +48,7 @@ class CustomUserManager(BaseUserManager):
         Create and save a SuperUser with the given email and password.
         """
         if not email or not password:
-            raise ValueError("Users must provide a valid email and password")
+            raise ValueError("New superusers must provide a valid email and password")
 
         user = self.create_user(email, password)
 
