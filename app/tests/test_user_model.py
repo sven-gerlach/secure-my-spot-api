@@ -4,9 +4,8 @@ Source for pytes-django:
 https://djangostars.com/blog/django-pytest-testing/
 """
 
-from django.contrib.auth import get_user_model
-
 import pytest
+from django.contrib.auth import get_user_model
 
 # marking this module such that tests have access to the database
 pytestmark = pytest.mark.django_db
@@ -24,9 +23,13 @@ def test_create_user():
 def test_create_invalid_user():
     """test creating invalid user yields ValueError"""
     User = get_user_model()
-    with pytest.raises(ValueError, match="New users must provide a valid email and password"):
+    with pytest.raises(
+        ValueError, match="New users must provide a valid email and password"
+    ):
         User.objects.create_user(email="", password="foo")
-    with pytest.raises(ValueError, match="New users must provide a valid email and password"):
+    with pytest.raises(
+        ValueError, match="New users must provide a valid email and password"
+    ):
         User.objects.create_user(email="email@email.com", password="")
 
 
@@ -43,9 +46,13 @@ def test_create_superuser():
 def test_create_invalid_superuser():
     """test creating invalid superuser yields ValueError"""
     User = get_user_model()
-    with pytest.raises(ValueError, match="New superusers must provide a valid email and password"):
+    with pytest.raises(
+        ValueError, match="New superusers must provide a valid email and password"
+    ):
         User.objects.create_superuser(email="", password="foo")
-    with pytest.raises(ValueError, match="New superusers must provide a valid email and password"):
+    with pytest.raises(
+        ValueError, match="New superusers must provide a valid email and password"
+    ):
         User.objects.create_superuser(email="email@email.com", password="")
 
 
@@ -72,4 +79,3 @@ def test_get_short_name():
     user.name = "name"
     user.surname = "surname"
     assert user.get_short_name() == "name"
-

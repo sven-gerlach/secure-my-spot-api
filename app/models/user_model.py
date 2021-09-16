@@ -21,6 +21,7 @@ class CustomUserManager(BaseUserManager):
     authentication. It needs to define the create_user and create_superuser
     methods.
     """
+
     def create_user(self, email, password):
         """
         Create and save a User with the given email and password.
@@ -33,7 +34,8 @@ class CustomUserManager(BaseUserManager):
 
         # by default this refers to the user model (presumably as per
         # AUTH_USER_MODEL in settings?
-        # Source: https://stackoverflow.com/questions/51163088/self-model-in-django-custom-usermanager#51163172
+        # Source: https://stackoverflow.com/questions/51163088/self-model-in-django-custom
+        # -usermanager#51163172
         user = self.model(email=email)
 
         # create hash of password and set hashed pswd as field name
@@ -60,13 +62,14 @@ class CustomUserManager(BaseUserManager):
 
 # Use PermissionsMixin to give custom User class
 # access to all of Django's permissions framework
-# Source: https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#custom-users-and-permissions
+# Source:https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#custom-users-and-permissions
 class User(AbstractBaseUser, PermissionsMixin):
     """
     A user model that sub-classes the AbstractBaseUser class. This allows for
     ultimate freedom to define fields beyond the ones defined by the
     AbstractUser class.
     """
+
     # todo: improve email validation
     email = models.EmailField(unique=True)
     name = models.CharField(max_length=50, blank=True)
