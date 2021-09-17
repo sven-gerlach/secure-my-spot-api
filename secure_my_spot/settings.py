@@ -165,6 +165,9 @@ STATIC_URL = "/static/"
 # create static root for handling / storing static files
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
 # add compression and caching support for static files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
