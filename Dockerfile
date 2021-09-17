@@ -40,4 +40,4 @@ COPY . .
 RUN adduser -D svengerlach
 USER svengerlach
 
-RUN python manage.py collectstatic --noinput --clear
+CMD ["python", "manage.py", "collectstatic", "--noinput", "--clear"]
