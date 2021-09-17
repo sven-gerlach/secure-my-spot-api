@@ -30,11 +30,13 @@ test:
   stage: test
   image: $IMAGE:latest
   services:
-    - postgres:latest
+    - name: postgres:latest
+      alias: postgres
   variables:
     POSTGRES_DB: test
     POSTGRES_USER: runner
     POSTGRES_PASSWORD: ""
+    POSTGRES_HOST_AUTH_METHOD: trust
     DATABASE_URL: postgres://runner@postgres:5432/test
   script:
     - python manage.py test # todo: remove this line?
