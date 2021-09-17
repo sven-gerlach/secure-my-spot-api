@@ -40,4 +40,6 @@ COPY . .
 RUN adduser -D svengerlach
 USER svengerlach
 
-CMD ["python", "manage.py", "collectstatic", "--noinput", "--clear"]
+# Heroku runs collectstaic automatically
+# https://devcenter.heroku.com/articles/django-assets#collectstatic-during-builds
+#CMD ["python", "manage.py", "collectstatic", "--noinput", "--clear"]
