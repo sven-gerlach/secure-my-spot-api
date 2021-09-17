@@ -38,10 +38,10 @@ test:
     DATABASE_URL: postgres://runner@postgres:5432/test
   script:
     - python manage.py test # todo: remove this line?
-#    - pytest
-    - flake8 secure_my_spot app --max-line-length=100
-    - black secure_my_spot app --check
-    - isort secure_my_spot app --check
+#   - pytest todo: figure out a way to run pytest inside container on Gitlab
+    - flake8 secure_my_spot/ app/ --max-line-length=100 --exclude __init__.py
+    - black secure_my_spot/ app/ --check
+    - isort secure_my_spot/ app/ --check
 
 deploy:
   stage: deploy
