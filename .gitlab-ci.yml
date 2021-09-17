@@ -22,7 +22,7 @@ build:
     - docker build
       --cache-from $IMAGE:latest
       --tag $IMAGE:latest
-      --file ./Dockerfile.prod
+      --file ./Dockerfile
       "."
     - docker push $IMAGE:latest
 
@@ -38,7 +38,7 @@ test:
     DATABASE_URL: postgres://runner@postgres:5432/test
   script:
     - python manage.py test # todo: remove this line?
-    - pytest
+#    - pytest
     - flake8 secure_my_spot app --max-line-length=100
     - black secure_my_spot app --check
     - isort secure_my_spot app --check
