@@ -41,8 +41,9 @@ else:
     # to locate the database based on Heroku setup
     DATABASE_URL = os.environ.get("DATABASE_URL")
 
+    # setting SSL required to True causes the test runner on Gitlab CI to fail
     DB = dj_database_url.config(
-        default="DATABASE_URL", conn_max_age=500, ssl_require=True
+        default="DATABASE_URL", conn_max_age=500, ssl_require=False
     )
     # Set debug to false
     DEBUG = False

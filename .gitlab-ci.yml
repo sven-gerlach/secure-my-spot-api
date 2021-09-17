@@ -30,15 +30,16 @@ test:
   stage: test
   image: $IMAGE:latest
   services:
-    - postgres:latest
+    - name: postgres:latest
+      alias: postgres
   variables:
     POSTGRES_DB: test
     POSTGRES_USER: runner
     POSTGRES_PASSWORD: ""
+    POSTGRES_HOST_AUTH_METHOD: trust
     DATABASE_URL: postgres://runner@postgres:5432/test
   script:
-    - python manage.py test # todo: remove this line?
-#   - pytest todo: figure out a way to run pytest inside container on Gitlab
+    - pytest
     - flake8 secure_my_spot/ app/ --max-line-length=100 --exclude __init__.py
     - black secure_my_spot/ app/ --check
     - isort secure_my_spot/ app/ --check
