@@ -10,13 +10,6 @@ LABEL maintainer="svengerlach@me.com"
 # set work directory
 WORKDIR /app
 
-# set environment variables
-# prevents Python from writing pyc files to disc
-ENV PYTHONDONTWRITEBYTECODE 1
-# prevents Python from buffering stdout and stderr (
-ENV PYTHONUNBUFFERED 1
-ENV DEBUG 0
-
 # install psycopg2 (needs to be installed manually rather than through executing the Pipfile
 RUN apk update \
     && apk add gcc libc-dev python3-dev musl-dev \
@@ -36,8 +29,13 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
+# collect static files
+RUN mkdir staticfiles
+RUN python manage.py collectstatic --noinput
+
 # add and run as non-root user
 RUN adduser -D svengerlach
 USER svengerlach
 
-CMD ["python", "manage.py", "collectstatic", "--noinput", "--clear"]
+# run gunicorn
+CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
