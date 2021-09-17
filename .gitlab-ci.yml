@@ -28,7 +28,7 @@ build:
 
 test:
   stage: test
-  image: $IMAGE:production
+  image: $IMAGE:latest
   services:
     - postgres:latest
   variables:
