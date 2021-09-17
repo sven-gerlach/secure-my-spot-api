@@ -39,3 +39,5 @@ COPY . .
 # add and run as non-root user
 RUN adduser -D svengerlach
 USER svengerlach
+
+CMD ["python", "manage.py", "collectstatic", "--noinput", "--clear"]
