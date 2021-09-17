@@ -37,5 +37,5 @@ RUN pipenv install --system --deploy --pre
 COPY . .
 
 # add and run as non-root user
-RUN adduser -D myuser
-USER myuser
+RUN adduser -D svengerlach
+USER svengerlach
