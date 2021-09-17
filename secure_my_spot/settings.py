@@ -40,8 +40,10 @@ else:
     # If we are on production, use the dj_database_url package
     # to locate the database based on Heroku setup
     DATABASE_URL = os.environ.get("DATABASE_URL")
+
+    # original default=DATABASE_URL
     DB = dj_database_url.config(
-        default=DATABASE_URL, conn_max_age=500, ssl_require=True
+        default="postgres://runner@postgres:5432/test", conn_max_age=500, ssl_require=True
     )
     # Set debug to false
     DEBUG = False
