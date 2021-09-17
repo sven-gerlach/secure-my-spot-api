@@ -34,8 +34,9 @@ test:
   variables:
     POSTGRES_DB: test
     POSTGRES_USER: runner
-    POSTGRES_PASSWORD: ""
-    DATABASE_URL: postgres://runner@postgres:5432/test
+    POSTGRES_HOST: postgres
+    POSTGRES_PASSWORD: foo
+    DATABASE_URL: postgres://runner:foo@postgres:5432/test
   script:
     - python manage.py test # todo: remove this line?
     - pytest
