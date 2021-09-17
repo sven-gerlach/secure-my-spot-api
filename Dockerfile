@@ -38,4 +38,4 @@ RUN adduser -D svengerlach
 USER svengerlach
 
 # run gunicorn
-CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
