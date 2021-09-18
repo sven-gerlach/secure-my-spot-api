@@ -40,7 +40,7 @@ test:
     DATABASE_URL: postgres://runner@postgres:5432/test
   script:
     - pytest
-    - flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations/
+    - flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations
     - black secure_my_spot/ app/ --check
     - isort secure_my_spot/ app/ --check
 
