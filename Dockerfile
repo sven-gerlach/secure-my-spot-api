@@ -30,7 +30,6 @@ RUN pipenv install --system --deploy --pre
 COPY . .
 
 # collect static files
-RUN mkdir staticfiles
 RUN python manage.py collectstatic --noinput
 
 # add and run as non-root user
