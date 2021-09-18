@@ -7,5 +7,5 @@
 build:
   docker:
     web: Dockerfile
-run:
+release:
   image: web
