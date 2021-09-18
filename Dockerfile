@@ -29,8 +29,8 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
-# collect static files
-RUN python manage.py collectstatic --noinput
+# collect static files / Heroku collects static files automatically during build
+# RUN python manage.py collectstatic --noinput
 
 # add and run as non-root user
 RUN adduser -D svengerlach
