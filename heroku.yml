@@ -1,4 +1,8 @@
 # https://testdriven.io/blog/deploying-django-to-heroku-with-docker/#heroku-docker-deployment
+# reset db on heroku:
+# https://simpleisbetterthancomplex.com/tutorial/2016/07/26/how-to-reset-migrations.html
+# https://devcenter.heroku.com/articles/heroku-cli-commands#heroku-pg-reset-database
+
 
 build:
   docker:

@@ -59,7 +59,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "0.0.0.0",
-    "fierce-ridge-78545.herokuapp.com",
+    "secure-my-spot-api.herokuapp.com",
 ]
 
 INSTALLED_APPS = [
