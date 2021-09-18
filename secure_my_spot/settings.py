@@ -173,4 +173,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # automatically configure DATABASE_URL, ALLOWED_HOSTS, WhiteNoise (for static assets), Logging, and
 # Heroku CI
 # Source: https://github.com/heroku/django-heroku
-django_heroku.settings(locals(), databases=False)
+# django_heroku.settings(locals(), databases=False)
