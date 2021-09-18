@@ -32,9 +32,10 @@ COPY . .
 # collect static files / Heroku collects static files automatically during build
 # RUN python manage.py collectstatic --noinput
 
-# add and run as non-root user
-RUN adduser -D svengerlach
-USER svengerlach
+# Heroku strongly recommends running the container as a non-root user as that is exactly how
+# Heroku wil run the created container for deployment
+RUN adduser -D generic_user
+USER generic_user
 
 # run gunicorn
 CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT

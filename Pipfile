@@ -17,6 +17,7 @@ pytest = "6.2.5"
 pytest-django = "4.4.0"
 coverage = "*"
 django-heroku = "*"
+django-extensions = "*"
 
 [dev-packages]
 
