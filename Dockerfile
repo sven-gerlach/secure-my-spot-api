@@ -38,4 +38,4 @@ RUN adduser -D generic_user
 USER generic_user
 
 # run gunicorn
-CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
