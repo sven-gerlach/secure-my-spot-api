@@ -41,7 +41,7 @@ test:
   script:
     - pytest
     - flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations
-    - black secure_my_spot/ app/ --check
+    - black secure_my_spot/ app/ --check --extend-exclude=migrations
     - isort secure_my_spot/ app/ --check
 
 deploy:
