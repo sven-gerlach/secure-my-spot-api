@@ -29,9 +29,6 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
-# collect static files / Heroku collects static files automatically during build
-# RUN python manage.py collectstatic --noinput
-
 # Heroku strongly recommends running the container as a non-root user as that is exactly how
 # Heroku wil run the created container for deployment
 RUN adduser -D generic_user

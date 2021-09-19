@@ -1,8 +1,11 @@
 __pycache__
-*.pyc
+test.txt
 .env
 .venv
-db.sqlite3
 .idea
 .coverage
+.gitignore
+db.sqlite3
 htmlcov
+Dockerfile
+docker-compose-dev.yml
