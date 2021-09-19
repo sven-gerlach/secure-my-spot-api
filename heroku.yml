@@ -7,7 +7,7 @@
 build:
   docker:
     web: Dockerfile
-release:
-  image: web
-  command:
-    - python manage.py migrate
+#release:
+#  image: web
+#  command:
+#    - python manage.py migrate
