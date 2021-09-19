@@ -8,6 +8,9 @@ FROM python:3.8-alpine
 LABEL maintainer="svengerlach@me.com"
 
 # set work directory
+# Github Actions recommends not to set WORKDIR
+# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#workdir
+# not clear at all how else to set the working directory
 WORKDIR /app
 
 # install psycopg2 (needs to be installed manually rather than through executing the Pipfile
@@ -33,8 +36,10 @@ RUN python manage.py collectstatic --noinput
 
 # Heroku strongly recommends running the container as a non-root user as that is exactly how
 # Heroku wil run the created container for deployment
-RUN adduser -D generic_user
-USER generic_user
+# However, setting a non-root user prevents access to GITHUB_WORKSPACE
+# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+#RUN adduser -D generic_user
+#USER generic_user
 
 # run gunicorn
 CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
