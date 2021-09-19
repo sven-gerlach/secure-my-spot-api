@@ -1,11 +1,7 @@
-from django.http import JsonResponse
-from django.utils.decorators import method_decorator
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 
 
-@method_decorator(csrf_exempt, name="dispatch")
-class SignUp(View):
-    def post(self, request):
-        response = request.body
-        return JsonResponse({"response": response})
+def signup_view(request):
+    """Sign-up view"""
+    html = "<h1>Sign-Up</h1>"
+    return HttpResponse(html)
