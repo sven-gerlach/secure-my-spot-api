@@ -13,4 +13,3 @@ release:
   image: web
   command:
     - python manage.py migrate
-    - puthon manage.py collectstatic --noinput
