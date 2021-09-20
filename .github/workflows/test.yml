@@ -2,7 +2,22 @@ name: test
 on: [push, pull_request]
 
 jobs:
+  # test if job is redundant
+  # https://github.com/marketplace/actions/skip-duplicate-actions
+  pre_job:
+    # continue-on-error: true # Uncomment once integration is finished
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      should_skip: ${{ steps.skip_check.outputs.should_skip }}
+    steps:
+      - id: skip_check
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          paths_ignore: '["**/README.md", "**/docs/**"]'
   test:
+    needs: pre_job
+    if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
     env:
       ENV: "development"
