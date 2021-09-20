@@ -1,3 +1,9 @@
+"""
+This docker-compose expands on the base one by passing on ENVs from the local container environment
+on Github Actions. Also, it does not include the volume setting as the Github environment does not
+have a pre-set space.
+"""
+
 version: "3.8"
 
 services:
