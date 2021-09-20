@@ -2,3 +2,25 @@ name: test
 on: [push, pull_request]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: $${{ secrets.DB_PORT }}
+      SECRET: $${{ secrets.SECRET }}
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build the docker-compose stack
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --build
+      - name: Check running containers
+        run: docker ps -a
+      - name: Check logs api
+        run: docker logs api
+      - name: Check logs postgres
+        run: docker logs postgres
+      - name: Run test suite
+        run: docker-compose exec web coverage run -m pytest
