@@ -33,3 +33,4 @@ jobs:
         run: docker logs postgres
       - name: Run test suite
         run: docker exec api coverage run -m pytest
+        # todo: add isort, black, and flake8 tests
