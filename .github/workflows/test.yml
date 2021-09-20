@@ -25,4 +25,4 @@ jobs:
       - name: Check logs postgres
         run: docker logs postgres
       - name: Run test suite
-        run: docker-compose exec web coverage run -m pytest
+        run: docker exec api coverage run -m pytest
