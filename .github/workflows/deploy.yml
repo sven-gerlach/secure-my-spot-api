@@ -10,7 +10,7 @@ on:
 
 # source: https://github.com/marketplace/actions/deploy-to-heroku
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
