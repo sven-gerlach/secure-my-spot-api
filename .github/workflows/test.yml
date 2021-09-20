@@ -5,12 +5,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DB_NAME: ${{ secrets.DB_NAME }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: $${{ secrets.DB_PORT }}
-      SECRET: $${{ secrets.SECRET }}
+      DB_NAME: "secure_my_spot_dev"
+      DB_USER: "svengerlach"
+      DB_PASSWORD: "123456789"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      SECRET: ${{ secrets.DJANGO_SECRET_KEY }}
 
     steps:
       - uses: actions/checkout@v1
