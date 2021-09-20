@@ -31,6 +31,11 @@ jobs:
         run: docker logs api
       - name: Check logs postgres
         run: docker logs postgres
-      - name: Run test suite
+      - name: Run pytest
         run: docker exec api coverage run -m pytest
-        # todo: add isort, black, and flake8 tests
+      - name: Run flake8
+        run: docker exec api flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations
+      - name: Run black
+        run: docker exec api black secure_my_spot/ app/ --check --extend-exclude=migrations
+      - name: Run isort
+        run: docker exec api isort secure_my_spot/ app/ --check
