@@ -1,6 +1,6 @@
-# run this yml file from the CLI with: docker-compose -f docker-compose-dev.yml up -d
+# run this yml file from the CLI with: docker-compose up -d
 # connect to:
-# db: docker-compose -f docker-compose-dev.yml exec db psql --username=svengerlach --dbname=secure_my_spot_dev
+# db: docker-compose exec db psql --username=svengerlach --dbname=secure_my_spot_dev
 # db: docker exec -it [container name] psql --username=svengerlach --dbname=secure_my_spot_dev
 
 

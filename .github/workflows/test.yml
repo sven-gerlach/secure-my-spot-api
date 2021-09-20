@@ -2,3 +2,34 @@ name: test
 on: [push, pull_request]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      ENV: "development"
+
+      # db variables for django
+      DB_NAME: "secure_my_spot_dev"
+      DB_USER: "svengerlach"
+      DB_PASSWORD: "123456789"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      SECRET: ${{ secrets.DJANGO_SECRET_KEY }}
+      DJANGO_SETTINGS_MODULE: "secure_my_spot.settings"
+
+      # db var for postgres db docker service
+      POSTGRES_USER: "svengerlach"
+      POSTGRES_PASSWORD: "123456789"
+      POSTGRES_DB: "secure_my_spot_dev"
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build the docker-compose stack
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --build
+      - name: Check running containers
+        run: docker ps -a
+      - name: Check logs api
+        run: docker logs api
+      - name: Check logs postgres
+        run: docker logs postgres
+      - name: Run test suite
+        run: docker exec api coverage run -m pytest
