@@ -2,9 +2,10 @@ name: test
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     env:
+      ENV: "development"
       DB_NAME: "secure_my_spot_dev"
       DB_USER: "svengerlach"
       DB_PASSWORD: "123456789"
