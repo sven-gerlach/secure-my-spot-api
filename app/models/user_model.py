@@ -16,6 +16,7 @@ from django.db import models
 
 # todo: build customeruseradmin class
 
+
 class CustomUserManager(BaseUserManager):
     """
     Custom user model manager where email is the unique identifier for
