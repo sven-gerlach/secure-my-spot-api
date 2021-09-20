@@ -12,6 +12,7 @@ jobs:
       DB_HOST: "db"
       DB_PORT: "5432"
       SECRET: ${{ secrets.DJANGO_SECRET_KEY }}
+      DJANGO_SETTINGS_MODULE: "secure_my_spot.settings"
 
     steps:
       - uses: actions/checkout@v1
