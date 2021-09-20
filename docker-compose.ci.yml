@@ -3,7 +3,7 @@ version: "3.8"
 services:
   web:
     environment:
-      - ENV=development
+      - ENV
 
       # db variables
       - DB_NAME
@@ -15,3 +15,8 @@ services:
 
       # Django settings.py
       - DJANGO_SETTINGS_MODULE
+  db:
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
