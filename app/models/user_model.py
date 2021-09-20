@@ -54,7 +54,7 @@ class CustomUserManager(BaseUserManager):
         if not email or not password:
             raise ValueError("New superusers must provide a valid email and password")
 
-        user = self.create_user(email, password)
+        user = self.create_user(email=email, password=password)
 
         user.is_superuser = True
         user.is_staff = True
@@ -72,8 +72,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     AbstractUser class.
     """
 
-    # todo: improve email validation
-    email = models.EmailField(unique=True)
+    email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)
     is_staff = models.BooleanField(default=False)
@@ -81,7 +80,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
-    # todo: define token field?
 
     USERNAME_FIELD = "email"
 
