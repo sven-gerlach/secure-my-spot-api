@@ -3,20 +3,20 @@ version: "3.8"
 services:
   web:
     environment:
-      - ENV=development
+      - ENV
 
       # db variables
-      - DB_NAME=secure_my_spot_dev
-      - DB_USER=svengerlach
-      - DB_PASSWORD=123456789
-      - DB_HOST=db
-      - DB_PORT=5432
-      - SECRET=${DJANGO_SECRET_KEY}
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DB_HOST
+      - DB_PORT
+      - SECRET
 
-#      - POSTGRES_USER=svengerlach
-#      - POSTGRES_PASSWORD=123456789
-#      - POSTGRES_DB=secure_my_spot_dev
-      # prevents Python from writing pyc files to disc
-#      - PYTHONDONTWRITEBYTECODE=1
-      # prevents Python from buffering stdout and stderr (
-#      - EPYTHONUNBUFFERED=1
+      # Django settings.py
+      - DJANGO_SETTINGS_MODULE
+  db:
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
