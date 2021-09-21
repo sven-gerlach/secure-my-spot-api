@@ -133,12 +133,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Setting the django rest framework authentication scheme
 REST_FRAMEWORK = {
+    # Setting the django rest framework authentication scheme
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-    ]
+    ],
+    # Only allow requests with valid JSON content (form data not allowed)
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+    ],
 }
 
 

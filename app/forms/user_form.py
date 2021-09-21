@@ -42,7 +42,7 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
-class CustomerUserChangeForm(forms.ModelForm):
+class CustomUserChangeForm(forms.ModelForm):
     """
     A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's

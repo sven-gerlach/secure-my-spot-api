@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
-from .forms.user_form import CustomerUserChangeForm, CustomUserCreationForm
+from .forms.user_form import CustomUserChangeForm, CustomUserCreationForm
 from .models.user_model import User
 
 
@@ -10,7 +10,7 @@ class CustomUserAdmin(BaseUserAdmin):
     """Customised UserAdmin class"""
 
     add_form = CustomUserCreationForm
-    form = CustomerUserChangeForm
+    form = CustomUserChangeForm
 
     # model = User
     list_display = ("email", "name", "surname", "is_staff", "is_superuser", "is_active")
