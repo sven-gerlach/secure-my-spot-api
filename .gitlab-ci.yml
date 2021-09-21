@@ -1,5 +1,7 @@
 # https://testdriven.io/blog/deploying-django-to-heroku-with-docker/#gitlab-ci
-# todo: consider migrating to github
+# this file was used prior to moving the repo away from gitlab and back to GitHub
+# GitHub actions are used for CI/CD
+# for reference purposes this file has been left in the repo
 
 stages:
   - build

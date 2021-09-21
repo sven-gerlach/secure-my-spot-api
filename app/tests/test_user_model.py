@@ -1,6 +1,6 @@
 """
 Module for all User model related tests
-Source for pytes-django:
+Source for pytest-django:
 https://djangostars.com/blog/django-pytest-testing/
 """
 
