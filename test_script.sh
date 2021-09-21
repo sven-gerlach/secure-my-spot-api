@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# execute all relevant tests
-# Note: the api container needs to be running
+# execute all relevant tests inside Docker container and prior to pushing branch to remote repo
+# all tests are executed again on the repo as part of the project's CI/CD pipeline
 
 echo
 echo ------------Pytest------------
