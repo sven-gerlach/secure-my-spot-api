@@ -11,30 +11,22 @@ from rest_framework.test import APIRequestFactory
 
 from ..models.user_model import User
 from ..views.auth_views import SignInView, SignUpView
+from .factories import get_json_credentials
 
 # marking this module such that tests have access to the database
 pytestmark = pytest.mark.django_db
 
 
-# todo: reduce significant repetition in the test setups
 def test_signupview():
     """Http response code should be 201 and data={"email": "[...]", "password": "[...]"}"""
     # request factory generates a request instance that can be used as the first argument in a view
     factory = APIRequestFactory()
 
     # https://www.django-rest-framework.org/api-guide/testing/#explicitly-encoding-the-request-body
-    path = "/sign-up/"
-    data = json.dumps(
-        {
-            "credentials": {
-                "email": "test@test.com",
-                "password": "secure",
-                "password_confirmation": "secure",
-            }
-        }
+    credentials = get_json_credentials()
+    request = factory.post(
+        "/sign-up/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # call the view with the request item
     response = SignUpView.as_view()(request)
@@ -42,11 +34,11 @@ def test_signupview():
     # test assertions
     assert response.status_code == 201
     assert json.loads(response.content) == {
-        "email": "test@test.com",
-        "password": "secure",
+        "email": credentials["credentials"]["email"],
+        "password": credentials["credentials"]["password"],
     }
     assert User.objects.count() == 1
-    assert User.objects.last().email == "test@test.com"
+    assert User.objects.last().email == credentials["credentials"]["email"]
 
 
 def test_signupview_missing_email():
@@ -55,15 +47,16 @@ def test_signupview_missing_email():
     factory = APIRequestFactory()
 
     # https://www.django-rest-framework.org/api-guide/testing/#explicitly-encoding-the-request-body
-    path = "/sign-up/"
-    data = json.dumps(
-        {"credentials": {"password": "secure", "password_confirmation": "secure"}}
+    credentials = get_json_credentials()
+    # remove email from credentials
+    credentials["credentials"].pop("email", None)
+    request = factory.post(
+        "/sign-up/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # call the view with the request item
     response = SignUpView.as_view()(request)
+    # response.render()
 
     # test assertions
     assert response.status_code == 400
@@ -72,25 +65,19 @@ def test_signupview_missing_email():
 
 def test_signupview_blank_email():
     """Missing email http response code of 400 and data for email=["This field is required."]"""
+    """Missing email http response code of 400 and data for email=["This field is required."]"""
     # request factory generates a request instance that can be used as the first argument in a view
     factory = APIRequestFactory()
 
     # https://www.django-rest-framework.org/api-guide/testing/#explicitly-encoding-the-request-body
-    path = "/sign-up/"
-    data = json.dumps(
-        {
-            "credentials": {
-                "email": "",
-                "password": "secure",
-                "password_confirmation": "secure",
-            }
-        }
+    credentials = get_json_credentials(email="")
+    request = factory.post(
+        "/sign-up/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # call the view with the request item
     response = SignUpView.as_view()(request)
+    # response.render()
 
     # test assertions
     assert response.status_code == 400
@@ -103,16 +90,13 @@ def test_signupview_missing_password():
     factory = APIRequestFactory()
 
     # https://www.django-rest-framework.org/api-guide/testing/#explicitly-encoding-the-request-body
-    path = "/sign-up/"
-    data = json.dumps(
-        {
-            "credentials": {
-                "email": "test@test.com",
-            }
-        }
+    credentials = get_json_credentials()
+    # remove password from credentials
+    credentials["credentials"].pop("password", None)
+    credentials["credentials"].pop("password_confirmation", None)
+    request = factory.post(
+        "/sign-up/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # call the view with the request item
     response = SignUpView.as_view()(request)
@@ -128,18 +112,12 @@ def test_signupview_non_matching_passwords():
     factory = APIRequestFactory()
 
     # https://www.django-rest-framework.org/api-guide/testing/#explicitly-encoding-the-request-body
-    path = "/sign-up/"
-    data = json.dumps(
-        {
-            "credentials": {
-                "email": "test@test.com",
-                "password": "secured",
-                "password_confirmation": "secure",
-            }
-        }
+    credentials = get_json_credentials(
+        password_confirmation="wrong password confirmation"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
+    request = factory.post(
+        "/sign-up/", json.dumps(credentials), content_type="application/json"
+    )
 
     # call the view with the request item
     response = SignUpView.as_view()(request)
@@ -156,22 +134,17 @@ def test_signupview_user_already_exists():
     factory = APIRequestFactory()
 
     # https://www.django-rest-framework.org/api-guide/testing/#explicitly-encoding-the-request-body
-    path = "/sign-up/"
-    data = json.dumps(
-        {
-            "credentials": {
-                "email": "test@test.com",
-                "password": "secure",
-                "password_confirmation": "secure",
-            }
-        }
+    credentials = get_json_credentials()
+    request = factory.post(
+        "/sign-up/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # create a user in the database with the same credentials
     User = get_user_model()
-    User.objects.create_user(email="test@test.com", password="secure")
+    User.objects.create_user(
+        email=credentials["credentials"]["email"],
+        password=credentials["credentials"]["password"],
+    )
 
     # call the sign-up view with the request item
     response = SignUpView.as_view()(request)
@@ -186,19 +159,21 @@ def test_signupview_user_already_exists():
 def test_signinview():
     """Validate that token is stored in database on user object, http code is 201, and that the
     same token is successfully returned to the client {"token": "[...]"}"""
-    # create a user with an email and a stored password
+    # create credentials
+    credentials = get_json_credentials()
+    # credentials["credentials"].pop("email_confirmation", None)
 
-    User = get_user_model()
-    user = User.objects.create_user(email="test@test.de", password="secure enough?")
+    # create a user with credentials
+    user = User.objects.create_user(
+        email=credentials["credentials"]["email"],
+        password=credentials["credentials"]["password"],
+    )
 
     # create a request object
     factory = APIRequestFactory()
-    path = "/sign-in/"
-    data = json.dumps(
-        {"credentials": {"email": "test@test.de", "password": "secure enough?"}}
+    request = factory.post(
+        "/sign-in/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # retrieve the response object by calling the view function with the request objects
     response = SignInView.as_view()(request)
@@ -217,12 +192,10 @@ def test_signinview_email_does_not_exist():
     not exist."]}"""
     # create a request object
     factory = APIRequestFactory()
-    path = "/sign-in/"
-    data = json.dumps(
-        {"credentials": {"email": "test@test.de", "password": "secure enough?"}}
+    credentials = get_json_credentials()
+    request = factory.post(
+        "/sign-in/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # retrieve the response object by calling the view function with the request objects
     response = SignInView.as_view()(request)
@@ -241,18 +214,22 @@ def test_signinview_email_does_not_exist():
 def test_signinview_incorrect_password():
     """Return error message to user with http code 401 and message {"password": ["Incorrect
     password!"]}"""
-    # create user
+    # credentials
+    credentials = get_json_credentials()
+
+    # create user with these credentials
     User = get_user_model()
-    User.objects.create_user(email="test@test.de", password="correct password")
+    User.objects.create_user(
+        email=credentials["credentials"]["email"],
+        password=credentials["credentials"]["password"],
+    )
 
     # create a request object
     factory = APIRequestFactory()
-    path = "/sign-in/"
-    data = json.dumps(
-        {"credentials": {"email": "test@test.de", "password": "wrong password"}}
+    credentials["credentials"]["password"] = "wrong password"
+    request = factory.post(
+        "/sign-in/", json.dumps(credentials), content_type="application/json"
     )
-    content_type = "application/json"
-    request = factory.post(path, data, content_type=content_type)
 
     # retrieve the response object by calling the view function with the request objects
     response = SignInView.as_view()(request)
