@@ -58,6 +58,7 @@ else:
 # if env variable is not available during deployment use random secret key
 # this work-around allows collectstatic to work during container build when secret key is not yet
 # available
+# https://stackoverflow.com/questions/59719175/where-to-run-collectstatic-when-deploying-django-app-to-heroku-using-docker
 SECRET_KEY = os.environ.get("SECRET_KEY", default=get_random_secret_key())
 
 ALLOWED_HOSTS = ["*"]
