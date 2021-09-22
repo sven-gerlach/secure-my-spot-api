@@ -1,12 +1,18 @@
+# todo: consider if GitHUb pages approach should be replaced with Heroku pipeline workflow
+# Problem of the GitHUb pages approach is that every pull request into main automatically deploys
+# Better would be deployment after pull request into main has been confirmed (that is after
+# merging dev into main). Or alternatively run a sort of test deployment on Heroku without
+# actually deploying.
+
 name: deploy-to-heroku
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+#  pull_request:
+#    branches:
+#      - main
 
 # source: https://github.com/marketplace/actions/deploy-to-heroku
 jobs:
@@ -19,7 +25,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
           heroku_email: ${{secrets.HEROKU_EMAIL}}
-          branch: "main"
+          branch: main
           usedocker: True
-          docker_heroku_process_type: "web"
+          docker_heroku_process_type: web
           stack: container
