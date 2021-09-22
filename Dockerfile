@@ -32,6 +32,11 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
+# collectsttic has to be run during build-time. If it is run at run-time static files will not
+# persist on Heroku. However, at build-time settings.py doesn't have access to the django secret
+# key stored as an env on heroku. To get around this issue the settings.py file uses a default
+# secret key as a fall-back option.
+# https://stackoverflow.com/questions/59719175/where-to-run-collectstatic-when-deploying-django-app-to-heroku-using-docker
 RUN python manage.py collectstatic --noinput
 
 # Heroku strongly recommends running the container as a non-root user as that is exactly how

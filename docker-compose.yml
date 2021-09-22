@@ -10,6 +10,7 @@ services:
   web:
     container_name: api
     build: .
+    image: api-img:latest
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
