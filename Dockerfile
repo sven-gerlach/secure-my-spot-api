@@ -5,7 +5,8 @@
 FROM python:3.8-alpine
 
 # add maintainer / contact details to container in form of key=value metadata
-LABEL maintainer="svengerlach@me.com"
+LABEL maintainer_name="Sven Gerlach" \
+      maintainer_email="svengerlach@me.com"
 
 # set work directory
 # Github Actions recommends not to set WORKDIR

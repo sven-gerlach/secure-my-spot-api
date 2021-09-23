@@ -10,8 +10,18 @@ echo
 echo ------------Flake8------------
 docker exec api flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations
 echo
-echo ------------Black------------
-docker exec api black secure_my_spot/ app/ --extend-exclude=migrations --check
-echo
-echo ------------iSort------------
-docker exec api isort secure_my_spot/ app/ --check
+
+if [ "$1" = "force" ]
+then
+  echo ------------Black------------
+  docker exec api black secure_my_spot/ app/ --extend-exclude=migrations
+  echo
+  echo ------------iSort------------
+  docker exec api isort secure_my_spot/ app/
+else
+  echo ------------Black------------
+  docker exec api black secure_my_spot/ app/ --extend-exclude=migrations --check
+  echo
+  echo ------------iSort------------
+  docker exec api isort secure_my_spot/ app/ --check
+fi
