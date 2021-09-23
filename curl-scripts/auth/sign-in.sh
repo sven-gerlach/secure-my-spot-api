@@ -6,8 +6,8 @@ curl "http://localhost:8000/sign-in/" \
   --header "Content-Type: application/json" \
   --data '{
     "credentials": {
-      "email": "s@sg.de",
-      "password": "123"
+      "email": "'"${email}"'",
+      "password": "'"${pw}"'"
     }
   }'
 

@@ -1,7 +1,11 @@
+import json
+
 from django.http import JsonResponse
+from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from ..serializers import AuthTokenSerializer, UserSerializer
 
@@ -57,6 +61,23 @@ class SignInView(ObtainAuthToken):
             token.delete()
             token = Token.objects.create(user=user)
             token.save()
+            # whilst no changes have been made to any user fields, the user object must be saved
+            # with the param update+fields set to the "last_login" field or else the field
+            # wouldn't update
+            # source: https://code.djangoproject.com/ticket/22981
+            user.save(update_fields=["last_login"])
         return JsonResponse(
             {"token": token.key, "user_id": user.pk, "email": user.email}, status=201
         )
+
+
+# todo: write tests for sign-out view
+class SignOutView(APIView):
+    """Sign out user provided user is authenticated and authorised to do so."""
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        """Delete the user's token."""
+        token = request.auth
+        token.delete()
+        return Response(status=200)
