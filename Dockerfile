@@ -14,19 +14,22 @@ LABEL maintainer="svengerlach@me.com"
 WORKDIR /app
 
 # install psycopg2 (needs to be installed manually rather than through executing the Pipfile
-RUN apk update \
-    && apk add gcc libc-dev python3-dev musl-dev \
-    && apk add postgresql-dev \
-    && pip install psycopg2 \
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libc-dev \
+    python3-dev \
+    musl-dev \
+    postgresql-dev \
     # install bash (alpine ships with ash)
     # access bash with "docker exec -it <container-name> /bin/bash"
-    && apk add --no-cache --upgrade bash
+    bash --no-cache --upgrade
 
 # source: https://jonathanmeier.io/using-pipenv-with-docker/
 # install pipenv and install dependencies
-RUN pip install pipenv
-COPY Pipfile .
-COPY Pipfile.lock .
+RUN pip install \
+    pipenv \
+    psycopg2
+COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --deploy --pre
 
 # copy project
