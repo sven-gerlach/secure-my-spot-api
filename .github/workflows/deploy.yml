@@ -7,14 +7,13 @@
 name: deploy-to-heroku
 
 on:
-  push:
-    branches:
-      - main
-#  pull_request:
-#    branches:
-#      - main
+  workflow_run:
+    workflows: ["test]
+    branches: [main]
+    types:
+      - completed
 
-# source: https://github.com/marketplace/actions/deploy-to-heroku
+      # source: https://github.com/marketplace/actions/deploy-to-heroku
 jobs:
   deploy:
     runs-on: ubuntu-latest
