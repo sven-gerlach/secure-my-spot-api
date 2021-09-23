@@ -15,7 +15,7 @@ LABEL maintainer_name="Sven Gerlach" \
 WORKDIR /app
 
 # install psycopg2 (needs to be installed manually rather than through executing the Pipfile
-RUN apt-get update && apt-get install -y \
+RUN apk update && apk add \
     gcc \
     libc-dev \
     python3-dev \
