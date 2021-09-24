@@ -1,11 +1,9 @@
-import json
-
 from django.http import JsonResponse
-from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from ..serializers import AuthTokenSerializer, UserSerializer
 
@@ -74,6 +72,7 @@ class SignInView(ObtainAuthToken):
 # todo: write tests for sign-out view
 class SignOutView(APIView):
     """Sign out user provided user is authenticated and authorised to do so."""
+
     permission_classes = [IsAuthenticated]
 
     def delete(self, request):
