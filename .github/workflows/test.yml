@@ -51,6 +51,6 @@ jobs:
       - name: Run flake8
         run: docker exec api flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations
       - name: Run black
-        run: docker exec api black secure_my_spot/ app/ --check --extend-exclude=migrations
+        run: docker exec api black secure_my_spot/ app/ --extend-exclude=migrations --check
       - name: Run isort
-        run: docker exec api isort secure_my_spot/ app/ --check
+        run: docker exec api isort secure_my_spot/ app/ --profile black --check

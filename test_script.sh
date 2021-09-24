@@ -17,11 +17,11 @@ then
   docker exec api black secure_my_spot/ app/ --extend-exclude=migrations
   echo
   echo ------------iSort------------
-  docker exec api isort secure_my_spot/ app/
+  docker exec api isort secure_my_spot/ app/ --profile black
 else
   echo ------------Black------------
   docker exec api black secure_my_spot/ app/ --extend-exclude=migrations --check
   echo
   echo ------------iSort------------
-  docker exec api isort secure_my_spot/ app/ --check
+  docker exec api isort secure_my_spot/ app/ --profile black --check
 fi

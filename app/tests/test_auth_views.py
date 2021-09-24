@@ -8,8 +8,7 @@ import pytest
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
-from rest_framework.test import (APIClient, APIRequestFactory,
-                                 force_authenticate)
+from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 
 from ..views.auth_views import SignInView, SignOutView, SignUpView
 from .factories import get_json_credentials
