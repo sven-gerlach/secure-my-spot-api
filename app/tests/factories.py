@@ -5,7 +5,12 @@ from ..models.user_model import User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
-    """Factory that generates a user with a random email and random password"""
+    """
+    Factory that generates a user with a random email and random password
+    UserFactory must subclass django ORM DjangoModelFactory for UserFactory.create() to create an
+    instance of a new user on the db
+    Source: https://pypi.org/project/factory-boy/
+    """
 
     class Meta:
         model = User
