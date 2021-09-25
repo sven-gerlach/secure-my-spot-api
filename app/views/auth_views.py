@@ -75,7 +75,6 @@ class SignInView(ObtainAuthToken):
         )
 
 
-# todo: write tests for sign-out view
 class SignOutView(APIView):
     """Sign out user provided user is authenticated and authorised to do so."""
 
@@ -86,3 +85,26 @@ class SignOutView(APIView):
         token = request.auth
         token.delete()
         return Response(status=200)
+
+
+# todo: write tests for ChangePw view
+class ChangePw(APIView):
+    """Change the password of an authenticated user."""
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        """
+        Partially updates the authenticated user's details, specifically their stored and
+        hashed password. The response ought to be a 204 status code.
+        """
+        user =request.user
+        data = request.data["credentials"]
+        if data:
+            if data.get("password") == data.get("password_confirmation"):
+                user.set_password(data["password"])
+                user.save()
+                return Response(status=204)
+            else:
+                return JsonResponse({"detail": "Passwords don't match"}, status=400)
+        else:
+            return JsonResponse({"detail": "No new passwords provided"}, status=400)
