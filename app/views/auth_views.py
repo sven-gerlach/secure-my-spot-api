@@ -3,6 +3,7 @@ Module for all views related to user authorisation
 """
 
 import logging
+
 from django.http import JsonResponse
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -17,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 class SignUpView(APIView):
     """Sign-up view"""
+
     def post(self, request):
         """
         Create and save a new user in the database
@@ -90,6 +92,7 @@ class SignOutView(APIView):
 # todo: write tests for ChangePw view
 class ChangePw(APIView):
     """Change the password of an authenticated user."""
+
     permission_classes = [IsAuthenticated]
 
     def patch(self, request):
@@ -97,7 +100,7 @@ class ChangePw(APIView):
         Partially updates the authenticated user's details, specifically their stored and
         hashed password. The response ought to be a 204 status code.
         """
-        user =request.user
+        user = request.user
         data = request.data["credentials"]
         if data["password"] and data["password_confirmation"]:
             if data.get("password") == data.get("password_confirmation"):

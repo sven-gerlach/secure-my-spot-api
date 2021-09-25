@@ -4,12 +4,7 @@ This module contains all the url patterns which direct requests to the relevant 
 
 from django.urls import path
 
-from .views.auth_views import (
-    SignInView,
-    SignOutView,
-    SignUpView,
-    ChangePw
-)
+from .views.auth_views import ChangePw, SignInView, SignOutView, SignUpView
 
 urlpatterns = [
     path("sign-up/", SignUpView.as_view()),

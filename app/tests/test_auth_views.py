@@ -3,22 +3,23 @@ Module for all User model related tests
 """
 
 import json
+import logging
 
 import pytest
-import logging
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 
 from ..views.auth_views import SignInView, SignOutView, SignUpView
-from .factories import get_json_credentials, UserFactory
+from .factories import get_json_credentials
 
 # marking this module such that tests have access to the database
 pytestmark = pytest.mark.django_db
 
 # instantiates the django logger
 logger = logging.getLogger(__name__)
+
 
 class TestSignUpView:
     def test_signupview(self):
@@ -331,12 +332,13 @@ class TestSignOutView:
         # test assertions
         assert response.status_code == 401
         assert json.loads(response.content) == {
-            "detail": "Invalid token header. No credentials ""provided."
+            "detail": "Invalid token header. No credentials " "provided."
         }
 
 
 class TestChangePw:
     """test ChangePw view"""
+
     def test_changepwview(self):
         # create faker credentials
         credentials = get_json_credentials()
@@ -367,10 +369,10 @@ class TestChangePw:
             {
                 "credentials": {
                     "password": "a new password",
-                    "password_confirmation": "a new password"
+                    "password_confirmation": "a new password",
                 }
             },
-            format="json"
+            format="json",
         )
 
         # test assertions
@@ -386,16 +388,16 @@ class TestChangePw:
             {
                 "credentials": {
                     "password": "a new password",
-                    "password_confirmation": "a new password"
+                    "password_confirmation": "a new password",
                 }
             },
-            format="json"
+            format="json",
         )
 
         # test assertions
         assert response.status_code == 401
         assert json.loads(response.content) == {
-            "detail": "Invalid token header. No credentials ""provided."
+            "detail": "Invalid token header. No credentials " "provided."
         }
 
     def test_changepwview_passwords_dont_match(self):
@@ -429,10 +431,10 @@ class TestChangePw:
             {
                 "credentials": {
                     "password": "a new password",
-                    "password_confirmation": "a new different password"
+                    "password_confirmation": "a new different password",
                 }
             },
-            format="json"
+            format="json",
         )
 
         # test assertions
@@ -469,13 +471,8 @@ class TestChangePw:
         client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
         response = client.patch(
             "/change-pw/",
-            {
-                "credentials": {
-                    "password": "",
-                    "password_confirmation": ""
-                }
-            },
-            format="json"
+            {"credentials": {"password": "", "password_confirmation": ""}},
+            format="json",
         )
 
         # test assertions
