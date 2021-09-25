@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 
 from ..views.auth_views import SignInView, SignOutView, SignUpView
-from .factories import get_json_credentials
+from .factories import get_json_credentials, UserFactory
 
 # marking this module such that tests have access to the database
 pytestmark = pytest.mark.django_db
@@ -333,3 +333,151 @@ class TestSignOutView:
         assert json.loads(response.content) == {
             "detail": "Invalid token header. No credentials ""provided."
         }
+
+
+class TestChangePw:
+    """test ChangePw view"""
+    def test_changepwview(self):
+        # create faker credentials
+        credentials = get_json_credentials()
+
+        # create a user with fake credentials
+        User = get_user_model()
+        user = User.objects.create_user(
+            email=credentials["credentials"]["email"],
+            password=credentials["credentials"]["password"],
+        )
+
+        # create a request object for sign-in view
+        factory = APIRequestFactory()
+        request = factory.post(
+            "/sign-in/", json.dumps(credentials), content_type="application/json"
+        )
+
+        # sign the user in with the request object and retrieve the token associated with the
+        # signed-in user
+        SignInView.as_view()(request)
+        token_obj = Token.objects.get(user=user)
+
+        # use APIClient and the token to request a password change
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
+        response = client.patch(
+            "/change-pw/",
+            {
+                "credentials": {
+                    "password": "a new password",
+                    "password_confirmation": "a new password"
+                }
+            },
+            format="json"
+        )
+
+        # test assertions
+        assert response.status_code == 204
+
+    def test_changepwview_unauthenticated(self):
+        """Expect status code of 401 and response content of {"detail": {"Invalid token header.
+        No credentials provided."}}"""
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="TOKEN ")
+        response = client.patch(
+            "/change-pw/",
+            {
+                "credentials": {
+                    "password": "a new password",
+                    "password_confirmation": "a new password"
+                }
+            },
+            format="json"
+        )
+
+        # test assertions
+        assert response.status_code == 401
+        assert json.loads(response.content) == {
+            "detail": "Invalid token header. No credentials ""provided."
+        }
+
+    def test_changepwview_passwords_dont_match(self):
+        """Expect status code of 400 and response content of {"detail": "Passwords don't match"}"""
+        # create faker credentials
+        credentials = get_json_credentials()
+
+        # create a user with fake credentials
+        User = get_user_model()
+        user = User.objects.create_user(
+            email=credentials["credentials"]["email"],
+            password=credentials["credentials"]["password"],
+        )
+
+        # create a request object for sign-in view
+        factory = APIRequestFactory()
+        request = factory.post(
+            "/sign-in/", json.dumps(credentials), content_type="application/json"
+        )
+
+        # sign the user in with the request object and retrieve the token associated with the
+        # signed-in user
+        SignInView.as_view()(request)
+        token_obj = Token.objects.get(user=user)
+
+        # use APIClient and the token to request a password change
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
+        response = client.patch(
+            "/change-pw/",
+            {
+                "credentials": {
+                    "password": "a new password",
+                    "password_confirmation": "a new different password"
+                }
+            },
+            format="json"
+        )
+
+        # test assertions
+        assert response.status_code == 400
+        assert json.loads(response.content) == {"detail": "Passwords don't match"}
+
+    def test_changepwview_missing_new_passwords(self):
+        """
+        Expect status code of 400 and response content of {"detail": "No new passwords provided"}
+        """
+        # create faker credentials
+        credentials = get_json_credentials()
+
+        # create a user with fake credentials
+        User = get_user_model()
+        user = User.objects.create_user(
+            email=credentials["credentials"]["email"],
+            password=credentials["credentials"]["password"],
+        )
+
+        # create a request object for sign-in view
+        factory = APIRequestFactory()
+        request = factory.post(
+            "/sign-in/", json.dumps(credentials), content_type="application/json"
+        )
+
+        # sign the user in with the request object and retrieve the token associated with the
+        # signed-in user
+        SignInView.as_view()(request)
+        token_obj = Token.objects.get(user=user)
+
+        # use APIClient and the token to request a password change
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
+        response = client.patch(
+            "/change-pw/",
+            {
+                "credentials": {
+                    "password": "",
+                    "password_confirmation": ""
+                }
+            },
+            format="json"
+        )
+
+        # test assertions
+        assert response.status_code == 400
+        assert json.loads(response.content) == {"detail": "No new passwords provided"}

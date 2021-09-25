@@ -99,7 +99,7 @@ class ChangePw(APIView):
         """
         user =request.user
         data = request.data["credentials"]
-        if data:
+        if data["password"] and data["password_confirmation"]:
             if data.get("password") == data.get("password_confirmation"):
                 user.set_password(data["password"])
                 user.save()
