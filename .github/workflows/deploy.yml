@@ -1,8 +1,4 @@
 # todo: consider if GitHUb pages approach should be replaced with Heroku pipeline workflow
-# Problem of the GitHUb pages approach is that every pull request into main automatically deploys
-# Better would be deployment after pull request into main has been confirmed (that is after
-# merging dev into main). Or alternatively run a sort of test deployment on Heroku without
-# actually deploying.
 
 name: deploy-to-heroku
 
