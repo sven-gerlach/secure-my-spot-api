@@ -1,3 +1,8 @@
+"""
+Module for all views related to user authorisation
+"""
+
+import logging
 from django.http import JsonResponse
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -7,10 +12,11 @@ from rest_framework.views import APIView
 
 from ..serializers import AuthTokenSerializer, UserSerializer
 
+logger = logging.getLogger(__name__)
+
 
 class SignUpView(APIView):
     """Sign-up view"""
-
     def post(self, request):
         """
         Create and save a new user in the database

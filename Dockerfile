@@ -21,6 +21,7 @@ RUN apk update && apk add \
     python3-dev \
     musl-dev \
     postgresql-dev \
+    vim \
     # install bash (alpine ships with ash)
     # access bash with "docker exec -it <container-name> /bin/bash"
     bash --no-cache --upgrade

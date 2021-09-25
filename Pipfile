@@ -20,6 +20,7 @@ django-heroku = "*"
 django-extensions = "*"
 faker = "~=8.13.2"
 factory-boy = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 

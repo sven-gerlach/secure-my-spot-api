@@ -5,6 +5,7 @@ Module for all User model related tests
 import json
 
 import pytest
+import logging
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.authtoken.models import Token
@@ -16,6 +17,8 @@ from .factories import get_json_credentials
 # marking this module such that tests have access to the database
 pytestmark = pytest.mark.django_db
 
+# instantiates the django logger
+logger = logging.getLogger(__name__)
 
 class TestSignUpView:
     def test_signupview(self):
@@ -304,8 +307,10 @@ class TestSignOutView:
         with pytest.raises(ObjectDoesNotExist):
             Token.objects.get(user=user)
 
-    def test_signoutview_unauthorised(self):
-        """An unauthorised attempt to sign out results in the client receiving a 401 status code."""
+    # todo: investigate why this test only runs with static files collected in staticfiles?
+    def test_signoutview_invalid_token(self):
+        """An unauthorised attempt to sign out with an invalid token results in the client
+        receiving a 401 status code and a json response {"detail": "Invalid token."}."""
         # create request object for sign-out view without submitting a token
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="Token " + "InvalidToken")
@@ -314,3 +319,17 @@ class TestSignOutView:
         # test assertions
         assert response.status_code == 401
         assert json.loads(response.content) == {"detail": "Invalid token."}
+
+    # todo: investigate why this test only runs with static files collected in staticfiles?
+    def test_signoutview_missing_token(self):
+        """An unauthenticated attempt to sign out with a missing token results in the client
+        receiving a 401 status code."""
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION="TOKEN ")
+        response = client.delete("/sign-out/")
+
+        # test assertions
+        assert response.status_code == 401
+        assert json.loads(response.content) == {
+            "detail": "Invalid token header. No credentials ""provided."
+        }

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -71,12 +72,18 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # add debug toolbar for better debugging
+    "debug_toolbar",
+    # rest framework offers additional classes for API support
     "rest_framework",
     "rest_framework.authtoken",
+    # adding the main API application of the project
     "app",
 ]
 
 MIDDLEWARE = [
+    # add debug toolbar middleware
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     # Add WhiteNoise package to middleware so that it serves static assets
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -87,6 +94,20 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
+# Normally, if INTERNAL_IP is set (typically 127.0.0.1) and the middleware
+# "debug_toolbar.middleware.show_toolbar" is set the debug toolbar shows up automatically when
+# DEBUG is set to True. However, containers' ip address changes with every time they are spun up.
+# Hence, this manual work-around needs to be applied.
+# source: https://stackoverflow.com/questions/26898597/django-debug-toolbar-and-docker
+# source: https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#toolbar-options
+def show_toolbar(request):
+    return True
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+}
 
 ROOT_URLCONF = "secure_my_spot.urls"
 
@@ -108,12 +129,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "secure_my_spot.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {"default": DB}
 
+# defines the custom user model
 AUTH_USER_MODEL = "app.User"
 
 # Password validation
@@ -138,7 +159,7 @@ REST_FRAMEWORK = {
     # Setting the django rest framework authentication scheme
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
     # Only allow requests with valid JSON content (form data not allowed)
@@ -146,7 +167,6 @@ REST_FRAMEWORK = {
         "rest_framework.parsers.JSONParser",
     ],
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -177,3 +197,32 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Custom logger that sends all logs to the console's stdout. This will ensure that print()
+# statements and any logging statements are printed to the console and can be read by listening
+# to "docker-compose logs -f"
+# https://odwyer.software/blog/logging-to-standard-output-with-django
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'formatters': {
+       'verbose': {
+           'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+       },
+   },
+   'handlers': {
+       'console': {
+           'level': 'DEBUG',
+           'class': 'logging.StreamHandler',
+           'stream': sys.stdout,
+           'formatter': 'verbose'
+       },
+   },
+   'loggers': {
+       '': {
+           'handlers': ['console'],
+           'level': 'DEBUG',
+           'propagate': True,
+       },
+   },
+}
