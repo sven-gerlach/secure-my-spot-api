@@ -12,7 +12,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 
 from ..views.auth_views import SignInView, SignOutView, SignUpView
-from .factories import get_json_credentials, UserFactory
+from .factories import UserFactory, get_json_credentials
 
 # marking this module such that tests have access to the database
 pytestmark = pytest.mark.django_db
@@ -54,21 +54,20 @@ class TestSignUpView:
         response = client.post(
             "/sign-up/",
             {
-                "credentials":
-                    {
-                        "email": user.email,
-                        "password": user.password,
-                        "password_confirmation": user.password
-                    }
+                "credentials": {
+                    "email": user.email,
+                    "password": user.password,
+                    "password_confirmation": user.password,
+                }
             },
-            format="json"
+            format="json",
         )
         # assert user is crated and stored in the db
         assert get_user_model().objects.get(email=user.email).email == user.email
         assert response.status_code == 201
         assert json.loads(response.content) == {
             "email": user.email,
-            "password": user.password
+            "password": user.password,
         }
 
     def test_signupview_missing_email(self):
