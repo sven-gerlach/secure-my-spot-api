@@ -39,6 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Build the docker-compose stack
+        # https://github.community/t/how-to-use-docker-compose-with-github-actions/16850/3
         run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d --build
       - name: Check running containers
         run: docker ps -a
