@@ -16,10 +16,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["email", "password"]
 
-
-    # implement custom create and update method or else the password is not saved as a hashed pw
-    # source: https://stackoverflow.com/questions/27586095/why-isnt-my-django-user-models-password-hashed
     def create(self, validated_data):
+        """implement custom create and update method or else the password is not saved as a hashed
+        pw
+        https://stackoverflow.com/questions/27586095/why-isnt-my-django-user-models-password-hashed
+        """
         password = validated_data.pop("password", None)
         instance = self.Meta.model(**validated_data)
         if password is not None:

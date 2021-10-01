@@ -1,10 +1,11 @@
 """Custom middleware that logs incoming requests and other detail to the console"""
+
 from datetime import datetime
-import json
 
 
 class RequestLogging:
     """Log incoming requests to the terminal"""
+
     def __init__(self, get_response):
         self.get_response = get_response
         # One-time configuration and initialization.
