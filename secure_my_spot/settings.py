@@ -79,9 +79,15 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     # adding the main API application of the project
     "app",
+    # https://pypi.org/project/django-cors-headers/
+    # this is necessary to set up the cors middleware which will respond appropriately to CORS
+    # preflight Options requests (see middleware object)
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    # # https://pypi.org/project/django-cors-headers/
+    "corsheaders.middleware.CorsMiddleware",
     # add debug toolbar middleware
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",

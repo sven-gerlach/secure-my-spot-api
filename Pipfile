@@ -21,6 +21,7 @@ django-extensions = "*"
 faker = "~=8.13.2"
 factory-boy = "*"
 django-debug-toolbar = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
