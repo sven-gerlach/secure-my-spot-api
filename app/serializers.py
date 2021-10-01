@@ -17,6 +17,26 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["email", "password"]
 
 
+    # implement custom create and update method or else the password is not saved as a hashed pw
+    # source: https://stackoverflow.com/questions/27586095/why-isnt-my-django-user-models-password-hashed
+    def create(self, validated_data):
+        password = validated_data.pop("password", None)
+        instance = self.Meta.model(**validated_data)
+        if password is not None:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr == "password":
+                instance.set_password(value)
+            else:
+                setattr(instance, attr, value)
+        instance.save()
+        return instance
+
+
 class AuthTokenSerializer(serializers.Serializer):
     """
     Custom auth-token serializer class. This is necessary because the original
