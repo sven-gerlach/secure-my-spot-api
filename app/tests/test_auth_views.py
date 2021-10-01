@@ -41,10 +41,6 @@ class TestSignUpView:
 
         # test assertions
         assert response.status_code == 201
-        assert json.loads(response.content) == {
-            "email": credentials["credentials"]["email"],
-            "password": credentials["credentials"]["password"],
-        }
         assert User.objects.count() == 1
         assert User.objects.last().email == credentials["credentials"]["email"]
 
@@ -65,10 +61,6 @@ class TestSignUpView:
         # assert user is crated and stored in the db
         assert get_user_model().objects.get(email=user.email).email == user.email
         assert response.status_code == 201
-        assert json.loads(response.content) == {
-            "email": user.email,
-            "password": user.password,
-        }
 
     def test_signupview_missing_email(self):
         """Missing email http response code of 400 and data for email=["This field is required."]"""
