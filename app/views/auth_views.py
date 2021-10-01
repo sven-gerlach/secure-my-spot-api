@@ -42,7 +42,7 @@ class SignUpView(APIView):
         # return http status 400 with error message otherwise
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
+            return Response(status=201)
         return JsonResponse(serializer.errors, status=400)
 
 
