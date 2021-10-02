@@ -3,7 +3,6 @@ Serializers for relevant models
 """
 
 from django.contrib.auth import authenticate
-from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 from .models.user_model import User
@@ -46,14 +45,14 @@ class AuthTokenSerializer(serializers.Serializer):
     https://github.com/encode/django-rest-framework/blob/3.6.0/rest_framework/authtoken/serializers.py
     """
 
-    email = serializers.CharField(label=_("e-Mail"), write_only=True)
+    email = serializers.CharField(label="e-Mail", write_only=True)
     password = serializers.CharField(
-        label=_("Password"),
+        label="Password",
         style={"input_type": "password"},
         trim_whitespace=False,
         write_only=True,
     )
-    token = serializers.CharField(label=_("Token"), read_only=True)
+    token = serializers.CharField(label="Token", read_only=True)
 
     def validate(self, attrs):
         """Validate user"""
@@ -69,10 +68,10 @@ class AuthTokenSerializer(serializers.Serializer):
             # users. (Assuming the default ModelBackend authentication
             # backend.)
             if not user:
-                msg = _("Unable to log in with provided credentials.")
+                msg = "Unable to log in with provided credentials."
                 raise serializers.ValidationError(msg, code="authorization")
         else:
-            msg = _('Must include "email" and "password".')
+            msg = 'Must include "email" and "password".'
             raise serializers.ValidationError(msg, code="authorization")
 
         attrs["user"] = user
