@@ -13,11 +13,8 @@ class RequestLogging:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-
-        dt = datetime.now()
-
         print("=====================INCOMING REQUEST=====================")
-        print(f"Time: {dt: %H:%M}")
+        print(f"Time: {datetime.now(): %H:%M}")
         print(f"Method: {request.method}")
         print(f"Body: {request.body}")
         print(f"Params: {request.content_params}")
@@ -27,5 +24,12 @@ class RequestLogging:
 
         # Code to be executed for each request/response after
         # the view is called.
+
+        print("====================OUTGOING RESPONSE=====================")
+        print(f"Time: {datetime.now(): %H:%M}")
+        print(f"Content: {response.content}")
+        print(f"Headers: {response.headers}")
+        print(f"Status Code: {response.status_code}")
+        print("===========================END============================")
 
         return response
