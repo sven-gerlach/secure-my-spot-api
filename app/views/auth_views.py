@@ -72,9 +72,7 @@ class SignInView(ObtainAuthToken):
             # wouldn't update
             # source: https://code.djangoproject.com/ticket/22981
             user.save(update_fields=["last_login"])
-        return JsonResponse(
-            {"token": token.key, "user_id": user.pk, "email": user.email}, status=201
-        )
+        return JsonResponse({"email": user.email, "token": token.key}, status=201)
 
 
 class SignOutView(APIView):

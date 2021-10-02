@@ -213,9 +213,8 @@ class TestSignInView:
         # test assertions
         assert response.status_code == 201
         assert json.loads(response.content) == {
-            "token": Token.objects.get(user=user).key,
-            "user_id": user.pk,
             "email": user.email,
+            "token": Token.objects.get(user=user).key,
         }
 
     def test_signinview_email_does_not_exist(self):
