@@ -8,7 +8,7 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: sh heroku_run_web_script.sh
+  web: secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
 release:
   image: web
   command:

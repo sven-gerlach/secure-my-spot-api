@@ -1,11 +1,7 @@
-__pycache__
-test.txt
 .env
 .venv
 .idea
 .coverage
 .gitignore
-db.sqlite3
 htmlcov
 Dockerfile
-docker-compose-dev.yml
