@@ -8,7 +8,7 @@ build:
   docker:
     web: Dockerfile
 run:
-  web: gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
+  web: sh heroku_run_web_script.sh
 release:
   image: web
   command:
