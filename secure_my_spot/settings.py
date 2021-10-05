@@ -73,7 +73,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # add debug toolbar for better debugging
-    "debug_toolbar",
+    # "debug_toolbar",
     # rest framework offers additional classes for API support
     "rest_framework",
     "rest_framework.authtoken",
