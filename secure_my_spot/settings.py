@@ -65,7 +65,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", default=get_random_secret_key())
 ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
-    "whitenoise.runserver_nostatic",
+    # "whitenoise.runserver_nostatic",
     "django_extensions",
     "django.contrib.admin",
     "django.contrib.auth",
