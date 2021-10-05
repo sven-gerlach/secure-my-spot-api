@@ -86,15 +86,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    # Add WhiteNoise package to middleware so that it serves static assets
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     # # https://pypi.org/project/django-cors-headers/
     "corsheaders.middleware.CorsMiddleware",
     # custom middleware that prints details of incoming http requests to the terminal
     "secure_my_spot.custom_middleware.request_logging.RequestLogging",
     # add debug toolbar middleware
     # "debug_toolbar.middleware.DebugToolbarMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    # Add WhiteNoise package to middleware so that it serves static assets
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
