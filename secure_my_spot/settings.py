@@ -85,6 +85,10 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
+# The order of the middleware is very important. In particular, SecurityMiddleware msut come first
+# immediately followed by WhiteNoiseMiddleware. Violating this restriction will result in static
+# assets not being served properly
+# https://cheat.readthedocs.io/en/latest/django/static_files.html#the-whitenoise-app
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     # Add WhiteNoise package to middleware so that it serves static assets
