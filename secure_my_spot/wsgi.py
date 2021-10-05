@@ -7,10 +7,15 @@ For more information on this file, see
 https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
-import os
-
+from django.conf import settings
+from django.contrib.staticfiles.handlers import StaticFilesHandler
 from django.core.wsgi import get_wsgi_application
+import os
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "secure_my_spot.settings")
 
-application = get_wsgi_application()
+# https://stackoverflow.com/questions/12800862/how-to-make-django-serve-static-files-with-gunicorn
+if settings.DEBUG:
+    application = StaticFilesHandler(get_wsgi_application())
+else:
+    application = get_wsgi_application()
