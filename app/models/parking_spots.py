@@ -33,7 +33,7 @@ class ParkingSpots(models.Model):
     latitude = models.DecimalField(
         help_text="GPS latitude bounded by [-90,90] and with 6 decimal places",
         decimal_places=6,
-        max_digits=9,
+        max_digits=9
     )
 
     longitude = models.DecimalField(
@@ -50,8 +50,8 @@ class ParkingSpots(models.Model):
         help_text="hourly rate in USD", decimal_places=2, max_digits=5
     )
 
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def coordinates(self):
