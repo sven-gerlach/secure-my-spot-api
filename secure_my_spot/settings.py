@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # add debug toolbar for better debugging
+    # [deactivated] add debug toolbar for better debugging
     # "debug_toolbar",
     # rest framework offers additional classes for API support
     "rest_framework",
@@ -85,7 +85,7 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
-# The order of the middleware is very important. In particular, SecurityMiddleware msut come first
+# The order of the middleware is very important. In particular, SecurityMiddleware must come first
 # immediately followed by WhiteNoiseMiddleware. Violating this restriction will result in static
 # assets not being served properly
 # https://cheat.readthedocs.io/en/latest/django/static_files.html#the-whitenoise-app

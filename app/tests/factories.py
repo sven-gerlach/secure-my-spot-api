@@ -1,7 +1,7 @@
 import factory
 from faker import Faker
 
-from ..models.user_model import User
+from ..models.user import User
 
 
 class UserFactory(factory.django.DjangoModelFactory):

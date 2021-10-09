@@ -11,7 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import AuthTokenSerializer, UserSerializer
+from ..serializers.token_serializer import AuthTokenSerializer
+from ..serializers.user_serializer import UserSerializer
 
 logger = logging.getLogger(__name__)
 

@@ -7,7 +7,7 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
-from ..models.user_model import User
+from ..models.user import User
 
 
 class CustomUserCreationForm(forms.ModelForm):
