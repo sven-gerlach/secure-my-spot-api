@@ -5,7 +5,7 @@ A model for parking spots that are part of the company's inventory for renting o
 from django.db import models
 
 
-class ParkingSpots(models.Model):
+class ParkingSpot(models.Model):
     """
     A model that represents a parking spot
 

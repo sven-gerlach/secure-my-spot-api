@@ -4,10 +4,10 @@ from rest_framework import serializers
 
 from utils.utils import is_integer
 
-from ..models.parking_spots import ParkingSpots
+from ..models.parking_spot import ParkingSpot
 
 
-class ParkingSpotsSerializer(serializers.ModelSerializer):
+class ParkingSpotSerializer(serializers.ModelSerializer):
     """
     Serializer for the parking spots model.
 
@@ -19,7 +19,7 @@ class ParkingSpotsSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = ParkingSpots
+        model = ParkingSpot
         fields = [
             "latitude",
             "longitude",
@@ -35,13 +35,15 @@ class ParkingSpotsSerializer(serializers.ModelSerializer):
             "rate": {"required": True},
         }
 
-        def validate_latitude(self, latitude):
+        def validate_latitude(self, latitude: str) -> Decimal:
             """
             Must have upper and lower bounds of +90 and -90 respectively.
             The number of decimal places must be limited to 6.
             """
 
             # convert string to decimal
+            # Note that conversion from string to Decimal avoids the possibility of float
+            # imprecision
             decimal_latitude = Decimal(latitude)
 
             if decimal_latitude > 90 or decimal_latitude < -90:
@@ -53,14 +55,14 @@ class ParkingSpotsSerializer(serializers.ModelSerializer):
 
             # Multiply by 10^6 and check if result is an integer. If not, raise validation error.
 
-            if not is_integer(decimal_latitude * 10 ^ 6):
+            if not is_integer(decimal_latitude * 10 ** 6):
                 raise serializers.ValidationError(
                     "The coordinate precision must be 6 decimals or " "less"
                 )
 
             return decimal_latitude
 
-        def validate_longitude(self, longitude):
+        def validate_longitude(self, longitude: str) -> Decimal:
             """
             Must have upper and lower bounds of +180 and -180 respectively.
             The lower bound is exclusive and the upper bound is inclusive.
@@ -76,7 +78,7 @@ class ParkingSpotsSerializer(serializers.ModelSerializer):
                     "in the West, and inclusive +180 in the East"
                 )
 
-            if not is_integer(decimal_longitude * 10 ^ 6):
+            if not is_integer(decimal_longitude * 10 ** 6):
                 raise serializers.ValidationError(
                     "The coordinate precision must be 6 decimals or " "less"
                 )
@@ -96,7 +98,7 @@ class ParkingSpotsSerializer(serializers.ModelSerializer):
                     "The hour rate must be a positive number."
                 )
 
-            if not is_integer(decimal_rate * 10 ^ 2):
+            if not is_integer(decimal_rate * 10 ** 2):
                 raise serializers.ValidationError(
                     "The hourly rate must have no more than 2 " "decimals"
                 )

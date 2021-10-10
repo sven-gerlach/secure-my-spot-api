@@ -1,2 +1,2 @@
-from .parking_spots import ParkingSpots
+from .parking_spot import ParkingSpot
 from .user import User

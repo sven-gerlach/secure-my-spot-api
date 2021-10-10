@@ -1,7 +1,11 @@
 import factory
-from faker import Faker
+from faker import Factory, Faker
 
+from ..models.parking_spot import ParkingSpot
 from ..models.user import User
+
+# create
+faker = Factory.create()
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -15,6 +19,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
+    # factory boy gives direct access to the Faker library through factory.Faker("identifier")
     email = factory.Faker("email")
     password = factory.Faker("password")
 
@@ -35,3 +40,16 @@ def get_json_credentials(email=None, password=None, password_confirmation=None):
             "password_confirmation": f"{password_confirmation}",
         }
     }
+
+
+class ParkingSpotFactory(factory.django.DjangoModelFactory):
+    """
+    A factory that generates a new random parking spot
+    """
+
+    class Meta:
+        model = ParkingSpot
+
+    latitude = faker.pydecimal(right_digits=6, min_value=-90, max_value=90)
+    longitude = faker.pydecimal(right_digits=6, min_value=-179.999999, max_value=180)
+    rate = faker.pydecimal(right_digits=2, min_value=10, max_value=70)
