@@ -1,6 +1,8 @@
 import factory
 from faker import Factory, Faker
 
+from utils.utils import get_rand_decimal
+
 from ..models.parking_spot import ParkingSpot
 from ..models.user import User
 
@@ -50,6 +52,12 @@ class ParkingSpotFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ParkingSpot
 
-    latitude = faker.pydecimal(right_digits=6, min_value=-90, max_value=90)
-    longitude = faker.pydecimal(right_digits=6, min_value=-179.999999, max_value=180)
-    rate = faker.pydecimal(right_digits=2, min_value=10, max_value=70)
+    # Note: faker's algorithm for calculating a pydecimal returns the upper or lower bound when
+    # the random decimal is above / below the upper/lower bound, thereby creating mostly lower or
+    # upper bound results. Hence, a manual random Decimal number generator his being used.
+
+    latitude = get_rand_decimal(min=-90, max=90, right_digits=6)
+
+    longitude = get_rand_decimal(min=-179.999999, max=180, right_digits=6)
+
+    rate = get_rand_decimal(min=0, max=100, right_digits=2)

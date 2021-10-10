@@ -1,5 +1,10 @@
+"""
+Implement customised form fields for the parking spots model to ensure validation
+"""
+
 from django import forms
 from django.forms import ModelForm
+
 from ..models.parking_spot import ParkingSpot
 
 
@@ -13,7 +18,7 @@ class CustomParkingSpotForm(ModelForm):
         min_value=-90,
         decimal_places=6,
         required=True,
-        help_text="GPS latitude bounded by [-90,90] and with 6 decimals"
+        help_text="GPS latitude bounded by [-90,90] and with 6 decimals",
     )
 
     longitude = forms.DecimalField(
@@ -34,4 +39,3 @@ class CustomParkingSpotForm(ModelForm):
     class Meta:
         model = ParkingSpot
         fields = ("latitude", "longitude", "rate", "reserved")
-
