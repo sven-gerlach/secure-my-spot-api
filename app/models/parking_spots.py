@@ -33,7 +33,7 @@ class ParkingSpots(models.Model):
     latitude = models.DecimalField(
         help_text="GPS latitude bounded by [-90,90] and with 6 decimal places",
         decimal_places=6,
-        max_digits=9
+        max_digits=9,
     )
 
     longitude = models.DecimalField(
