@@ -3,7 +3,9 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from .forms.user_form import CustomUserChangeForm, CustomUserCreationForm
+from .forms.parking_spot_form import CustomParkingSpotForm
 from .models.user import User
+from .models.parking_spot import ParkingSpot
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -55,5 +57,23 @@ class CustomUserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+class CustomParkingSpotAdmin(admin.ModelAdmin):
+    """
+    Customised ParkingSpot admin class
+    """
+
+    form = CustomParkingSpotForm
+
+    list_display = (
+        "id",
+        "latitude",
+        "longitude",
+        "rate",
+        "created_at",
+        "updated_at"
+    )
+
+
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(ParkingSpot, CustomParkingSpotAdmin)
 admin.site.unregister(Group)

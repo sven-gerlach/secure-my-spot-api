@@ -31,23 +31,26 @@ class ParkingSpot(models.Model):
     """
 
     latitude = models.DecimalField(
-        help_text="GPS latitude bounded by [-90,90] and with 6 decimal places",
+        help_text="GPS latitude bounded by [-90,90] and with 6 decimals",
         decimal_places=6,
-        max_digits=9,
+        max_digits=9
     )
 
     longitude = models.DecimalField(
-        help_text="GPS longitude bounded by (-180, 180] with 6 decimal places",
+        help_text="GPS longitude bounded by (-180, 180] with 6 decimals",
         decimal_places=6,
-        max_digits=9,
+        max_digits=9
     )
 
     reserved = models.BooleanField(
-        help_text="Specifies if the parking spot is already reserved", default=False
+        help_text="Specifies if the parking spot is already reserved",
+        default=False
     )
 
     rate = models.DecimalField(
-        help_text="hourly rate in USD", decimal_places=2, max_digits=5
+        help_text="hourly rate in USD with 2 decimals",
+        decimal_places=2,
+        max_digits=5
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

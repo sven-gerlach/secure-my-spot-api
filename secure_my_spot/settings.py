@@ -18,6 +18,8 @@ import dj_database_url
 from django.core.management.utils import get_random_secret_key
 
 # todo: break up settings into base, dev, testing, etc
+# 1) add test_settings which uses a faster hashing algorithm for signing up new users
+# 2) [...]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent

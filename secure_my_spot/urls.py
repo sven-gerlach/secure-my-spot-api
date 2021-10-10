@@ -16,9 +16,14 @@ Including another URLconf
 import debug_toolbar
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("__debug__", include(debug_toolbar.urls)),
     path("", include("app.urls")),
+    # delivers the favicon during dev and prod mode
+    # https://www.ordinarycoders.com/blog/article/add-a-custom-favicon-to-your-django-web-app
+    path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url('image/favicon.ico'))),
 ]

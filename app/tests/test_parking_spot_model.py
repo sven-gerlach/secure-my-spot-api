@@ -26,3 +26,5 @@ class TestParkingSpotModel:
         assert new_parking_spot.latitude == Decimal("10.123456")
         assert new_parking_spot.longitude == Decimal("-170.123456")
         assert new_parking_spot.rate == Decimal("28.17")
+
+    
