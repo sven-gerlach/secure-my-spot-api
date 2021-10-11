@@ -35,7 +35,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
             "rate": {"required": True},
         }
 
-        def validate_latitude(self, latitude: str) -> Decimal:
+        def validate_latitude(self, value):
             """
             Must have upper and lower bounds of +90 and -90 respectively.
             The number of decimal places must be limited to 6.
@@ -44,7 +44,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
             # convert string to decimal
             # Note that conversion from string to Decimal avoids the possibility of float
             # imprecision
-            decimal_latitude = Decimal(latitude)
+            decimal_latitude = Decimal(value)
 
             if decimal_latitude > 90 or decimal_latitude < -90:
                 raise serializers.ValidationError(
@@ -54,15 +54,14 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
                 )
 
             # Multiply by 10^6 and check if result is an integer. If not, raise validation error.
-
             if not is_integer(decimal_latitude * 10 ** 6):
                 raise serializers.ValidationError(
                     "The coordinate precision must be 6 decimals or " "less"
                 )
 
-            return decimal_latitude
+            return value
 
-        def validate_longitude(self, longitude: str) -> Decimal:
+        def validate_longitude(self, value):
             """
             Must have upper and lower bounds of +180 and -180 respectively.
             The lower bound is exclusive and the upper bound is inclusive.
@@ -70,7 +69,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
             """
 
             # convert string to decimal
-            decimal_longitude = Decimal(longitude)
+            decimal_longitude = Decimal(value)
 
             if decimal_longitude > 180 or decimal_longitude <= -180:
                 raise serializers.ValidationError(
@@ -83,17 +82,17 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
                     "The coordinate precision must be 6 decimals or " "less"
                 )
 
-            return decimal_longitude
+            return value
 
-        def validate_rate(self, rate):
+        def validate_rate(self, value):
             """
             Must have 2 decimals or less.
             Must be positive.
             """
 
-            decimal_rate = Decimal(rate)
+            decimal_rate = Decimal(value)
 
-            if rate < 0:
+            if value < 0:
                 raise serializers.ValidationError(
                     "The hour rate must be a positive number."
                 )
@@ -103,4 +102,4 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
                     "The hourly rate must have no more than 2 " "decimals"
                 )
 
-            return decimal_rate
+            return value
