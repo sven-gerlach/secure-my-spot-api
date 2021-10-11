@@ -2,12 +2,15 @@
 Test the parking spot serializer
 """
 
+from decimal import Decimal
+
 import pytest
-from app.models.parking_spot import ParkingSpot
-from ..factories import ParkingSpotFactory
-from app.serializers.parking_spot_serializer import ParkingSpotSerializer
 from django.test import TestCase
-from copy import copy
+
+from app.models.parking_spot import ParkingSpot
+from app.serializers.parking_spot_serializer import ParkingSpotSerializer
+
+from ..factories import ParkingSpotFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -71,26 +74,72 @@ class TestParkingSpotSerializer(TestCase):
         decimals.
         """
 
-        # create shallow copies of the serialized data dictionary
-        invalid_upper_bound = copy(self.serialized_data)
-        invalid_lower_bound = copy(self.serialized_data)
-        invalid_decimals = copy(self.serialized_data)
-
-        # manipulate all three copies
-        invalid_upper_bound["latitude"] = "91"
-        invalid_lower_bound["latitude"] = "-91"
-        invalid_decimals["latitude"] = "0.0000001"
+        # # create shallow copies of the serialized data dictionary
+        invalid_upper_bound = ParkingSpotFactory.build(latitude=Decimal("91"))
+        invalid_lower_bound = ParkingSpotFactory.build(latitude=Decimal("-91"))
+        invalid_decimals = ParkingSpotFactory.build(latitude=Decimal("0.0000001"))
 
         # create serializers
-        serializer_invalid_upper_bound = ParkingSpotSerializer(data=invalid_upper_bound)
-        serializer_invalid_lower_bound = ParkingSpotSerializer(data=invalid_lower_bound)
-        serializer_invalid_decimals = ParkingSpotSerializer(data=invalid_decimals)
-
-        print(vars(serializer_invalid_upper_bound), "\n")
-        print(vars(serializer_invalid_lower_bound), "\n")
-        print(vars(serializer_invalid_decimals), "\n")
+        serializer_invalid_upper_bound = ParkingSpotSerializer(
+            data=invalid_upper_bound.get_dictionary("latitude", "longitude", "rate")
+        )
+        serializer_invalid_lower_bound = ParkingSpotSerializer(
+            data=invalid_lower_bound.get_dictionary("latitude", "longitude", "rate")
+        )
+        serializer_invalid_decimals = ParkingSpotSerializer(
+            data=invalid_decimals.get_dictionary("latitude", "longitude", "rate")
+        )
 
         # assertions
         assert serializer_invalid_upper_bound.is_valid() is False
+        assert serializer_invalid_lower_bound.is_valid() is False
+        assert serializer_invalid_decimals.is_valid() is False
+
+    def test_deserialize_invalid_longitude(self):
+        """
+        Change longitude in serialized_data to test upper and lower bounds as well as the limit of 6
+        decimals.
+        """
+
+        # # create shallow copies of the serialized data dictionary
+        invalid_upper_bound = ParkingSpotFactory.build(longitude=Decimal("181"))
+        invalid_lower_bound = ParkingSpotFactory.build(longitude=Decimal("-180"))
+        invalid_decimals = ParkingSpotFactory.build(longitude=Decimal("0.0000001"))
+
+        # create serializers
+        serializer_invalid_upper_bound = ParkingSpotSerializer(
+            data=invalid_upper_bound.get_dictionary("latitude", "longitude", "rate")
+        )
+        serializer_invalid_lower_bound = ParkingSpotSerializer(
+            data=invalid_lower_bound.get_dictionary("latitude", "longitude", "rate")
+        )
+        serializer_invalid_decimals = ParkingSpotSerializer(
+            data=invalid_decimals.get_dictionary("latitude", "longitude", "rate")
+        )
+
+        # assertions
+        assert serializer_invalid_upper_bound.is_valid() is False
+        assert serializer_invalid_lower_bound.is_valid() is False
+        assert serializer_invalid_decimals.is_valid() is False
+
+    def test_deserialize_invalid_rate(self):
+        """
+        Change rate in serialized_data to test lower bound as well as the limit of 2
+        decimals.
+        """
+
+        # # create shallow copies of the serialized data dictionary
+        invalid_lower_bound = ParkingSpotFactory.build(rate=Decimal("-0.01"))
+        invalid_decimals = ParkingSpotFactory.build(rate=Decimal("0.001"))
+
+        # create serializers
+        serializer_invalid_lower_bound = ParkingSpotSerializer(
+            data=invalid_lower_bound.get_dictionary("latitude", "longitude", "rate")
+        )
+        serializer_invalid_decimals = ParkingSpotSerializer(
+            data=invalid_decimals.get_dictionary("latitude", "longitude", "rate")
+        )
+
+        # assertions
         assert serializer_invalid_lower_bound.is_valid() is False
         assert serializer_invalid_decimals.is_valid() is False

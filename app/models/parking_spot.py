@@ -54,16 +54,29 @@ class ParkingSpot(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
-    def coordinates(self):
+    def get_coordinates(self) -> str:
         """
         Returns the coordinates in string format -> "latitude,longitude"
         """
 
         return f"{str(self.latitude)},{str(self.longitude)}"
 
-    def __str__(self):
-        status = "reserved" if self.reserved else "available"
+    def __str__(self) -> str:
         return (
-            f"Parking spot {self.id} located at ({self.latitude},{self.longitude}) "
-            f"is {status} for an hourly rate of {self.rate}"
+            f"Parking spot {self.id}, located at ({self.latitude},{self.longitude}), "
+            f"is {self.get_status} for an hourly rate of {self.rate}"
         )
+
+    def get_dictionary(self, *args: str) -> dict:
+        """
+        Return a dictionary containing all the provided args as keys and their respective values
+        """
+        return {arg: getattr(self, arg) for arg in args}
+
+    @property
+    def get_status(self) -> str:
+        """
+        returns the string "reserved" if the reserved field attribute is True and "available"
+        otherwise
+        """
+        return "reserved" if self.reserved else "available"

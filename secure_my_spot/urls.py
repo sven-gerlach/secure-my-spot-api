@@ -23,10 +23,8 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("app.urls")),
-
     # debug toolbar is currently deactivated
     path("__debug__", include(debug_toolbar.urls)),
-
     # [the below code does resolve the favicon issue in the browser but als cause some tests ti
     # fail
     # delivers the favicon during dev and prod mode

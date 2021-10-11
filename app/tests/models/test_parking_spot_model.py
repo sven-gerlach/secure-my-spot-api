@@ -14,12 +14,7 @@ class TestParkingSpotModel:
     A test suite for testing the parking spots model
     """
 
-    def test_create_valid_parking_spot(self):
-        parking_spot = ParkingSpotFactory.create()
-        print("latitude: ", parking_spot.latitude)
-        print("longitude: ", parking_spot.longitude)
-        print("rate: ", parking_spot.rate)
-
+    def test_create_valid_parking_spot(self, parking_spot):
         # retrieve last object from db
         new_parking_spot = ParkingSpot.objects.last()
 
@@ -52,3 +47,26 @@ class TestParkingSpotModel:
         parking_spot_decimal_breach.save()
 
         assert ParkingSpot.objects.count() == 3
+
+    def test_utility_method(self, parking_spot):
+        """
+        This test utilises the pytest recommended approach of using fixtures as arguments of test
+        functions. In this case, the fixture parking_spot generates, stores, and returns a parking
+        spot model instance.
+        """
+        assert (
+            parking_spot.get_coordinates
+            == f"{parking_spot.latitude},{parking_spot.longitude}"
+        )
+        assert parking_spot.get_status == "available"
+        assert (
+            str(parking_spot) == f"Parking spot {parking_spot.id}, located at "
+            f"({parking_spot.get_coordinates}), "
+            f"is {parking_spot.get_status} for an hourly rate of "
+            f"{parking_spot.rate}"
+        )
+        assert parking_spot.get_dictionary("latitude", "longitude", "rate") == {
+            "latitude": parking_spot.latitude,
+            "longitude": parking_spot.longitude,
+            "rate": parking_spot.rate,
+        }
