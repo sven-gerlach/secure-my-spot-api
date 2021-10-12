@@ -98,7 +98,7 @@ MIDDLEWARE = [
     # # https://pypi.org/project/django-cors-headers/
     "corsheaders.middleware.CorsMiddleware",
     # custom middleware that prints details of incoming http requests to the terminal
-    "secure_my_spot.custom_middleware.request_logging.RequestLogging",
+    "secure_my_spot.custom_middleware.request_response_logger.RequestLogging",
     # add debug toolbar middleware
     # "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

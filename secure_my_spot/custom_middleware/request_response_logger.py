@@ -17,7 +17,7 @@ class RequestLogging:
         print(f"Time: {datetime.now(): %H:%M}")
         print(f"Method: {request.method}")
         print(f"Body: {request.body}")
-        print(f"Params: {request.content_params}")
+        print(f"Params: {request.GET}")
         print("===========================END============================")
 
         response = self.get_response(request)
