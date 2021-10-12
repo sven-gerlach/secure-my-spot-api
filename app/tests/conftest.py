@@ -18,12 +18,3 @@ def parking_spot():
 
     # create a parking spot instance and save it on the db
     return ParkingSpotFactory()
-
-
-@pytest.fixture()
-def parking_spots():
-    """
-    A fixture that creates and returns a list of parking spots.
-    """
-
-    return [ParkingSpotFactory() for _ in range(1, 5)]
