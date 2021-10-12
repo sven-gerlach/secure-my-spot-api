@@ -64,7 +64,7 @@ class CustomParkingSpotAdmin(admin.ModelAdmin):
 
     form = CustomParkingSpotForm
 
-    list_display = ("id", "latitude", "longitude", "rate", "created_at", "updated_at")
+    list_display = ("id", "latitude", "longitude", "rate", "reserved", "created_at", "updated_at")
 
 
 admin.site.register(User, CustomUserAdmin)

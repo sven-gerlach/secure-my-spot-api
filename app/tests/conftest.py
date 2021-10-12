@@ -1,5 +1,7 @@
 """
-Parking spot instances
+This module is being loaded automatically by Pytest. It includes all fixtures which are also
+automatically loaded in any test suites that require them. Therefore, fixtures can be used in any
+test function without the need for importing the fixture into the module.
 """
 
 import pytest
