@@ -56,3 +56,29 @@ class TestParkingSpotViews(TestCase):
         # assertions
         assert view_response.status_code == 200
         assert decoded_response == []
+
+    def test_get_available_parking_spots_filtered_view(self):
+        # create three parking spots at the null meridian and latitude 0, 1, and 2 deg
+        # the step-distance between each incremental degree of latitude is ~111km
+        # see http://www.csgnetwork.com/degreelenllavcalc.html
+        [ParkingSpotFactory.create(latitude=0 + i, longitude=0) for i in range(0, 3)]
+
+        # store all 3 response objects in this list
+        response_list = []
+
+        # km length of 1 deg in latitude at the equator
+        dist = 111
+
+        # create the response object
+        for i in range(0, 3):
+            response_list.append(
+                self.client.get(
+                    reverse("api-available-parking-spots-filter")
+                    + f"?lat=0&long=0&unit=km&dist={1 + i * dist}"
+                )
+            )
+
+        # assertions
+        for i in range(0, 3):
+            assert response_list[i].status_code == 200
+            assert len(json.loads(response_list[i].content)) == 1 + i

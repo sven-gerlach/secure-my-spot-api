@@ -25,7 +25,7 @@ urlpatterns = [
     # the client is expected to send the filter keys (location, unit, distance) in query strings
     # a request for all available parking spots around the GPS point (0.123456,0.123456) within a
     # 100 meter radius would look like this:
-    # available-parking-spots-radial?lat=0.123456&long=0.123456&unit=meter&distance=100
+    # available-parking-spots-radial?lat=0.123456&long=0.123456&unit=km&dist=0.1
     path(
         "available-parking-spots-filter",
         GetAvailableParkingSpotsFilterView.as_view(),
