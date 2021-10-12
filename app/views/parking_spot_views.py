@@ -1,14 +1,14 @@
 """
 This module includes all the parking spots views
 """
+
 from rest_framework import generics
 from rest_framework.mixins import ListModelMixin
 
+from utils.utils import haversine_distance
+
 from ..models.parking_spot import ParkingSpot
 from ..serializers.parking_spot_serializer import ParkingSpotSerializer
-
-from utils.utils import haversine_distance
-from decimal import Decimal
 
 
 class GetAvailableParkingSpotsView(generics.ListAPIView, ListModelMixin):
@@ -60,13 +60,16 @@ class GetAvailableParkingSpotsFilterView(generics.ListAPIView, ListModelMixin):
         available_parking_spots_filtered = []
 
         for parking_spot in available_parking_spots:
-            if haversine_distance(
-                user_latitude=float(latitude),
-                user_longitude=float(longitude),
-                parking_spot_latitude=float(parking_spot.latitude),
-                parking_spot_longitude=float(parking_spot.longitude),
-                unit=unit
-            ) <= float(distance):
+            if (
+                haversine_distance(
+                    user_latitude=float(latitude),
+                    user_longitude=float(longitude),
+                    parking_spot_latitude=float(parking_spot.latitude),
+                    parking_spot_longitude=float(parking_spot.longitude),
+                    unit=unit,
+                )
+                <= float(distance)
+            ):
                 available_parking_spots_filtered.append(parking_spot)
 
         return available_parking_spots_filtered
