@@ -1,11 +1,12 @@
+import json
+
 import pytest
 from django.test import Client
-import json
 
 pytestmark = pytest.mark.django_db
 
 
-class TestParkingSpotViews():
+class TestParkingSpotViews:
     """
     A test suite for all parking spot views
     """
@@ -23,13 +24,16 @@ class TestParkingSpotViews():
             del _["created_at"]
             del _["updated_at"]
 
+        # it is necessary to force python not to truncate decimal zeros, hence the string
+        # formatting of lat, long, and rate
         parking_spots_list = [
             {
-                "latitude": f"{parking_spot.latitude}",
-                "longitude": f"{parking_spot.longitude}",
-                "rate": f"{parking_spot.rate}",
-                "reserved": parking_spot.reserved
-            } for parking_spot in parking_spots
+                "latitude": f"{parking_spot.latitude:.6f}",
+                "longitude": f"{parking_spot.longitude:.6f}",
+                "rate": f"{parking_spot.rate:.2f}",
+                "reserved": parking_spot.reserved,
+            }
+            for parking_spot in parking_spots
         ]
 
         # Assertions
