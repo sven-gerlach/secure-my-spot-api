@@ -7,7 +7,7 @@ from ..models.parking_spot import ParkingSpot
 from ..serializers.parking_spot_serializer import ParkingSpotSerializer
 
 
-class ParkingSpotView(generics.ListAPIView, ListModelMixin):
+class GetAllParkingSpotsView(generics.ListAPIView, ListModelMixin):
     """
     View to list all available, that is unreserved, parking spots.
 

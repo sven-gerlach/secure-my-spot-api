@@ -11,7 +11,7 @@ from .views.auth_views import (
     SignUpView
 )
 
-from .views.parking_spot_views import ParkingSpotView
+from .views.parking_spot_views import GetAllParkingSpotsView
 
 
 urlpatterns = [
@@ -22,5 +22,5 @@ urlpatterns = [
     path("change-pw/", ChangePw.as_view()),
 
     # parking spot routes
-    path("available-parking-spots/", ParkingSpotView.as_view()),
+    path("available-parking-spots/", GetAllParkingSpotsView.as_view()),
 ]
