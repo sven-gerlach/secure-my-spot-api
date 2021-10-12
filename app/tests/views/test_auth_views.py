@@ -8,6 +8,7 @@ import logging
 import pytest
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from django.urls import reverse
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIClient, APIRequestFactory, force_authenticate
 
@@ -33,7 +34,9 @@ class TestSignUpView:
         # #explicitly-encoding-the-request-body
         credentials = get_json_credentials()
         request = factory.post(
-            "/sign-up/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-up"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # call the view with the request item
@@ -48,7 +51,7 @@ class TestSignUpView:
         user = UserFactory.build()
         client = APIClient()
         response = client.post(
-            "/sign-up/",
+            reverse("api-sign-up"),
             {
                 "credentials": {
                     "email": user.email,
@@ -74,7 +77,9 @@ class TestSignUpView:
         # remove email from credentials
         credentials["credentials"].pop("email", None)
         request = factory.post(
-            "/sign-up/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-up"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # call the view with the request item
@@ -96,7 +101,9 @@ class TestSignUpView:
         # #explicitly-encoding-the-request-body
         credentials = get_json_credentials(email="")
         request = factory.post(
-            "/sign-up/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-up"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # call the view with the request item
@@ -124,7 +131,9 @@ class TestSignUpView:
         credentials["credentials"].pop("password", None)
         credentials["credentials"].pop("password_confirmation", None)
         request = factory.post(
-            "/sign-up/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-up"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # call the view with the request item
@@ -146,7 +155,9 @@ class TestSignUpView:
             password_confirmation="wrong password confirmation"
         )
         request = factory.post(
-            "/sign-up/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-up"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # call the view with the request item
@@ -167,7 +178,9 @@ class TestSignUpView:
         # #explicitly-encoding-the-request-body
         credentials = get_json_credentials()
         request = factory.post(
-            "/sign-up/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-up"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # create a user in the database with the same credentials
@@ -204,7 +217,9 @@ class TestSignInView:
         # create a request object
         factory = APIRequestFactory()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # retrieve the response object by calling the view function with the request objects
@@ -224,7 +239,9 @@ class TestSignInView:
         factory = APIRequestFactory()
         credentials = get_json_credentials()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # retrieve the response object by calling the view function with the request objects
@@ -256,7 +273,9 @@ class TestSignInView:
         # create a request object for sign-in view
         factory = APIRequestFactory()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # retrieve the response object by calling the view function with the request objects
@@ -266,7 +285,9 @@ class TestSignInView:
         factory = APIRequestFactory()
         credentials["credentials"]["password"] = "wrong password"
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # retrieve the response object by calling the view function with the request objects
@@ -303,7 +324,9 @@ class TestSignOutView:
         # create a request object for sign-in view
         factory = APIRequestFactory()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # sign the user in with the request object and retrieve the token associated with the
@@ -312,7 +335,7 @@ class TestSignOutView:
         token_obj = Token.objects.get(user=user)
 
         # create request object for sign-out view
-        request = factory.delete("/sign-out")
+        request = factory.delete(reverse("api-sign-out"))
         force_authenticate(request, user=user, token=token_obj)
         response = SignOutView.as_view()(request)
 
@@ -328,7 +351,7 @@ class TestSignOutView:
         # create request object for sign-out view without submitting a token
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="Token " + "InvalidToken")
-        response = client.delete("/sign-out/")
+        response = client.delete(reverse("api-sign-out"))
 
         # test assertions
         assert response.status_code == 401
@@ -340,7 +363,7 @@ class TestSignOutView:
         receiving a 401 status code."""
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="TOKEN ")
-        response = client.delete("/sign-out/")
+        response = client.delete(reverse("api-sign-out"))
 
         # test assertions
         assert response.status_code == 401
@@ -366,7 +389,9 @@ class TestChangePw:
         # create a request object for sign-in view
         factory = APIRequestFactory()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # sign the user in with the request object and retrieve the token associated with the
@@ -378,7 +403,7 @@ class TestChangePw:
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
         response = client.patch(
-            "/change-pw/",
+            reverse("api-change-pw"),
             {
                 "credentials": {
                     "password": "a new password",
@@ -397,7 +422,7 @@ class TestChangePw:
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="TOKEN ")
         response = client.patch(
-            "/change-pw/",
+            reverse("api-change-pw"),
             {
                 "credentials": {
                     "password": "a new password",
@@ -428,7 +453,9 @@ class TestChangePw:
         # create a request object for sign-in view
         factory = APIRequestFactory()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # sign the user in with the request object and retrieve the token associated with the
@@ -440,7 +467,7 @@ class TestChangePw:
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
         response = client.patch(
-            "/change-pw/",
+            reverse("api-change-pw"),
             {
                 "credentials": {
                     "password": "a new password",
@@ -471,7 +498,9 @@ class TestChangePw:
         # create a request object for sign-in view
         factory = APIRequestFactory()
         request = factory.post(
-            "/sign-in/", json.dumps(credentials), content_type="application/json"
+            reverse("api-sign-in"),
+            json.dumps(credentials),
+            content_type="application/json",
         )
 
         # sign the user in with the request object and retrieve the token associated with the
@@ -483,7 +512,7 @@ class TestChangePw:
         client = APIClient()
         client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
         response = client.patch(
-            "/change-pw/",
+            reverse("api-change-pw"),
             {"credentials": {"password": "", "password_confirmation": ""}},
             format="json",
         )

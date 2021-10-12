@@ -2,6 +2,7 @@ import json
 
 import pytest
 from django.test import TestCase
+from django.urls import reverse
 from rest_framework.test import APIClient
 
 from ..factories import ParkingSpotFactory
@@ -21,7 +22,7 @@ class TestParkingSpotViews(TestCase):
 
     def test_get_available_parking_spots_view(self):
         factory = [ParkingSpotFactory() for _ in range(1, 5)]
-        view_response = self.client.get("/available-parking-spots/")
+        view_response = self.client.get(reverse("api-available-parking-spots"))
 
         # Note: created_at and updated_at are removed because the date/time formatting difference
         decoded_response = json.loads(view_response.content)
@@ -47,7 +48,7 @@ class TestParkingSpotViews(TestCase):
 
     def test_get_available_parking_spots_view_none_available(self):
         # no parking spots are created and make a get request to the end-point
-        view_response = self.client.get("/available-parking-spots/")
+        view_response = self.client.get(reverse("api-available-parking-spots"))
 
         # decode JSON bytes response
         decoded_response = json.loads(view_response.content)
