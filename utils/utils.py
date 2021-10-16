@@ -42,10 +42,10 @@ def get_rand_decimal(min: float, max: float, right_digits: int) -> Decimal:
 
 
 def haversine_distance(
-        user_latitude: float,
-        user_longitude: float,
-        parking_spot_latitude: float,
-        parking_spot_longitude: float,
+        user_lat: float,
+        user_lng: float,
+        parking_spot_lat: float,
+        parking_spot_lng: float,
         unit: str
 ) -> float:
     """
@@ -60,17 +60,17 @@ def haversine_distance(
     radius_earth = 6371 * conversion_factor
 
     # convert to radian
-    user_latitude_rad = user_latitude * math.pi / 180
-    parking_spot_latitude_rad = parking_spot_latitude * math.pi / 180
+    user_lat_rad = user_lat * math.pi / 180
+    parking_spot_lat_rad = parking_spot_lat * math.pi / 180
 
     # convert lat and long deltas to radian
-    latitude_delta_rad = (parking_spot_latitude - user_latitude) * math.pi / 180
-    longitude_delta_rad = (parking_spot_longitude - user_longitude) * math.pi / 180
+    lat_delta_rad = (parking_spot_lat - user_lat) * math.pi / 180
+    lng_delta_rad = (parking_spot_lng - user_lng) * math.pi / 180
 
     a = \
-        math.sin(latitude_delta_rad / 2) * math.sin(latitude_delta_rad / 2) + \
-        math.cos(user_latitude_rad) * math.cos(parking_spot_latitude_rad) * \
-        math.sin(longitude_delta_rad / 2) * math.sin(longitude_delta_rad / 2)
+        math.sin(lat_delta_rad / 2) * math.sin(lat_delta_rad / 2) + \
+        math.cos(user_lat_rad) * math.cos(parking_spot_lat_rad) * \
+        math.sin(lng_delta_rad / 2) * math.sin(lng_delta_rad / 2)
 
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
 

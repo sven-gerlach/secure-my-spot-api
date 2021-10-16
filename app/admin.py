@@ -66,8 +66,8 @@ class CustomParkingSpotAdmin(admin.ModelAdmin):
 
     list_display = (
         "id",
-        "latitude",
-        "longitude",
+        "lat",
+        "lng",
         "rate",
         "reserved",
         "created_at",

@@ -13,7 +13,7 @@ class CustomParkingSpotForm(ModelForm):
     Set implicit model field validation for latitude, longitude, and rate
     """
 
-    latitude = forms.DecimalField(
+    lat = forms.DecimalField(
         max_value=90,
         min_value=-90,
         decimal_places=6,
@@ -21,7 +21,7 @@ class CustomParkingSpotForm(ModelForm):
         help_text="GPS latitude bounded by [-90,90] and with 6 decimals",
     )
 
-    longitude = forms.DecimalField(
+    lng = forms.DecimalField(
         max_value=180,
         min_value=-179.999999,
         decimal_places=6,
@@ -38,4 +38,4 @@ class CustomParkingSpotForm(ModelForm):
 
     class Meta:
         model = ParkingSpot
-        fields = ("latitude", "longitude", "rate", "reserved")
+        fields = ("lat", "lng", "rate", "reserved")

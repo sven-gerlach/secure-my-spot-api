@@ -45,8 +45,8 @@ class TestParkingSpotSerializer(TestCase):
         Create a new parking spot with the model object manager and serialize that class instance.
         """
 
-        assert self.serialized_data["latitude"] == str(self.parking_spot.latitude)
-        assert self.serialized_data["longitude"] == str(self.parking_spot.longitude)
+        assert self.serialized_data["lat"] == str(self.parking_spot.lat)
+        assert self.serialized_data["lng"] == str(self.parking_spot.lng)
         assert self.serialized_data["rate"] == str(self.parking_spot.rate)
         assert self.serialized_data["reserved"] is False
 
@@ -63,31 +63,31 @@ class TestParkingSpotSerializer(TestCase):
         deserialized_data = serializer.validated_data
 
         # compare all four data points to original data
-        assert str(deserialized_data["latitude"]) == self.serialized_data["latitude"]
-        assert str(deserialized_data["longitude"]) == self.serialized_data["longitude"]
+        assert str(deserialized_data["lat"]) == self.serialized_data["lat"]
+        assert str(deserialized_data["lng"]) == self.serialized_data["lng"]
         assert str(deserialized_data["rate"]) == self.serialized_data["rate"]
         assert deserialized_data["reserved"] == self.serialized_data["reserved"]
 
-    def test_deserialize_invalid_latitude(self):
+    def test_deserialize_invalid_lat(self):
         """
         Change latitude in serialized_data to test upper and lower bounds as well as the limit of 6
         decimals.
         """
 
         # # create shallow copies of the serialized data dictionary
-        invalid_upper_bound = ParkingSpotFactory.build(latitude=Decimal("91"))
-        invalid_lower_bound = ParkingSpotFactory.build(latitude=Decimal("-91"))
-        invalid_decimals = ParkingSpotFactory.build(latitude=Decimal("0.0000001"))
+        invalid_upper_bound = ParkingSpotFactory.build(lat=Decimal("91"))
+        invalid_lower_bound = ParkingSpotFactory.build(lat=Decimal("-91"))
+        invalid_decimals = ParkingSpotFactory.build(lat=Decimal("0.0000001"))
 
         # create serializers
         serializer_invalid_upper_bound = ParkingSpotSerializer(
-            data=invalid_upper_bound.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_upper_bound.get_dictionary("lat", "lng", "rate")
         )
         serializer_invalid_lower_bound = ParkingSpotSerializer(
-            data=invalid_lower_bound.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_lower_bound.get_dictionary("lat", "lng", "rate")
         )
         serializer_invalid_decimals = ParkingSpotSerializer(
-            data=invalid_decimals.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_decimals.get_dictionary("lat", "lng", "rate")
         )
 
         # assertions
@@ -95,26 +95,26 @@ class TestParkingSpotSerializer(TestCase):
         assert serializer_invalid_lower_bound.is_valid() is False
         assert serializer_invalid_decimals.is_valid() is False
 
-    def test_deserialize_invalid_longitude(self):
+    def test_deserialize_invalid_lng(self):
         """
         Change longitude in serialized_data to test upper and lower bounds as well as the limit of 6
         decimals.
         """
 
         # # create shallow copies of the serialized data dictionary
-        invalid_upper_bound = ParkingSpotFactory.build(longitude=Decimal("181"))
-        invalid_lower_bound = ParkingSpotFactory.build(longitude=Decimal("-180"))
-        invalid_decimals = ParkingSpotFactory.build(longitude=Decimal("0.0000001"))
+        invalid_upper_bound = ParkingSpotFactory.build(lng=Decimal("181"))
+        invalid_lower_bound = ParkingSpotFactory.build(lng=Decimal("-180"))
+        invalid_decimals = ParkingSpotFactory.build(lng=Decimal("0.0000001"))
 
         # create serializers
         serializer_invalid_upper_bound = ParkingSpotSerializer(
-            data=invalid_upper_bound.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_upper_bound.get_dictionary("lat", "lng", "rate")
         )
         serializer_invalid_lower_bound = ParkingSpotSerializer(
-            data=invalid_lower_bound.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_lower_bound.get_dictionary("lat", "lng", "rate")
         )
         serializer_invalid_decimals = ParkingSpotSerializer(
-            data=invalid_decimals.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_decimals.get_dictionary("lat", "lng", "rate")
         )
 
         # assertions
@@ -134,10 +134,10 @@ class TestParkingSpotSerializer(TestCase):
 
         # create serializers
         serializer_invalid_lower_bound = ParkingSpotSerializer(
-            data=invalid_lower_bound.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_lower_bound.get_dictionary("lat", "lng", "rate")
         )
         serializer_invalid_decimals = ParkingSpotSerializer(
-            data=invalid_decimals.get_dictionary("latitude", "longitude", "rate")
+            data=invalid_decimals.get_dictionary("lat", "lng", "rate")
         )
 
         # assertions

@@ -11,7 +11,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
     """
     Serializer for the parking spots model.
 
-    longitude / latitude / rate:
+    lat / lng / rate:
         required fields
 
     created_at / updated_at:
@@ -21,21 +21,22 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkingSpot
         fields = [
-            "latitude",
-            "longitude",
+            "id",
+            "lat",
+            "lng",
             "reserved",
             "rate",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["created_at", "updated_at"]
+        read_only_fields = ["created_at", "updated_at", "id"]
         extra_kwargs = {
-            "latitude": {"required": True},
-            "longitude": {"required": True},
+            "lat": {"required": True},
+            "lng": {"required": True},
             "rate": {"required": True},
         }
 
-    def validate_latitude(self, value):
+    def validate_lat(self, value):
         """
         Must have upper and lower bounds of +90 and -90 respectively.
         The number of decimal places must be limited to 6.
@@ -43,7 +44,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
 
         if value > 90 or value < -90:
             raise serializers.ValidationError(
-                "The latitude must be between -90 on the "
+                "The lat must be between -90 on the "
                 "Southern bound and +90 on the Northern bound, "
                 "inclusively"
             )
@@ -56,7 +57,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
 
         return value
 
-    def validate_longitude(self, value):
+    def validate_lng(self, value):
         """
         Must have upper and lower bounds of +180 and -180 respectively.
         The lower bound is exclusive and the upper bound is inclusive.
@@ -64,15 +65,15 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
         """
 
         # convert string to decimal
-        decimal_longitude = Decimal(value)
+        decimal_lng = Decimal(value)
 
-        if decimal_longitude > 180 or decimal_longitude <= -180:
+        if decimal_lng > 180 or decimal_lng <= -180:
             raise serializers.ValidationError(
-                "The longitude must be between exclusive -180 "
+                "The lng must be between exclusive -180 "
                 "in the West, and inclusive +180 in the East"
             )
 
-        if not is_integer(decimal_longitude * 10 ** 6):
+        if not is_integer(decimal_lng * 10 ** 6):
             raise serializers.ValidationError(
                 "The coordinate precision must be 6 decimals or " "less"
             )

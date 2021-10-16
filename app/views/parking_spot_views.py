@@ -51,8 +51,8 @@ class GetAvailableParkingSpotsFilterView(generics.ListAPIView, ListModelMixin):
         # assumed that the client front-end implementation will submit complete query strings
         # string values
         params = self.request.query_params
-        latitude = params["lat"]
-        longitude = params["long"]
+        lat = params["lat"]
+        lng = params["lng"]
         unit = params["unit"]
         distance = params["dist"]
 
@@ -62,10 +62,10 @@ class GetAvailableParkingSpotsFilterView(generics.ListAPIView, ListModelMixin):
         for parking_spot in available_parking_spots:
             if (
                 haversine_distance(
-                    user_latitude=float(latitude),
-                    user_longitude=float(longitude),
-                    parking_spot_latitude=float(parking_spot.latitude),
-                    parking_spot_longitude=float(parking_spot.longitude),
+                    user_lat=float(lat),
+                    user_lng=float(lng),
+                    parking_spot_lat=float(parking_spot.lat),
+                    parking_spot_lng=float(parking_spot.lng),
                     unit=unit,
                 )
                 <= float(distance)

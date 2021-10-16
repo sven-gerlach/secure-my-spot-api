@@ -11,9 +11,9 @@ class ParkingSpot(models.Model):
 
     Model Fields
     ----------------
-    latitude: decimal
-        A number with 6 decimal places and bounded by [-90,90]
-    longitude: decimal
+    lat: decimal
+        A number with 6 decimal places and bounded by [-90,90].
+    lng: decimal
         A number with 6 decimal places and bounded by (-180,180]
         Note: albeit not overly relevant, an overlapping -180th or 180th meridian is being
         avoided by making the range exclusive on the negative 180 end and inclusive on the
@@ -23,6 +23,8 @@ class ParkingSpot(models.Model):
     rate: decimal
         A number with 2 decimal places. Indicates the hourly USD rate for a parking spot.
 
+    Note: lat / lng nomenclature is the same as used by Google maps
+
     Methods
     -------------
     coordinates: str
@@ -30,13 +32,13 @@ class ParkingSpot(models.Model):
         -> coordinates="51.432393,-0.348023"
     """
 
-    latitude = models.DecimalField(
+    lat = models.DecimalField(
         help_text="GPS latitude bounded by [-90,90] and with 6 decimals",
         decimal_places=6,
         max_digits=9,
     )
 
-    longitude = models.DecimalField(
+    lng = models.DecimalField(
         help_text="GPS longitude bounded by (-180, 180] with 6 decimals",
         decimal_places=6,
         max_digits=9,
@@ -56,14 +58,14 @@ class ParkingSpot(models.Model):
     @property
     def get_coordinates(self) -> str:
         """
-        Returns the coordinates in string format -> "latitude,longitude"
+        Returns the coordinates in string format -> "lat,lng"
         """
 
-        return f"{str(self.latitude)},{str(self.longitude)}"
+        return f"{str(self.lat)},{str(self.lng)}"
 
     def __str__(self) -> str:
         return (
-            f"Parking spot {self.id}, located at ({self.latitude},{self.longitude}), "
+            f"Parking spot {self.id}, located at ({self.lat},{self.lng}), "
             f"is {self.get_status} for an hourly rate of {self.rate}"
         )
 

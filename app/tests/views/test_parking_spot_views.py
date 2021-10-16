@@ -26,16 +26,17 @@ class TestParkingSpotViews(TestCase):
 
         # Note: created_at and updated_at are removed because the date/time formatting difference
         decoded_response = json.loads(view_response.content)
-        for _ in decoded_response:
-            del _["created_at"]
-            del _["updated_at"]
+        for parking_spot in decoded_response:
+            del parking_spot["created_at"]
+            del parking_spot["updated_at"]
+            del parking_spot["id"]
 
         # it is necessary to force python not to truncate decimal zeros, hence the string
         # formatting of lat, long, and rate
         parking_spots_list = [
             {
-                "latitude": f"{parking_spot.latitude:.6f}",
-                "longitude": f"{parking_spot.longitude:.6f}",
+                "lat": f"{parking_spot.lat:.6f}",
+                "lng": f"{parking_spot.lng:.6f}",
                 "rate": f"{parking_spot.rate:.2f}",
                 "reserved": parking_spot.reserved,
             }
@@ -61,7 +62,7 @@ class TestParkingSpotViews(TestCase):
         # create three parking spots at the null meridian and latitude 0, 1, and 2 deg
         # the step-distance between each incremental degree of latitude is ~111km
         # see http://www.csgnetwork.com/degreelenllavcalc.html
-        [ParkingSpotFactory.create(latitude=0 + i, longitude=0) for i in range(0, 3)]
+        [ParkingSpotFactory.create(lat=0 + i, lng=0) for i in range(0, 3)]
 
         # store all 3 response objects in this list
         response_list = []
@@ -74,7 +75,7 @@ class TestParkingSpotViews(TestCase):
             response_list.append(
                 self.client.get(
                     reverse("api-available-parking-spots-filter")
-                    + f"?lat=0&long=0&unit=km&dist={1 + i * dist}"
+                    + f"?lat=0&lng=0&unit=km&dist={1 + i * dist}"
                 )
             )
 
