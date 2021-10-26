@@ -9,9 +9,7 @@ from .views.parking_spot_views import (
     GetAvailableParkingSpotsFilterView,
     GetAvailableParkingSpotsView,
 )
-from .views.reservation_views import (
-    CreateReservationView,
-)
+from .views.reservation_views import CreateReservationView
 
 urlpatterns = [
     # auth routes
@@ -19,7 +17,6 @@ urlpatterns = [
     path("sign-in/", SignInView.as_view(), name="api-sign-in"),
     path("sign-out/", SignOutView.as_view(), name="api-sign-out"),
     path("change-pw/", ChangePw.as_view(), name="api-change-pw"),
-
     # parking spot routes
     path(
         "available-parking-spots/",
@@ -35,7 +32,6 @@ urlpatterns = [
         GetAvailableParkingSpotsFilterView.as_view(),
         name="api-available-parking-spots-filter",
     ),
-
     # a sample path to this route is of the following format: reservation/18, meaning create a
     # reservation for the parking spot with id=18. The data of the request will either contain
     # the token (authenticated) or the user's email. Additionally the data will contain the
@@ -44,5 +40,5 @@ urlpatterns = [
         "reservation/<int:parking_spot_id>/",
         CreateReservationView.as_view(),
         name="api-create-reservation",
-    )
+    ),
 ]

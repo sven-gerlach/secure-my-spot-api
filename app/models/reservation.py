@@ -3,6 +3,7 @@ A model for reservations.
 """
 
 from django.db import models
+
 from .user import User
 
 
@@ -27,8 +28,4 @@ class Reservation(models.Model):
     deleted user. Instead, foreign key should be set to null (only works if field is null-able).
     """
 
-    user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True
-    )
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

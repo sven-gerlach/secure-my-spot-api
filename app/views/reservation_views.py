@@ -10,6 +10,7 @@ class CreateReservationView(APIView):
     Create a new reservation. If the user is not authenticated confirm that data includes the
     user's email and the reservation length (minutes) and the param includes the parking spot id
     """
+
     def post(self, request, parking_spot_id):
         """
         Post method is split between authenticated and unauthenticated users. In both cases,
@@ -24,3 +25,4 @@ class CreateReservationView(APIView):
             data = request.data["reservation"]
             email = data["email"]
             reservation_length = data["reservation_length"]
+            print(email, "\n", reservation_length)
