@@ -16,6 +16,7 @@ class RequestLogging:
         print("=====================INCOMING REQUEST=====================")
         print(f"Time: {datetime.now(): %H:%M}")
         print(f"Method: {request.method}")
+        print(f"Path: {request.path}")
         print(f"Body: {request.body}")
         print(f"Params: {request.GET}")
         print("===========================END============================")
