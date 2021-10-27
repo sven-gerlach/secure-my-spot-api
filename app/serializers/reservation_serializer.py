@@ -3,8 +3,8 @@ A module for reservation serializer class
 """
 
 from rest_framework import serializers
+
 from ..models.reservation import Reservation
-from .parking_spot_serializer import ParkingSpotSerializer
 
 
 class ReservationSerializer(serializers.ModelSerializer):

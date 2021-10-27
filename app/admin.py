@@ -5,8 +5,8 @@ from django.contrib.auth.models import Group
 from .forms.parking_spot_form import CustomParkingSpotForm
 from .forms.user_form import CustomUserChangeForm, CustomUserCreationForm
 from .models.parking_spot import ParkingSpot
-from .models.user import User
 from .models.reservation import Reservation
+from .models.user import User
 
 
 class CustomUserAdmin(BaseUserAdmin):

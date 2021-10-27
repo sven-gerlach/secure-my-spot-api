@@ -4,8 +4,8 @@ A model for reservations.
 
 from django.db import models
 
-from .user import User
 from .parking_spot import ParkingSpot
+from .user import User
 
 
 class Reservation(models.Model):
@@ -63,10 +63,10 @@ class Reservation(models.Model):
         else:
             user_id = self.email
         expiration_time = "{:02d}:{:02d}:{:02d}".format(
-            self.end_time.hour,
-            self.end_time.minute,
-            self.end_time.second
+            self.end_time.hour, self.end_time.minute, self.end_time.second
         )
 
-        return f"This parking reservation with id {parking_spot_id}, associated with user " \
-               f"{user_id}, expires at {expiration_time}"
+        return (
+            f"This parking reservation with id {parking_spot_id}, associated with user "
+            f"{user_id}, expires at {expiration_time}"
+        )

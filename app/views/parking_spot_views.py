@@ -45,7 +45,9 @@ class GetAvailableParkingSpotsFilterView(generics.ListAPIView, ListModelMixin):
         """
 
         # query set containing all available parking spots that are commercially available (active)
-        available_parking_spots = ParkingSpot.objects.filter(reserved=False, active=True)
+        available_parking_spots = ParkingSpot.objects.filter(
+            reserved=False, active=True
+        )
 
         # retrieve query params; evaluation of query param completeness is overlooked as it is
         # assumed that the client front-end implementation will submit complete query strings

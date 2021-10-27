@@ -3,8 +3,9 @@ Module for all reservation views
 """
 import datetime
 
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from ..models.parking_spot import ParkingSpot
 from ..serializers.reservation_serializer import ReservationSerializer
 
@@ -41,7 +42,7 @@ class CreateReservationView(APIView):
                 "email": email,
                 "parking_spot": parking_spot_id,
                 "start_time": time_now,
-                "end_time": time_now + time_delta
+                "end_time": time_now + time_delta,
             }
 
         # serialize the data stream
