@@ -6,6 +6,7 @@ from .forms.parking_spot_form import CustomParkingSpotForm
 from .forms.user_form import CustomUserChangeForm, CustomUserCreationForm
 from .models.parking_spot import ParkingSpot
 from .models.user import User
+from .models.reservation import Reservation
 
 
 class CustomUserAdmin(BaseUserAdmin):
@@ -70,6 +71,7 @@ class CustomParkingSpotAdmin(admin.ModelAdmin):
         "lng",
         "rate",
         "reserved",
+        "active",
         "created_at",
         "updated_at",
     )
@@ -77,4 +79,5 @@ class CustomParkingSpotAdmin(admin.ModelAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(ParkingSpot, CustomParkingSpotAdmin)
+admin.site.register(Reservation)
 admin.site.unregister(Group)

@@ -38,4 +38,4 @@ class CustomParkingSpotForm(ModelForm):
 
     class Meta:
         model = ParkingSpot
-        fields = ("lat", "lng", "rate", "reserved")
+        fields = ("lat", "lng", "rate", "reserved", "active")

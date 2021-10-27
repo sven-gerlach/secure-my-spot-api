@@ -25,6 +25,7 @@ class ParkingSpotSerializer(serializers.ModelSerializer):
             "lat",
             "lng",
             "reserved",
+            "active",
             "rate",
             "created_at",
             "updated_at",

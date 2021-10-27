@@ -18,7 +18,8 @@ class GetAvailableParkingSpotsView(generics.ListAPIView, ListModelMixin):
     * This is a public route that does not require token authentication
     """
 
-    queryset = ParkingSpot.objects.filter(reserved=False)
+    # query set containing all available parking spots that are commercially available (active)
+    queryset = ParkingSpot.objects.filter(reserved=False, active=True)
     serializer_class = ParkingSpotSerializer
     # turning pagination off
     pagination_class = None
@@ -43,8 +44,8 @@ class GetAvailableParkingSpotsFilterView(generics.ListAPIView, ListModelMixin):
         available-parking-spots-radial-filter?lat=0.123456&long=0.123456&unit=miles&dist=0.1
         """
 
-        # query set containing all available parking spots
-        available_parking_spots = ParkingSpot.objects.filter(reserved=False)
+        # query set containing all available parking spots that are commercially available (active)
+        available_parking_spots = ParkingSpot.objects.filter(reserved=False, active=True)
 
         # retrieve query params; evaluation of query param completeness is overlooked as it is
         # assumed that the client front-end implementation will submit complete query strings
