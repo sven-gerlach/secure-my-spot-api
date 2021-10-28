@@ -2,9 +2,11 @@
 A module for reservation serializer class
 """
 
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from ..models.reservation import Reservation
+from ..models.parking_spot import ParkingSpot
 
 
 class ReservationSerializer(serializers.ModelSerializer):
@@ -48,3 +50,20 @@ class ReservationSerializer(serializers.ModelSerializer):
             )
 
         return attrs
+
+    def validate_parking_spot(self, parking_spot):
+        """
+        The parking spot must be active and available
+        """
+
+        if not parking_spot.active:
+            raise serializers.ValidationError(
+                "This parking spot is currently not commercially available"
+            )
+
+        if parking_spot.reserved:
+            raise serializers.ValidationError(
+                "This parking spot is already reserved"
+            )
+
+        return parking_spot

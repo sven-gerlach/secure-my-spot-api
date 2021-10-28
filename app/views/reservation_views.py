@@ -3,6 +3,7 @@ Module for all reservation views
 """
 import datetime
 
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -30,23 +31,24 @@ class CreateReservationView(APIView):
         time_now = datetime.datetime.now()
         reservation_duration = int(request.data["reservation"]["reservation_length"])
         time_delta = datetime.timedelta(minutes=reservation_duration)
+        data = {
+            "parking_spot": parking_spot_id,
+            "start_time": time_now,
+            "end_time": time_now + time_delta,
+        }
 
         if request.user.is_authenticated:
-            # if user is authenticated the user id needs to be serialized
-            print("user is authenticated", request.user)
-            print(parking_spot_id)
+            # if user is authenticated the user id needs to be added to the data dict that will
+            # be serialized
+            data["user"] = request.user.id
         else:
             # if the user is not authenticated the user email needs to be provided instead
-            email = request.data["reservation"]["email"]
-            data = {
-                "email": email,
-                "parking_spot": parking_spot_id,
-                "start_time": time_now,
-                "end_time": time_now + time_delta,
-            }
+            data["email"] = request.data["reservation"]["email"]
 
         # serialize the data stream
         serializer = ReservationSerializer(data=data)
+
+        print(serializer)
 
         # throw a validation exception and send a response if validation fails
         serializer.is_valid(raise_exception=True)
@@ -55,7 +57,7 @@ class CreateReservationView(APIView):
         serializer.save()
 
         # and set the related parking spot status to reserved=true
-        parking_spot = ParkingSpot.objects.get(id=parking_spot_id)
+        parking_spot = get_object_or_404(ParkingSpot, id=parking_spot_id)
         parking_spot.reserved = True
         parking_spot.save()
 

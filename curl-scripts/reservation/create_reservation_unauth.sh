@@ -1,6 +1,6 @@
 #!/bin/bash
 
-curl "http://localhost:8000/reservation/${res_id}/" \
+curl "http://localhost:8000/reservation/${spot_id}/" \
   --include \
   --request POST \
   --header "Content-Type: application/json" \
