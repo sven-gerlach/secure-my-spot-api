@@ -1,3 +1,6 @@
+# By default, docker-compose reads two files, the docker-compose.yml and the
+# docker-compose.override.yml
+
 version: "3.8"
 
 services:

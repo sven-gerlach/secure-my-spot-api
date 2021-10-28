@@ -14,9 +14,6 @@ LABEL maintainer_name="Sven Gerlach" \
 # not clear at all how else to set the working directory
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
 # install psycopg2 (needs to be installed manually rather than through executing the Pipfile
 RUN apk update && apk add \
     gcc \
