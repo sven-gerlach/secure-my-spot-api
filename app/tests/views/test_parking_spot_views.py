@@ -39,6 +39,7 @@ class TestParkingSpotViews(TestCase):
                 "lng": f"{parking_spot.lng:.6f}",
                 "rate": f"{parking_spot.rate:.2f}",
                 "reserved": parking_spot.reserved,
+                "active": parking_spot.active,
             }
             for parking_spot in factory
         ]
