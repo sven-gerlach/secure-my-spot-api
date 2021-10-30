@@ -29,6 +29,7 @@ services:
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
+      - REDIS_PASSWORD
 
   db:
     environment:
@@ -36,11 +37,77 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
 
-  broker:
+  worker:
     environment:
+      - ENV
+
+      # db variables
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DB_HOST
+      - DB_PORT
+      - SECRET
+
+      # Django settings.py
+      - DJANGO_SETTINGS_MODULE
+
+      # Python settings
+      - PYTHONUNBUFFERED
+      - PYTHONDONTWRITEBYTECODE
+
+      # rabbit settings
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
+      - REDIS_PASSWORD
+      - REDIS_PASSWORD
+
+  broker:
+    environment:
+      - ENV
+
+      # db variables
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DB_HOST
+      - DB_PORT
+      - SECRET
+
+      # Django settings.py
+      - DJANGO_SETTINGS_MODULE
+
+      # Python settings
+      - PYTHONUNBUFFERED
+      - PYTHONDONTWRITEBYTECODE
+
+      # rabbit settings
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
+      - REDIS_PASSWORD
+      - REDIS_PASSWORD
 
   redis:
     environment:
+      - ENV
+
+      # db variables
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+      - DB_HOST
+      - DB_PORT
+      - SECRET
+
+      # Django settings.py
+      - DJANGO_SETTINGS_MODULE
+
+      # Python settings
+      - PYTHONUNBUFFERED
+      - PYTHONDONTWRITEBYTECODE
+
+      # rabbit settings
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
+      - REDIS_PASSWORD
       - REDIS_PASSWORD
