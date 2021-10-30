@@ -19,7 +19,6 @@ jobs:
     needs: pre_job
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
-    # todo: put some of these variables into GitHub env variables
     env:
       ENV: "development"
 
@@ -34,8 +33,19 @@ jobs:
 
       # db var for postgres db docker service
       POSTGRES_USER: "svengerlach"
-      POSTGRES_PASSWORD: "123456789"
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_DB: "secure_my_spot_dev"
+
+      # python settings
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+
+      # Rabbitmq vars
+      RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_DEFAULT_USER }}
+      RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_DEFAULT_PASS }}
+
+      # Redis vars
+      REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v1
