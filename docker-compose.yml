@@ -2,13 +2,14 @@
 # connect to:
 # db: docker-compose exec db psql --username=svengerlach --dbname=secure_my_spot_dev
 # db: docker exec -it [container name] psql --username=svengerlach --dbname=secure_my_spot_dev
+# source for rabbit / redis: https://github.com/MexsonFernandes/Asynchronous_Tasks-Django-Celery-RabbitMQ-Redis/blob/master/docker-compose.yml
 
 
 version: "3.8"
 
 services:
   web:
-    container_name: api
+    container_name: django
     build: .
     image: api-img:latest
     command: python manage.py runserver 0.0.0.0:8000
@@ -16,12 +17,41 @@ services:
       - 8000:8000
     depends_on:
       - db
+
   db:
     container_name: postgres
     image: postgres:12.0-alpine
     restart: on-failure
-  rabbit:
+
+
+  # Celery
+  worker:
+    container_name: celery
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
+    depends_on:
+      - db
+      - web
+      - rabbit
+      - redis
+    restart: always
+
+  broker:
     container_name: rabbit
-    image: rabbitmq
+    image: rabbitmq:3-management
     restart: on-failure
-    hostname: my-rabbit
+    hostname: rabbit
+    ports:
+      - "5672:5672"  # We forward this port because it's useful for debugging
+      - "15672:15672"  # Here, we can access RabbitMQ management plugin
+
+  redis:
+    container_name: redis
+    image: redis
+    hostname: redis
+    # use the redis_entrypoint
+    command: redis-server --requirepass $$REDIS_PASSWORD
+    ports:
+      - "6379:6379"

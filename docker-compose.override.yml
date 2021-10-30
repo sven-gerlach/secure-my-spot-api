@@ -9,9 +9,24 @@ services:
       - .:/app/
     env_file:
       - .env
+
   db:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  worker:
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+
+  broker:
+    env_file:
+      - .env
+
+  redis:
     env_file:
       - .env
 

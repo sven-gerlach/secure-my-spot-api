@@ -246,3 +246,14 @@ LOGGING = {
         },
     },
 }
+
+# Celery settings
+# broker -> Rabbitmq
+# todo: add user and passwords for Redis and Rabbit to GitHub secrets
+rabbit_user = os.getenv("RABBITMQ_DEFAULT_USER")
+rabbit_password = os.getenv("RABBITMQ_DEFAULT_PASS")
+CELERY_BROKER_URL = f"amqp://{rabbit_user}:{rabbit_password}@broker//"
+
+# backend -> Redis
+redis_password = os.getenv("REDIS_PASSWORD")
+CELERY_RESULT_BACKEND = f"redis://:{redis_password}@redis:6379/0"
