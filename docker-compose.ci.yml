@@ -20,8 +20,27 @@ services:
 
       # Django settings.py
       - DJANGO_SETTINGS_MODULE
+
+      # Python settings
+      - PYTHONUNBUFFERED
+      - PYTHONDONTWRITEBYTECODE
+
+      # rabbit settings
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
+      - REDIS_PASSWORD
+
   db:
     environment:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - POSTGRES_DB
+
+  worker:
+    environment:
+      - RABBITMQ_DEFAULT_USER
+      - RABBITMQ_DEFAULT_PASS
+
+  redis:
+    environment:
+      - REDIS_PASSWORD

@@ -29,6 +29,8 @@ jobs:
       DB_HOST: "db"
       DB_PORT: "5432"
       SECRET: ${{ secrets.DJANGO_SECRET_KEY }}
+
+      # Django env settings
       DJANGO_SETTINGS_MODULE: "secure_my_spot.settings"
 
       # db var for postgres db docker service
@@ -51,7 +53,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Build the docker-compose stack
         # https://github.community/t/how-to-use-docker-compose-with-github-actions/16850/3
-        run: docker-compose -f docker-compose.yml -f docker-compose.yml up --build
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build
       - name: Check running containers
         run: docker ps -a
       - name: Check logs api
