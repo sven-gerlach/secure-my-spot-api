@@ -17,6 +17,7 @@ services:
       - 8000:8000
     depends_on:
       - db
+      - worker
 
   db:
     container_name: postgres
@@ -33,8 +34,7 @@ services:
     command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     depends_on:
       - db
-      - web
-      - rabbit
+      - broker
       - redis
     restart: always
 
