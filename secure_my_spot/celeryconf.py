@@ -4,6 +4,7 @@ Source: https://docs.celeryproject.org/en/stable/django/first-steps-with-django.
 """
 
 import os
+
 from celery import Celery
 
 # set the default Django settings module for the "celery" program
