@@ -61,9 +61,9 @@ jobs:
       - name: Check logs postgres
         run: docker logs postgres
       - name: Check logs worker
-        run: docker logs worker
+        run: docker logs celery
       - name: Check logs broker
-        run: docker logs broker
+        run: docker logs rabbit
       - name: Check logs redis
         run: docker logs redis
       - name: Run pytest
