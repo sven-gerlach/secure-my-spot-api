@@ -29,7 +29,6 @@ services:
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
-      - REDIS_PASSWORD
 
   db:
     environment:
@@ -60,7 +59,6 @@ services:
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
-      - REDIS_PASSWORD
 
   broker:
     environment:
@@ -85,7 +83,6 @@ services:
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
-      - REDIS_PASSWORD
 
   redis:
     environment:
@@ -109,5 +106,4 @@ services:
       # rabbit settings
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
-      - REDIS_PASSWORD
       - REDIS_PASSWORD
