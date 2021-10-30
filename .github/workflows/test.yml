@@ -67,10 +67,11 @@ jobs:
       - name: Check logs redis
         run: docker logs redis
       - name: Run pytest
-        run: docker exec api coverage run -m pytest
+        run: docker exec django coverage run -m pytest
       - name: Run flake8
-        run: docker exec api flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__.py,migrations
+        run: docker exec django flake8 secure_my_spot/ app/ --max-line-length=100 --exclude=__init__
+        .py,migrations
       - name: Run black
-        run: docker exec api black secure_my_spot/ app/ --extend-exclude=migrations --check
+        run: docker exec django black secure_my_spot/ app/ --extend-exclude=migrations --check
       - name: Run isort
-        run: docker exec api isort secure_my_spot/ app/ --profile black --check
+        run: docker exec django isort secure_my_spot/ app/ --profile black --check
