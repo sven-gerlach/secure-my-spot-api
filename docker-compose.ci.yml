@@ -62,48 +62,10 @@ services:
 
   broker:
     environment:
-      - ENV
-
-      # db variables
-      - DB_NAME
-      - DB_USER
-      - DB_PASSWORD
-      - DB_HOST
-      - DB_PORT
-      - SECRET
-
-      # Django settings.py
-      - DJANGO_SETTINGS_MODULE
-
-      # Python settings
-      - PYTHONUNBUFFERED
-      - PYTHONDONTWRITEBYTECODE
-
       # rabbit settings
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
-      - REDIS_PASSWORD
 
   redis:
     environment:
-      - ENV
-
-      # db variables
-      - DB_NAME
-      - DB_USER
-      - DB_PASSWORD
-      - DB_HOST
-      - DB_PORT
-      - SECRET
-
-      # Django settings.py
-      - DJANGO_SETTINGS_MODULE
-
-      # Python settings
-      - PYTHONUNBUFFERED
-      - PYTHONDONTWRITEBYTECODE
-
-      # rabbit settings
-      - RABBITMQ_DEFAULT_USER
-      - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
