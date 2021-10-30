@@ -36,7 +36,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
 
-  worker:
+  broker:
     environment:
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
