@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 from ..models.parking_spot import ParkingSpot
 from ..serializers.reservation_serializer import ReservationSerializer
+from ..tasks.tasks import make_parking_spot_available
 
 
 class CreateReservationView(APIView):
@@ -48,8 +49,6 @@ class CreateReservationView(APIView):
         # serialize the data stream
         serializer = ReservationSerializer(data=data)
 
-        print(serializer)
-
         # throw a validation exception and send a response if validation fails
         serializer.is_valid(raise_exception=True)
 
@@ -60,6 +59,13 @@ class CreateReservationView(APIView):
         parking_spot = get_object_or_404(ParkingSpot, id=parking_spot_id)
         parking_spot.reserved = True
         parking_spot.save()
+
+        # set a task that makes the same parking spot available for reservation again after the
+        # reservation length is up
+        make_parking_spot_available.apply_async(
+            args=[parking_spot_id],
+            countdown=float(reservation_duration * 20),
+        )
 
         # declare the response variable such that the email or user key can be removed before
         # sending a JSON response
