@@ -247,13 +247,20 @@ LOGGING = {
     },
 }
 
-# Celery settings
-# broker -> Rabbitmq
-# todo: add user and passwords for Redis and Rabbit to GitHub secrets
-rabbit_user = os.getenv("RABBITMQ_DEFAULT_USER")
-rabbit_password = os.getenv("RABBITMQ_DEFAULT_PASS")
-CELERY_BROKER_URL = f"amqp://{rabbit_user}:{rabbit_password}@broker//"
+if os.getenv("ENV") == "development":
+    # Celery settings
+    # broker -> Rabbitmq
+    rabbit_user = os.getenv("RABBITMQ_DEFAULT_USER")
+    rabbit_password = os.getenv("RABBITMQ_DEFAULT_PASS")
+    CELERY_BROKER_URL = f"amqp://{rabbit_user}:{rabbit_password}@broker//"
 
-# backend -> Redis
-redis_password = os.getenv("REDIS_PASSWORD")
-CELERY_RESULT_BACKEND = f"redis://:{redis_password}@redis:6379/0"
+    # backend -> Redis
+    redis_password = os.getenv("REDIS_PASSWORD")
+    CELERY_RESULT_BACKEND = f"redis://:{redis_password}@redis:6379/0"
+else:
+    CELERY_BROKER_URL = os.getenv("CLOUDAMQP_URL")
+    CELERY_RESULT_BACKEND = os.getenv("REDIS_URL")
+
+    # Set broker pool limit to 1
+    # https://devcenter.heroku.com/articles/cloudamqp#celery
+    CELERY_BROKER_POOL_LIMIT = 1
