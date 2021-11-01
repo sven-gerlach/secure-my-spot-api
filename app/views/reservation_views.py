@@ -64,7 +64,7 @@ class CreateReservationView(APIView):
         # reservation length is up
         make_parking_spot_available.apply_async(
             args=[parking_spot_id],
-            countdown=float(reservation_duration * 60),
+            countdown=float(reservation_duration * 20),
         )
 
         # declare the response variable such that the email or user key can be removed before
