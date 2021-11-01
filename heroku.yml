@@ -7,6 +7,7 @@
 build:
   docker:
     django: Dockerfile
+    celery: Dockerfile
 release:
   image: django
   command:
@@ -17,5 +18,5 @@ run:
     image: django
     command: gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
   celery:
-    image: django
+    image: celery
     command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
