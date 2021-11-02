@@ -13,7 +13,6 @@ release:
   command:
     - python manage.py collectstatic --noinput
     - python manage.py migrate --noinput
-    - celery -A secure_my_spot.celeryconf worker -B -D --loglevel=INFO
 run:
   web: gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
-  worker: celery -A secure_my_spot.celeryconf worker -B --loglevel=INFO
+  worker: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
