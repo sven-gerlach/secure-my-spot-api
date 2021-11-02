@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from utils.send_mail import send_reservation_confirmation_mail
+
 from ..models.parking_spot import ParkingSpot
 from ..serializers.reservation_serializer import ReservationSerializer
 from ..tasks.tasks import make_parking_spot_available
@@ -70,6 +72,15 @@ class CreateReservationView(APIView):
         # declare the response variable such that the email or user key can be removed before
         # sending a JSON response
         response = serializer.data
+
+        # send confirmation email to user
+        send_reservation_confirmation_mail(
+            user_mail_address=response["email"],
+            parking_spot_id=response["parking_spot"],
+            reservation_id=response["id"],
+            start_time=response["start_time"],
+            end_time=response["end_time"],
+        )
 
         if request.user.is_authenticated:
             del response["email"]

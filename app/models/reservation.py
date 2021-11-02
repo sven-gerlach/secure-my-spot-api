@@ -67,6 +67,6 @@ class Reservation(models.Model):
         )
 
         return (
-            f"This parking reservation with id {parking_spot_id}, associated with user "
+            f"Reservation {self.id} for parking spot {parking_spot_id}, associated with user "
             f"{user_id}, expires at {expiration_time}"
         )

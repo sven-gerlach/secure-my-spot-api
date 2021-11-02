@@ -14,7 +14,15 @@ class ReservationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Reservation
-        fields = ["user", "email", "parking_spot", "paid", "start_time", "end_time"]
+        fields = [
+            "id",
+            "user",
+            "email",
+            "parking_spot",
+            "paid",
+            "start_time",
+            "end_time",
+        ]
 
     def create(self, validated_data):
         """
