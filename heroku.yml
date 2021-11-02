@@ -15,7 +15,9 @@ release:
 run:
   web:
     image: django
-    command: gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
-  worker:
+    command:
+      - gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
+  celery-worker:
     image: django
-    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
+    command:
+      - celery -A secure_my_spot.celeryconf worker --loglevel=INFO
