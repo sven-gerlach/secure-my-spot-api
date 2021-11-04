@@ -33,6 +33,13 @@ class Reservation(models.Model):
 
     parking_spot: ensure that parking spots that have a reservation history cannot be deleted
 
+    rate: adding rate from the parking_spot model to the reservation model is needed as a pure
+    ref-key relation may result in referencing the wrong rate. For instance, the parking spot
+    rate may change due to demand/supply imbalances shortly after / during the user's reservation
+    process. Hence, if the payments processing module took the going rate from the reference
+    parking spot instance the rate in the payments processing module would end up being different
+    to the rate the user agreed to when making the reservation.
+
     paid: Record whether the parking spot reservation has been paid for. Note that eventually,
     at the time of creating a new reservation, the payment intent, including payment details,
     will have been collected from the user but the final payment for the parking spot will be
@@ -45,8 +52,11 @@ class Reservation(models.Model):
     """
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    email = models.EmailField(blank=True)
+    email = models.EmailField(help_text="email of the user")
     parking_spot = models.ForeignKey(ParkingSpot, on_delete=models.PROTECT)
+    rate = models.DecimalField(
+        help_text="hourly rate in USD with 2 decimals", decimal_places=2, max_digits=5
+    )
     paid = models.BooleanField(default=False)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
@@ -70,3 +80,13 @@ class Reservation(models.Model):
             f"Reservation {self.id} for parking spot {parking_spot_id}, associated with user "
             f"{user_id}, expires at {expiration_time}"
         )
+
+    @property
+    def duration(self):
+        """
+        Return the duration of the reservation period in minutes.
+        @return: reservation_length -> str
+        """
+
+        duration_datetime = self.end_time - self.start_time
+        return int(round(duration_datetime.seconds / 60, 2))

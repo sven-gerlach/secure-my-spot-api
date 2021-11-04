@@ -19,6 +19,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             "user",
             "email",
             "parking_spot",
+            "rate",
             "paid",
             "start_time",
             "end_time",
@@ -45,10 +46,10 @@ class ReservationSerializer(serializers.ModelSerializer):
         end_time must be strictly greater / after start_time
         """
 
-        if bool(attrs.get("user")) == bool(attrs.get("email")):
-            raise serializers.ValidationError(
-                "Either a user instance or an email must be provided, but not both concurrently"
-            )
+        # if bool(attrs.get("user")) == bool(attrs.get("email")):
+        #     raise serializers.ValidationError(
+        #         "Either a user instance or an email must be provided, but not both concurrently"
+        #     )
 
         if attrs["end_time"] <= attrs["start_time"]:
             raise serializers.ValidationError(

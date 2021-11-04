@@ -247,6 +247,7 @@ LOGGING = {
     },
 }
 
+# Celery / RabbitMQ / Redis settings
 if os.getenv("ENV") == "development":
     # Celery settings
     # broker -> Rabbitmq
@@ -265,7 +266,7 @@ else:
     # https://devcenter.heroku.com/articles/cloudamqp#celery
     CELERY_BROKER_POOL_LIMIT = 1
 
-# Email settings
+# Email client settings
 # https://www.sitepoint.com/django-send-email/
 EMAIL_HOST = "smtp-relay.sendinblue.com"
 EMAIL_PORT = 587

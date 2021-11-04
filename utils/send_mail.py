@@ -3,13 +3,18 @@ Module which sends an email via the Sendinblue SMTP server
 """
 
 from datetime import datetime
+import pytz
 from django.core.mail import send_mail
+from decimal import Decimal
+from app.models.reservation import Reservation
+from utils.payments import get_total_reservation_fee
 
 
 def send_reservation_confirmation_mail(
         user_mail_address: str,
         parking_spot_id: str,
-        reservation_id: str,
+        rate: Decimal,
+        reservation_id: float,
         start_time: datetime,
         end_time: datetime
 ):
@@ -25,6 +30,18 @@ def send_reservation_confirmation_mail(
     end_time: reservation end time
     """
 
+    reservation_fee = get_total_reservation_fee(reservation_id)
+
+    # time zone formatting
+    utc_tz = pytz.utc
+    est_tz = pytz.timezone("US/Eastern")
+    start_time_utc = utc_tz.localize(start_time)
+    end_time_utc = utc_tz.localize(end_time)
+    start_time_est = start_time_utc.astimezone(est_tz)
+    end_time_est = end_time_utc.astimezone(est_tz)
+    fmt = "%H:%M"
+
+    # todo: add card details
     message = f"""
     Dear User,
     
@@ -34,22 +51,56 @@ def send_reservation_confirmation_mail(
     
     Parking Spot ID: {parking_spot_id}
     Reservation ID: {reservation_id}
-    Start Time: {start_time}
-    End Time: {end_time}
+    Rate / hour (USD): {rate}
+    Start Time: {start_time_est.strftime(fmt)}
+    End Time: {end_time_est.strftime(fmt)}
+    Reservation Fee (USD): {reservation_fee}
+    Payment Details: [xxxx-xxxx-xxxx-1234]
+    Payment Processed: not yet
     
-    Note: all times are in EST
+    Note: all times are New York Time (EST)
     
     Kindest regards,
     
-    Secure-MY-Spot
+    Secure My Spot
     """
 
-    # todo: create secure-my-spot email address on ProtonMail
-    # todo: format start and end-times
-    # todo: change system time zone to EST
+    # todo: user receives two emails: confirmed this function is only executed once
     send_mail(
         subject="Reservation Confirmation",
         message=message,
-        from_email="svengerlach@me.com",
+        from_email="Secure My Spot <secure-my-spot@donotreply.com>",
         recipient_list=[user_mail_address]
+    )
+
+
+def send_reservation_has_ended_mail(reservation_id):
+    """
+    Send email to user confirming that their reservation of the reserved parking spot has ended
+    and that their provided payment method will now be used to process the final amount.
+    """
+
+    reservation = Reservation.objects.get(id=reservation_id)
+    reservation_fee = get_total_reservation_fee(reservation_id)
+
+    # todo: add card details to email message
+    message = f"""
+    Dear User,
+    
+    Your reservation of parking spot {reservation.parking_spot.id} has expired. The total 
+    reservation fee of USD {reservation_fee} will be charged to the card ending in [xxxx]
+    immediately.
+    
+    Thank you for your business. We look forward to helping you find parking in New York City soon.
+    
+    Kindest regards,
+    
+    Secure My Spot
+    """
+
+    send_mail(
+        subject="Reservation Has Expired",
+        message=message,
+        from_email="Secure My Spot <secure-my-spot@donotreply.com>",
+        recipient_list=[reservation.email]
     )
