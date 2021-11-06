@@ -18,6 +18,7 @@ class RequestLogging:
         print(f"Method: {request.method}")
         print(f"Path: {request.path}")
         print(f"Body: {request.body}")
+        print(f"Header: {request.headers}")
         print(f"Params: {request.GET}")
         print("===========================END============================")
 

@@ -60,7 +60,7 @@ def test_string_rep():
     """String representation of user object should return email"""
     User = get_user_model()
     user = User.objects.create_user(email="user@email.de", password="foo")
-    assert user.__str__() == user.email
+    assert user.__str__() == f"User with primary key {user.email}"
 
 
 def test_get_full_name():

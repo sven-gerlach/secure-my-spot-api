@@ -3,7 +3,6 @@ Module for all reservation views
 """
 import datetime
 
-from django.contrib.auth import get_user
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -27,6 +26,10 @@ class CreateReservationView(APIView):
         this method invokes data serialization and creates a new reservation resource.
         """
 
+        print(dir(request))
+        print(request.user)
+        print(dir(request.user))
+
         # create the data object that needs to be serialized
         data = {}
         rate = ParkingSpot.objects.get(id=parking_spot_id).rate
@@ -47,7 +50,7 @@ class CreateReservationView(APIView):
             # be serialized
             print("================= ", request.user.id, " =================")
             data["user"] = request.user.id
-            data["email"] = get_user(request).email
+            data["email"] = request.user.email
         else:
             # if the user is not authenticated the user email needs to be provided instead
             data["email"] = request.data["reservation"]["email"]
@@ -72,6 +75,9 @@ class CreateReservationView(APIView):
             args=[parking_spot_id, serializer.data["id"]],
             countdown=float(reservation_duration * 20),
         )
+
+        # todo: queue a task which sends an email 5min prior to the expiry of the reservation,
+        #  providing the user with a link which allows them to extend the reservation
 
         # declare the response variable such that the email or user key can be removed before
         # sending a JSON response

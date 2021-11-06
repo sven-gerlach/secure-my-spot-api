@@ -1,3 +1,7 @@
+"""
+Module for all model instance factories
+"""
+
 import factory
 from faker import Factory, Faker
 
@@ -6,8 +10,9 @@ from utils.utils import get_rand_decimal
 from ..models.parking_spot import ParkingSpot
 from ..models.user import User
 
-# create
+# create faker instance
 faker = Factory.create()
+fake = Faker()
 
 
 class UserFactory(factory.django.DjangoModelFactory):

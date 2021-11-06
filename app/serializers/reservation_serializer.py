@@ -46,15 +46,19 @@ class ReservationSerializer(serializers.ModelSerializer):
         end_time must be strictly greater / after start_time
         """
 
-        # if bool(attrs.get("user")) == bool(attrs.get("email")):
-        #     raise serializers.ValidationError(
-        #         "Either a user instance or an email must be provided, but not both concurrently"
-        #     )
-
-        if attrs["end_time"] <= attrs["start_time"]:
-            raise serializers.ValidationError(
-                "The end_time must be strictly greater / later than the start_time"
-            )
+        # in a partial update the start_time property is not provided as only the end_time or the
+        # paid fields may be updated. In case of a partial update, compare the end_time to the
+        # instance value associated with start_time instead
+        if attrs.get("start_time"):
+            if attrs["end_time"] <= attrs["start_time"]:
+                raise serializers.ValidationError(
+                    "The end_time must be strictly greater / later than the start_time"
+                )
+        else:
+            if attrs["end_time"] <= self.instance.start_time:
+                raise serializers.ValidationError(
+                    "The end_time must be strictly greater / later than the start_time"
+                )
 
         return attrs
 

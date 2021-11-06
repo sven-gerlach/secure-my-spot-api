@@ -70,6 +70,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     AbstractUser class.
     """
 
+    # todo: add user's number plate information
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)
@@ -85,7 +86,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
+        return f"User with primary key {self.email}"
 
     def get_full_name(self):
         """Return the full name in string format. Appears alongside the username

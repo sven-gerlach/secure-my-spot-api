@@ -1,3 +1,7 @@
+"""
+Testing the parking spot model
+"""
+
 import copy
 from decimal import Decimal
 
