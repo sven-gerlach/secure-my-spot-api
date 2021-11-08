@@ -56,7 +56,7 @@ class CreateReservationView(APIView):
             data["email"] = request.data["reservation"]["email"]
 
         # serialize the data stream
-        serializer = ReservationSerializer(data=data)
+        serializer = ReservationSerializer(data=data, context={"user": request.user})
 
         # throw a validation exception and send a response if validation fails
         serializer.is_valid(raise_exception=True)

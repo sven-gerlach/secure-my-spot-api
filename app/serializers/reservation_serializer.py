@@ -2,6 +2,8 @@
 A module for reservation serializer class
 """
 
+from django.contrib.auth import get_user_model
+from django.db.models import ObjectDoesNotExist
 from rest_framework import serializers
 
 from ..models.reservation import Reservation
@@ -76,3 +78,25 @@ class ReservationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("This parking spot is already reserved")
 
         return parking_spot
+
+    def validate_email(self, email):
+        """
+        If user is not authenticated and the email provided with the email field has an associated
+        user in the db, throw an error that lets the client know that this particular email has
+        an associated account which ought to be used for the reservation instead
+        """
+
+        User = get_user_model()
+
+        # only run validation if the user is not authenticated
+        if not self.context["user"].is_authenticated:
+            try:
+                User.objects.get(email=email)
+                raise serializers.ValidationError(
+                    "This email has been assigned to an existing account. Please sign into that "
+                    "account to reserve your spot or use a different email address."
+                )
+            except ObjectDoesNotExist:
+                return email
+
+        return email

@@ -6,6 +6,8 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 
 import pytest
+from django.contrib.auth.models import AnonymousUser
+from rest_framework.test import APIRequestFactory
 
 from app.models.parking_spot import ParkingSpot
 from app.models.user import User
@@ -54,7 +56,9 @@ class TestReservationSerializer:
             "end_time": end_time,
         }
 
-        serializer = ReservationSerializer(data=data)
+        serializer = ReservationSerializer(
+            data=data, context={"user": reservation_auth_user.user}
+        )
 
         # assertions
         assert serializer.is_valid() is True
@@ -80,7 +84,7 @@ class TestReservationSerializer:
             "end_time": end_time,
         }
 
-        serializer = ReservationSerializer(data=data)
+        serializer = ReservationSerializer(data=data, context={"user": user})
         serializer.is_valid()
         reservation = serializer.save()
 
@@ -117,7 +121,7 @@ class TestReservationSerializer:
             "end_time": start_time,
         }
 
-        serializer = ReservationSerializer(data=data)
+        serializer = ReservationSerializer(data=data, context={"user": user})
 
         # assertions
         assert serializer.is_valid() is False
@@ -153,7 +157,7 @@ class TestReservationSerializer:
             "end_time": end_time,
         }
 
-        serializer = ReservationSerializer(data=data)
+        serializer = ReservationSerializer(data=data, context={"user": user})
 
         # assertions
         assert serializer.is_valid() is False
@@ -179,7 +183,37 @@ class TestReservationSerializer:
             "end_time": end_time,
         }
 
-        serializer = ReservationSerializer(data=data)
+        serializer = ReservationSerializer(data=data, context={"user": user})
+
+        # assertions
+        assert serializer.is_valid() is False
+
+    def test_validate_email_method_existing_account(self, user, parking_spot):
+        """
+        The usage of an email by an unauthenticated user, attempting to reserve a parking spot,
+        when that email is also registered with a user in the database needs to throw a
+        ValidationError
+        """
+
+        # set valid start- and end-times and create data for serializer
+        start_time = datetime.now()
+        end_time = start_time + timedelta(minutes=10)
+
+        data = {
+            "email": user.email,
+            "parking_spot": parking_spot.id,
+            "rate": parking_spot.rate,
+            "start_time": start_time,
+            "end_time": end_time,
+        }
+
+        # create request mock and set unauthenticated user
+        factory = APIRequestFactory()
+        path = f"/reservation/{parking_spot.id}/"
+        request = factory.post(path, format="json")
+        request.user = AnonymousUser()
+
+        serializer = ReservationSerializer(data=data, context={"user": request.user})
 
         # assertions
         assert serializer.is_valid() is False

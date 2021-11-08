@@ -69,7 +69,7 @@ def send_reservation_confirmation_mail(
     send_mail(
         subject="Reservation Confirmation",
         message=message,
-        from_email="Secure My Spot <secure-my-spot@donotreply.com>",
+        from_email="Secure My Spot <donotreply@secure-my-spot.com>",
         recipient_list=[user_mail_address]
     )
 
@@ -101,6 +101,6 @@ def send_reservation_has_ended_mail(reservation_id):
     send_mail(
         subject="Reservation Has Expired",
         message=message,
-        from_email="Secure My Spot <secure-my-spot@donotreply.com>",
+        from_email="Secure My Spot <donotreply@secure-my-spot.com>",
         recipient_list=[reservation.email]
     )
