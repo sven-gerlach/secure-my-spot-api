@@ -99,7 +99,7 @@ def send_reservation_has_ended_mail(reservation_id):
     """
 
     send_mail(
-        subject="Reservation Has Expired",
+        subject="Reservation Expiration",
         message=message,
         from_email="Secure My Spot <donotreply@secure-my-spot.com>",
         recipient_list=[reservation.email]

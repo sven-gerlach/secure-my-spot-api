@@ -73,7 +73,7 @@ class CreateReservationView(APIView):
         # reservation length is up
         unreserve_parking_spot.apply_async(
             args=[parking_spot_id, serializer.data["id"]],
-            countdown=float(reservation_duration * 20),
+            countdown=float(reservation_duration * 60),
         )
 
         # todo: queue a task which sends an email 5min prior to the expiry of the reservation,
