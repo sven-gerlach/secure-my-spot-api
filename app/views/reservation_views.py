@@ -1,15 +1,21 @@
 """
 Module for all reservation views
 """
+
+# import Python modules
 import datetime
 
+# import Django / RestFramework modules
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from utils.send_mail import send_reservation_confirmation_mail
 
+# import custom modules
 from ..models.parking_spot import ParkingSpot
+from ..models.reservation import Reservation
 from ..serializers.reservation_serializer import ReservationSerializer
 from ..tasks.tasks import unreserve_parking_spot
 
@@ -102,3 +108,72 @@ class CreateReservationView(APIView):
         else:
             del response["user"]
             return Response(data=response)
+
+
+class GetReservationView(APIView):
+    """
+    Return a reservation with a specific reservation_id, provided the user is not authenticated
+    and the provided email string matches with the email field on the reservation with the id of
+    reservation_id
+    """
+
+    def get(self, request, reservation_id, email):
+        """
+        Retrieve the reservation with id of reservation_id, check that the user is not
+        authenticated and that the email matches with the email param. Serialize the reservation
+        and return it to the client.
+        """
+
+        # get the reservation that matches the provided id and email
+        reservation = get_object_or_404(Reservation, id=reservation_id, email=email)
+
+        # if the reservation was made by an authenticated user reject the request
+        if reservation.user:
+            return Response(
+                {
+                    "detail": "This reservation belongs to an authenticated account. "
+                    "Please login to review this reservation."
+                },
+                status=401,
+            )
+
+        # serialize the data
+        serializer = ReservationSerializer(reservation)
+
+        # send the response
+        return Response(serializer.data, status=200)
+
+
+class GetActiveReservations(APIView):
+    """
+    Class provides a list with all active reservations for an authenticated user
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieve all active reservations owned by authenticated user and return the serialized
+        result
+        """
+        active_reservations = Reservation.objects.filter(paid=False, user=request.user)
+        serializer = ReservationSerializer(active_reservations, many=True)
+        return Response(serializer.data)
+
+
+class GetExpiredReservations(APIView):
+    """
+    Class provides a list with all expired reservations associated with the authenticated user
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Retrieve all expired reservations owned by authenticated user and return the serialized
+        result
+        """
+
+        expired_reservations = Reservation.objects.filter(paid=True, user=request.user)
+        serializer = ReservationSerializer(expired_reservations, many=True)
+        return Response(serializer.data)

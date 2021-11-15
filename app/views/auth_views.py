@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 class SignUpView(APIView):
     """Sign-up view"""
 
+    # todo: add email verification to acc creation process
     def post(self, request):
         """
         Create and save a new user in the database

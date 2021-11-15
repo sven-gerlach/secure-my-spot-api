@@ -41,7 +41,7 @@ def send_reservation_confirmation_mail(
     end_time_est = end_time_utc.astimezone(est_tz)
     fmt = "%H:%M"
 
-    # todo: add card details
+    # todo: add card details and personalise email for authenticated users
     message = f"""
     Dear User,
     
@@ -65,7 +65,6 @@ def send_reservation_confirmation_mail(
     Secure My Spot
     """
 
-    # todo: user receives two emails: confirmed this function is only executed once
     send_mail(
         subject="Reservation Confirmation",
         message=message,
@@ -83,7 +82,7 @@ def send_reservation_has_ended_mail(reservation_id):
     reservation = Reservation.objects.get(id=reservation_id)
     reservation_fee = get_total_reservation_fee(reservation_id)
 
-    # todo: add card details to email message
+    # todo: add card details to email message and personalise email for authenticated users
     message = f"""
     Dear User,
     
