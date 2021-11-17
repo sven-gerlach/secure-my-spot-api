@@ -10,10 +10,9 @@ from .views.parking_spot_views import (
     GetAvailableParkingSpotsView,
 )
 from .views.reservation_views import (
-    CreateReservationView,
-    GetActiveReservations,
-    GetExpiredReservations,
-    GetReservationView,
+    ReservationViewAuth,
+    ReservationViewUnauth,
+    GetExpiredReservationsAuth,
 )
 
 urlpatterns = [
@@ -37,33 +36,34 @@ urlpatterns = [
         GetAvailableParkingSpotsFilterView.as_view(),
         name="api-available-parking-spots-filter",
     ),
-    # reservation routes
-    # a sample path to this route is of the following format: reservation/18, meaning create a
-    # reservation for the parking spot with id=18. The data of the request will either contain
-    # the token (authenticated) or the user's email. Additionally the data will contain the
-    # length of reservation period in minutes
+    # create reservation for authenticated user
     path(
-        "reservation/<int:parking_spot_id>/",
-        CreateReservationView.as_view(),
-        name="api-create-reservation",
+        "reservation-auth/<int:parking_spot_id>/",
+        ReservationViewAuth.as_view(),
+        name="api-create-reservation-auth",
     ),
-    # this reservation route returns a specific reservation, as identified by the reservationID
-    # and a matching user's email, for unauthenticated users
+    # create reservation for unauthenticated user
     path(
-        "reservation/<int:reservation_id>/<str:email>/",
-        GetReservationView.as_view(),
-        name="api-get-reservation",
+        "reservation-unauth/<int:parking_spot_id>/",
+        ReservationViewUnauth.as_view(),
+        name="api-create-reservation-unauth"
     ),
     # route for retrieving all active reservations for an authenticated user
     path(
-        "active-reservations/",
-        GetActiveReservations.as_view(),
-        name="api-get-active-reservations",
+        "reservation-auth/",
+        ReservationViewAuth.as_view(),
+        name="api-retrieve-active-reservations-auth",
+    ),
+    # retrieve reservation for unauthenticated user with email and reservationID
+    path(
+        "reservation-unauth/<int:reservation_id>/<str:email>/",
+        ReservationViewUnauth.as_view(),
+        name="api-get-reservation-unauth",
     ),
     # route for retrieving all expired reservations for an authenticated user
     path(
-        "expired-reservations/",
-        GetExpiredReservations.as_view(),
-        name="api-get-expired-reservations",
+        "expired-reservations-auth/",
+        GetExpiredReservationsAuth.as_view(),
+        name="api-get-expired-reservations-auth",
     ),
 ]
