@@ -272,3 +272,15 @@ EMAIL_HOST = "smtp-relay.sendinblue.com"
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv("EMAIL_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD")
+
+# setting up django-redis cache - use the same back-end as Celery
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": CELERY_RESULT_BACKEND,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": "django",
+    }
+}

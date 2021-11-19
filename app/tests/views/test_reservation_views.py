@@ -15,7 +15,7 @@ class TestReservationViews:
     """
 
     def test_create_reservation_view_unauth_user(self, client, parking_spot):
-        path = f"/reservation/{parking_spot.id}/"
+        path = f"/reservation-unauth/{parking_spot.id}/"
         data = {"reservation": {"reservation_length": 10, "email": "test@test.com"}}
 
         response = client.post(path=path, data=data, format="json")
@@ -30,7 +30,7 @@ class TestReservationViews:
         # force authenticate user
         client.force_authenticate(user=user)
 
-        path = f"/reservation/{parking_spot.id}/"
+        path = f"/reservation-auth/{parking_spot.id}/"
         data = {"reservation": {"reservation_length": 10}}
 
         response = client.post(path=path, data=data, format="json")

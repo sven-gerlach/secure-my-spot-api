@@ -12,4 +12,6 @@ def get_total_reservation_fee(reservation_id):
     """
 
     reservation = Reservation.objects.get(id=reservation_id)
-    return round(reservation.duration * reservation.rate / 60, 2)
+    duration_minutes = reservation.duration
+    rate_per_hour = reservation.rate
+    return round(duration_minutes * rate_per_hour / 60, 2)

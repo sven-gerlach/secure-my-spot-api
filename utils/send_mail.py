@@ -33,12 +33,9 @@ def send_reservation_confirmation_mail(
     reservation_fee = get_total_reservation_fee(reservation_id)
 
     # time zone formatting
-    utc_tz = pytz.utc
     est_tz = pytz.timezone("US/Eastern")
-    start_time_utc = utc_tz.localize(start_time)
-    end_time_utc = utc_tz.localize(end_time)
-    start_time_est = start_time_utc.astimezone(est_tz)
-    end_time_est = end_time_utc.astimezone(est_tz)
+    start_time_est = start_time.astimezone(est_tz)
+    end_time_est = end_time.astimezone(est_tz)
     fmt = "%H:%M"
 
     # todo: add card details and personalise email for authenticated users
@@ -67,6 +64,59 @@ def send_reservation_confirmation_mail(
 
     send_mail(
         subject="Reservation Confirmation",
+        message=message,
+        from_email="Secure My Spot <donotreply@secure-my-spot.com>",
+        recipient_list=[user_mail_address]
+    )
+
+
+def send_reservation_amendment_confirmation_mail(
+        user_mail_address: str,
+        parking_spot_id: str or int,
+        rate: Decimal,
+        reservation_id: float,
+        start_time: datetime,
+        end_time: datetime
+):
+    """
+    Send email to user confirming the amended reservation details
+    """
+
+    reservation_fee = get_total_reservation_fee(reservation_id)
+
+    # time zone formatting
+    est_tz = pytz.timezone("US/Eastern")
+    start_time_est = start_time.astimezone(est_tz)
+    end_time_est = end_time.astimezone(est_tz)
+    fmt = "%H:%M"
+
+    message = f"""
+        Dear User,
+
+        This email confirms your amended reservation of a parking spot in 
+        New York City. Please note the reservation details below. 
+        
+        We will send you another email 5min before your reservation expires 
+        to remind you and to give you the option to extend your reservation.
+
+        Parking Spot ID: {parking_spot_id}
+        Reservation ID: {reservation_id}
+        Rate / hour (USD): {rate}
+        Start Time: {start_time_est.strftime(fmt)}
+        End Time: {end_time_est.strftime(fmt)}
+        Reservation Fee (USD): {reservation_fee}
+        Payment Details: [xxxx-xxxx-xxxx-1234]
+        Payment Processed: not yet
+
+        Note: all times are New York Time (EST)
+
+        Kindest regards,
+
+        Secure My Spot
+        """
+
+    send_mail(
+        subject="Reservation Amendment",
         message=message,
         from_email="Secure My Spot <donotreply@secure-my-spot.com>",
         recipient_list=[user_mail_address]

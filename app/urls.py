@@ -10,9 +10,9 @@ from .views.parking_spot_views import (
     GetAvailableParkingSpotsView,
 )
 from .views.reservation_views import (
+    GetExpiredReservationsAuth,
     ReservationViewAuth,
     ReservationViewUnauth,
-    GetExpiredReservationsAuth,
 )
 
 urlpatterns = [
@@ -46,7 +46,7 @@ urlpatterns = [
     path(
         "reservation-unauth/<int:parking_spot_id>/",
         ReservationViewUnauth.as_view(),
-        name="api-create-reservation-unauth"
+        name="api-create-reservation-unauth",
     ),
     # route for retrieving all active reservations for an authenticated user
     path(
@@ -65,5 +65,17 @@ urlpatterns = [
         "expired-reservations-auth/",
         GetExpiredReservationsAuth.as_view(),
         name="api-get-expired-reservations-auth",
+    ),
+    # change a reservation for an authenticated user
+    path(
+        "update-reservation-auth/<int:reservation_id>/",
+        ReservationViewAuth.as_view(),
+        name="api-update-reservation-auth",
+    ),
+    # change a reservation for an unauthenticated user
+    path(
+        "update-reservation-unauth/<int:reservation_id>/<str:email>/",
+        ReservationViewUnauth.as_view(),
+        name="api-update-reservation-unauth",
     ),
 ]
