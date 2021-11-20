@@ -50,16 +50,7 @@ else:
     # Set debug to false
     DEBUG = False
     # Only allow the `CLIENT_ORIGIN` for CORS
-    CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
-
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
+    # CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
