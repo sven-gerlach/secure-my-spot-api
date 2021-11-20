@@ -273,12 +273,16 @@ class ReservationViewUnauth(APIView):
         # retrieve reservation from db
         reservation = get_object_or_404(Reservation, id=reservation_id, email=email)
 
+        print("============================ S T A R T ============================")
+        print(dir(reservation))
+        print("============================== E N D ==============================")
+
         # convert date_time str into Python datetime object
         end_time_str = request.data["reservation"]["end_time"]
         conversion_format = "%Y-%m-%dT%H:%M:%S.%fZ"
         end_time = datetime.datetime.strptime(end_time_str, conversion_format)
 
-        # replace seconds and microseconds
+        # replace seconds and microseconds with zero
         end_time = end_time.replace(second=0, microsecond=0)
 
         # set end_time on data dictionary
