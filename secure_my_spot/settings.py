@@ -50,7 +50,7 @@ else:
     # Set debug to false
     DEBUG = False
     # Only allow the `CLIENT_ORIGIN` for CORS
-    # CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
+    CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -90,9 +90,9 @@ INSTALLED_APPS = [
 # assets not being served properly
 # https://cheat.readthedocs.io/en/latest/django/static_files.html#the-whitenoise-app
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
     # https://pypi.org/project/django-cors-headers/
     "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
     # Add WhiteNoise package to middleware so that it serves static assets
     "whitenoise.middleware.WhiteNoiseMiddleware",
     # custom middleware that prints details of incoming http requests to the terminal
