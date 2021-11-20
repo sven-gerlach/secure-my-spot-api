@@ -18,8 +18,7 @@ import dj_database_url
 from django.core.management.utils import get_random_secret_key
 
 # todo: break up settings into base, dev, testing, etc
-# 1) add test_settings which uses a faster hashing algorithm for signing up new users
-# 2) [...]
+# todo: 1) add test_settings which uses a faster hashing algorithm for signing up new users
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +37,7 @@ if os.getenv("ENV") == "development":
     # Set debug to true
     DEBUG = True
     # Only allow locally running client at port 3000 for CORS
-    CORS_ORIGIN_WHITELIST = [
+    CORS_ALLOWED_ORIGINS = [
         "http://localhost:3000",
     ]
 else:
@@ -51,7 +50,7 @@ else:
     # Set debug to false
     DEBUG = False
     # Only allow the `CLIENT_ORIGIN` for CORS
-    CORS_ORIGIN_WHITELIST = [os.getenv("CLIENT_ORIGIN")]
+    CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
 
 
 # Quick-start development settings - unsuitable for production
@@ -93,10 +92,10 @@ INSTALLED_APPS = [
 # https://cheat.readthedocs.io/en/latest/django/static_files.html#the-whitenoise-app
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # https://pypi.org/project/django-cors-headers/
+    "corsheaders.middleware.CorsMiddleware",
     # Add WhiteNoise package to middleware so that it serves static assets
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    # # https://pypi.org/project/django-cors-headers/
-    "corsheaders.middleware.CorsMiddleware",
     # custom middleware that prints details of incoming http requests to the terminal
     "secure_my_spot.custom_middleware.request_response_logger.RequestLogging",
     # add debug toolbar middleware

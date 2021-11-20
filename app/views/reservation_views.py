@@ -176,16 +176,13 @@ class ReservationViewUnauth(APIView):
     specific reservation.
     """
 
-    # set class variables for task_ids
-
     def post(self, request, parking_spot_id):
         """
         Create a new reservation resource associated with an unauthenticated user's email and a
         parking spot
         """
 
-        # create the data object that needs to be serialized
-        data = {}
+        # setup the components that make up the data object that needs serializing
         rate = ParkingSpot.objects.get(id=parking_spot_id).rate
         # create datetime object and strip seconds and microseconds off
         time_now = datetime.datetime.now().replace(second=0, microsecond=0)
