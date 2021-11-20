@@ -41,8 +41,7 @@ class ReservationViewAuth(APIView):
         Create a new reservation resource associated with an authenticated user and a parking spot.
         """
 
-        # create the data object that needs to be serialized
-        data = {}
+        # setup the components that make up the data object that needs serializing
         rate = ParkingSpot.objects.get(id=parking_spot_id).rate
         # create datetime object and strip seconds and microseconds off
         time_now = datetime.datetime.now().replace(second=0, microsecond=0)
@@ -137,37 +136,36 @@ class ReservationViewAuth(APIView):
 
         serializer = ReservationSerializer(reservation, data=data, partial=True)
 
-        if serializer.is_valid():
-            serializer.save()
+        serializer.is_valid(raise_exception=True)
 
-            # retrieve task_id associated with reservation_id from Redis cache
-            task_id = cache.get(serializer.data["id"])
+        serializer.save()
 
-            # revoke existing task to reset availability of reserved parking spot
-            app.control.revoke(task_id=task_id, terminate=True)
+        # retrieve task_id associated with reservation_id from Redis cache
+        task_id = cache.get(serializer.data["id"])
 
-            # set new task with new end_time param
-            task = unreserve_parking_spot.apply_async(
-                args=[reservation.parking_spot.id, reservation.id],
-                eta=reservation.end_time,
-            )
+        # revoke existing task to reset availability of reserved parking spot
+        app.control.revoke(task_id=task_id, terminate=True)
 
-            # save reservation_id / task_id key / value pair in Redis cache
-            cache.set(serializer.data["id"], task.task_id)
+        # set new task with new end_time param
+        task = unreserve_parking_spot.apply_async(
+            args=[reservation.parking_spot.id, reservation.id],
+            eta=reservation.end_time,
+        )
 
-            # send a email to user, confirming amended reservation details
-            send_reservation_amendment_confirmation_mail(
-                user_mail_address=reservation.email,
-                parking_spot_id=reservation.parking_spot.id,
-                rate=reservation.rate,
-                reservation_id=reservation.id,
-                start_time=reservation.start_time,
-                end_time=reservation.end_time,
-            )
+        # save reservation_id / task_id key / value pair in Redis cache
+        cache.set(serializer.data["id"], task.task_id)
 
-            return Response(serializer.data, status=200)
-        else:
-            return Response(serializer.errors)
+        # send a email to user, confirming amended reservation details
+        send_reservation_amendment_confirmation_mail(
+            user_mail_address=reservation.email,
+            parking_spot_id=reservation.parking_spot.id,
+            rate=reservation.rate,
+            reservation_id=reservation.id,
+            start_time=reservation.start_time,
+            end_time=reservation.end_time,
+        )
+
+        return Response(data=serializer.data, status=200)
 
 
 class ReservationViewUnauth(APIView):
@@ -288,39 +286,38 @@ class ReservationViewUnauth(APIView):
 
         serializer = ReservationSerializer(reservation, data=data, partial=True)
 
-        if serializer.is_valid():
-            # save the new reservation instance
-            serializer.save()
+        serializer.is_valid(raise_exception=True)
 
-            # retrieve task_id associated with reservation_id from Redis cache
-            task_id = cache.get(serializer.data["id"])
+        # save the new reservation instance
+        serializer.save()
 
-            # revoke existing task to reset availability of reserved parking spot
-            app.control.revoke(task_id=task_id, terminate=True)
+        # retrieve task_id associated with reservation_id from Redis cache
+        task_id = cache.get(serializer.data["id"])
 
-            # set new task with new end_time param
-            task = unreserve_parking_spot.apply_async(
-                args=[reservation.parking_spot.id, reservation.id],
-                eta=reservation.end_time,
-            )
+        # revoke existing task to reset availability of reserved parking spot
+        app.control.revoke(task_id=task_id, terminate=True)
 
-            # save reservation_id / task_id key / value pair in Redis cache
-            cache.set(serializer.data["id"], task.task_id)
+        # set new task with new end_time param
+        task = unreserve_parking_spot.apply_async(
+            args=[reservation.parking_spot.id, reservation.id],
+            eta=reservation.end_time,
+        )
 
-            # send a email to user, confirming amended reservation details
-            send_reservation_amendment_confirmation_mail(
-                user_mail_address=reservation.email,
-                parking_spot_id=reservation.parking_spot.id,
-                rate=reservation.rate,
-                reservation_id=reservation.id,
-                start_time=reservation.start_time,
-                end_time=reservation.end_time,
-            )
+        # save reservation_id / task_id key / value pair in Redis cache
+        cache.set(serializer.data["id"], task.task_id)
 
-            # return response to client
-            return Response(serializer.data, status=200)
-        else:
-            return Response(serializer.errors)
+        # send a email to user, confirming amended reservation details
+        send_reservation_amendment_confirmation_mail(
+            user_mail_address=reservation.email,
+            parking_spot_id=reservation.parking_spot.id,
+            rate=reservation.rate,
+            reservation_id=reservation.id,
+            start_time=reservation.start_time,
+            end_time=reservation.end_time,
+        )
+
+        # return response to client
+        return Response(data=serializer.data, status=200)
 
 
 class GetExpiredReservationsAuth(APIView):
