@@ -320,6 +320,10 @@ class ReservationViewUnauth(APIView):
             end_time=reservation.end_time,
         )
 
+        print("============================ S T A R T ============================")
+        print("task_id: ", task_id)
+        print("============================== E N D ==============================")
+
         # return response to client
         return Response(data=serializer.data, status=200)
 
