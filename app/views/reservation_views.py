@@ -302,11 +302,13 @@ class ReservationViewUnauth(APIView):
         # retrieve task_id associated with reservation_id from Redis cache
         task_id = cache.get(serializer.data["id"])
 
+        print(task_id)
         print("============================ 5 ============================")
 
         # revoke existing task to reset availability of reserved parking spot
-        app.control.revoke(task_id=task_id, terminate=True)
+        app.control.revoke(task_id=task_id)
 
+        print(dir(app))
         print("============================ 6 ============================")
 
         # set new task with new end_time param
