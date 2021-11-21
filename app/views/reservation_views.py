@@ -303,12 +303,14 @@ class ReservationViewUnauth(APIView):
         task_id = cache.get(serializer.data["id"])
 
         print(task_id)
+
         print("============================ 5 ============================")
+
+        print(dir(app))
 
         # revoke existing task to reset availability of reserved parking spot
         app.control.revoke(task_id=task_id)
 
-        print(dir(app))
         print("============================ 6 ============================")
 
         # set new task with new end_time param
