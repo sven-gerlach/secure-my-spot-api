@@ -273,9 +273,7 @@ class ReservationViewUnauth(APIView):
         # retrieve reservation from db
         reservation = get_object_or_404(Reservation, id=reservation_id, email=email)
 
-        print("============================ S T A R T ============================")
-        print(dir(reservation))
-        print("============================== E N D ==============================")
+        print("============================ 1 ============================")
 
         # convert date_time str into Python datetime object
         end_time_str = request.data["reservation"]["end_time"]
@@ -290,16 +288,26 @@ class ReservationViewUnauth(APIView):
 
         serializer = ReservationSerializer(reservation, data=data, partial=True)
 
+        print("============================ 2 ============================")
+
         serializer.is_valid(raise_exception=True)
+
+        print("============================ 3 ============================")
 
         # save the new reservation instance
         serializer.save()
 
+        print("============================ 4 ============================")
+
         # retrieve task_id associated with reservation_id from Redis cache
         task_id = cache.get(serializer.data["id"])
 
+        print("============================ 5 ============================")
+
         # revoke existing task to reset availability of reserved parking spot
         app.control.revoke(task_id=task_id, terminate=True)
+
+        print("============================ 6 ============================")
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
@@ -307,8 +315,12 @@ class ReservationViewUnauth(APIView):
             eta=reservation.end_time,
         )
 
+        print("============================ 7 ============================")
+
         # save reservation_id / task_id key / value pair in Redis cache
         cache.set(serializer.data["id"], task.task_id)
+
+        print("============================ 8 ============================")
 
         # send a email to user, confirming amended reservation details
         send_reservation_amendment_confirmation_mail(
@@ -320,9 +332,7 @@ class ReservationViewUnauth(APIView):
             end_time=reservation.end_time,
         )
 
-        print("============================ S T A R T ============================")
-        print("task_id: ", task_id)
-        print("============================== E N D ==============================")
+        print("============================ 9 ============================")
 
         # return response to client
         return Response(data=serializer.data, status=200)
