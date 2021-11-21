@@ -309,7 +309,7 @@ class ReservationViewUnauth(APIView):
         print(dir(app))
 
         # revoke existing task to reset availability of reserved parking spot
-        app.control.revoke(task_id=task_id)
+        app.control.revoke(task_id=task_id, terminate=True, signal="SIGKILL")
 
         print("============================ 6 ============================")
 
