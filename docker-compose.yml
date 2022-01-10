@@ -34,7 +34,7 @@ services:
       dockerfile: Dockerfile
     # todo: auto-reload should not be used for production
     # command: python manage.py celery_autoload
-    command: REMAP_SIGTERM=SIGQUIT celery -A secure_my_spot.celeryconf worker --loglevel=INFO
+    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     depends_on:
       - db
       - broker
