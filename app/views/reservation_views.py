@@ -264,7 +264,7 @@ class ReservationViewUnauth(APIView):
         # send the response
         return Response(serializer.data, status=200)
 
-    def put(self, request, reservation_id, email):
+    def patch(self, request, reservation_id, email):
         """
         This view updates the end_time of a reservation with the data provided by the
         unauthenticated client
