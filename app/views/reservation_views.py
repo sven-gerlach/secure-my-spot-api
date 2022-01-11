@@ -364,6 +364,7 @@ class TestPatchMethod(APIView):
     """
     Testing patch method
     """
+
     def patch(self, request):
         print(request)
         return Response({"patch": "works"}, status=200)
