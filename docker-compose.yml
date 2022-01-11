@@ -34,7 +34,7 @@ services:
       dockerfile: Dockerfile
     # todo: auto-reload should not be used for production
     # command: python manage.py celery_autoload
-    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO --statedb=/var/run/celery/worker.state
+    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     depends_on:
       - db
       - broker
