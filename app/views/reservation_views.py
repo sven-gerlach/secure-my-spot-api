@@ -358,3 +358,12 @@ class GetExpiredReservationsAuth(APIView):
         expired_reservations = Reservation.objects.filter(paid=True, user=request.user)
         serializer = ReservationSerializer(expired_reservations, many=True)
         return Response(serializer.data)
+
+
+class TestPatchMethod(APIView):
+    """
+    Testing patch method
+    """
+    def patch(self, request):
+        print(request)
+        return Response({"patch": "works"}, status=200)

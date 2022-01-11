@@ -13,6 +13,7 @@ from .views.reservation_views import (
     GetExpiredReservationsAuth,
     ReservationViewAuth,
     ReservationViewUnauth,
+    TestPatchMethod,
 )
 
 urlpatterns = [
@@ -77,5 +78,10 @@ urlpatterns = [
         "update-reservation-unauth/<int:reservation_id>/<str:email>/",
         ReservationViewUnauth.as_view(),
         name="api-update-reservation-unauth",
+    ),
+    path(
+        "test-patch-method/",
+        TestPatchMethod.as_view(),
+        name="test-patch-method",
     ),
 ]
