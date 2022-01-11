@@ -264,7 +264,7 @@ class ReservationViewUnauth(APIView):
         # send the response
         return Response(serializer.data, status=200)
 
-    def patch(self, request, reservation_id, email):
+    def put(self, request, reservation_id, email):
         """
         This view updates the end_time of a reservation with the data provided by the
         unauthenticated client
@@ -309,7 +309,6 @@ class ReservationViewUnauth(APIView):
         print(dir(app))
 
         # revoke existing task to reset availability of reserved parking spot
-        # app.control.revoke(task_id=task_id, terminate=True, signal="SIGKILL")
         app.control.revoke(task_id=task_id)
 
         print("============================ 6 ============================")
