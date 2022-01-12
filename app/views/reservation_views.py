@@ -5,6 +5,7 @@ Module for all reservation views
 # import Python modules
 import datetime
 
+import celery.app.task
 from django.core.cache import cache
 
 # import Django / RestFramework modules
@@ -359,22 +360,3 @@ class GetExpiredReservationsAuth(APIView):
         expired_reservations = Reservation.objects.filter(paid=True, user=request.user)
         serializer = ReservationSerializer(expired_reservations, many=True)
         return Response(serializer.data)
-
-
-class TestPatchMethod(APIView):
-    """
-    Testing patch method
-    """
-
-    def get(self, request):
-        send_test_patch_email(message="Test Get Method button clicked")
-        task = send_delayed_test_patch_email.apply_async(countdown=10)
-        print(task.task_id)
-        cache.set("task", task.task_id)
-        return Response({"get": "Delayed task set up"})
-
-    def patch(self, request):
-        task_id = cache.get("task")
-        print(task_id)
-        app.control.revoke(task_id=task_id)
-        return Response({"patch": "works"}, status=200)

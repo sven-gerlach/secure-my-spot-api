@@ -36,8 +36,6 @@ services:
     # command: python manage.py celery_autoload
     # statedb: https://docs.celeryproject.org/en/stable/userguide/workers.html#persistent-revokes
     command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
-    environment:
-      REMAP_SIGTERM: 'SIGQUIT'
     depends_on:
       - db
       - broker

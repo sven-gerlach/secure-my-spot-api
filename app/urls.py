@@ -79,9 +79,4 @@ urlpatterns = [
         ReservationViewUnauth.as_view(),
         name="api-update-reservation-unauth",
     ),
-    path(
-        "test-patch-method/",
-        TestPatchMethod.as_view(),
-        name="test-patch-method",
-    ),
 ]

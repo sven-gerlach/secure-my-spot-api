@@ -32,8 +32,3 @@ def unreserve_parking_spot(parking_spot_id, reservation_id):
 
     # send email to user confirming end of the reservation period
     send_reservation_has_ended_mail(reservation_id)
-
-
-@shared_task
-def send_delayed_test_patch_email():
-    send_test_patch_email(message="This is the delayed email.")
