@@ -26,7 +26,7 @@ from utils.send_mail import (
 from ..models.parking_spot import ParkingSpot
 from ..models.reservation import Reservation
 from ..serializers.reservation_serializer import ReservationSerializer
-from ..tasks.tasks import unreserve_parking_spot, send_delayed_test_patch_email
+from ..tasks.tasks import send_delayed_test_patch_email, unreserve_parking_spot
 
 
 class ReservationViewAuth(APIView):
@@ -368,9 +368,7 @@ class TestPatchMethod(APIView):
 
     def get(self, request):
         send_test_patch_email(message="Test Get Method button clicked")
-        task = send_delayed_test_patch_email.apply_async(
-            countdown=10
-        )
+        task = send_delayed_test_patch_email.apply_async(countdown=10)
         print(task.task_id)
         cache.set("task", task.task_id)
         return Response({"get": "Delayed task set up"})
