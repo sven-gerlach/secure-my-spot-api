@@ -6,7 +6,7 @@ Module for tasks associated with the reservation view
 from celery import shared_task
 from django.shortcuts import get_object_or_404
 
-from utils.send_mail import send_reservation_has_ended_mail, send_test_patch_email
+from utils.send_mail import send_reservation_has_ended_mail
 
 from ..models.parking_spot import ParkingSpot
 

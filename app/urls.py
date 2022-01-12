@@ -13,7 +13,6 @@ from .views.reservation_views import (
     GetExpiredReservationsAuth,
     ReservationViewAuth,
     ReservationViewUnauth,
-    TestPatchMethod,
 )
 
 urlpatterns = [

@@ -5,29 +5,24 @@ Module for all reservation views
 # import Python modules
 import datetime
 
-import celery.app.task
-from django.core.cache import cache
-
 # import Django / RestFramework modules
+from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from secure_my_spot.celeryconf import app
-
 # import utils
 from utils.send_mail import (
     send_reservation_amendment_confirmation_mail,
     send_reservation_confirmation_mail,
-    send_test_patch_email,
 )
 
 # import custom modules
 from ..models.parking_spot import ParkingSpot
 from ..models.reservation import Reservation
 from ..serializers.reservation_serializer import ReservationSerializer
-from ..tasks.tasks import send_delayed_test_patch_email, unreserve_parking_spot
+from ..tasks.tasks import unreserve_parking_spot
 
 
 class ReservationViewAuth(APIView):
@@ -143,10 +138,12 @@ class ReservationViewAuth(APIView):
         serializer.save()
 
         # retrieve task_id associated with reservation_id from Redis cache
-        task_id = cache.get(serializer.data["id"])
+        cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
-        app.control.revoke(task_id=task_id, terminate=True)
+        # todo: this feature does not work at the moment because the worker gets shut down
+        #  automatically by Heroku
+        # app.control.revoke(task_id=task_id, terminate=True)
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
@@ -275,8 +272,6 @@ class ReservationViewUnauth(APIView):
         # retrieve reservation from db
         reservation = get_object_or_404(Reservation, id=reservation_id, email=email)
 
-        print("============================ 1 ============================")
-
         # convert date_time str into Python datetime object
         end_time_str = request.data["reservation"]["end_time"]
         conversion_format = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -290,30 +285,18 @@ class ReservationViewUnauth(APIView):
 
         serializer = ReservationSerializer(reservation, data=data, partial=True)
 
-        print("============================ 2 ============================")
-
         serializer.is_valid(raise_exception=True)
-
-        print("============================ 3 ============================")
 
         # save the new reservation instance
         serializer.save()
 
-        print("============================ 4 ============================")
-
         # retrieve task_id associated with reservation_id from Redis cache
-        task_id = cache.get(serializer.data["id"])
-
-        print(task_id)
-
-        print("============================ 5 ============================")
-
-        print(dir(app))
+        cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
-        app.control.revoke(task_id=task_id)
-
-        print("============================ 6 ============================")
+        # todo: this feature does not work at the moment because the worker gets shut down
+        #  automatically by Heroku
+        # app.control.revoke(task_id=task_id)
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
@@ -321,12 +304,8 @@ class ReservationViewUnauth(APIView):
             eta=reservation.end_time,
         )
 
-        print("============================ 7 ============================")
-
         # save reservation_id / task_id key / value pair in Redis cache
         cache.set(serializer.data["id"], task.task_id)
-
-        print("============================ 8 ============================")
 
         # send a email to user, confirming amended reservation details
         send_reservation_amendment_confirmation_mail(
@@ -337,8 +316,6 @@ class ReservationViewUnauth(APIView):
             start_time=reservation.start_time,
             end_time=reservation.end_time,
         )
-
-        print("============================ 9 ============================")
 
         # return response to client
         return Response(data=serializer.data, status=200)
