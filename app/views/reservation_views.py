@@ -19,13 +19,14 @@ from secure_my_spot.celeryconf import app
 from utils.send_mail import (
     send_reservation_amendment_confirmation_mail,
     send_reservation_confirmation_mail,
+    send_test_patch_email,
 )
 
 # import custom modules
 from ..models.parking_spot import ParkingSpot
 from ..models.reservation import Reservation
 from ..serializers.reservation_serializer import ReservationSerializer
-from ..tasks.tasks import unreserve_parking_spot
+from ..tasks.tasks import unreserve_parking_spot, send_delayed_test_patch_email
 
 
 class ReservationViewAuth(APIView):
@@ -365,6 +366,17 @@ class TestPatchMethod(APIView):
     Testing patch method
     """
 
+    def get(self, request):
+        send_test_patch_email(message="Test Get Method button clicked")
+        task = send_delayed_test_patch_email.apply_async(
+            countdown=10
+        )
+        print(task.task_id)
+        cache.set("task", task.task_id)
+        return Response({"get": "Delayed task set up"})
+
     def patch(self, request):
-        print(request)
+        task_id = cache.get("task")
+        print(task_id)
+        app.control.revoke(task_id=task_id)
         return Response({"patch": "works"}, status=200)
