@@ -49,6 +49,9 @@ jobs:
       # Redis vars
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
+      # Stripe vars
+      STRIPE_API_TEST_KEY: ${{ secrets.STRIPE_PASSWORD }}
+
     steps:
       - uses: actions/checkout@v1
       - name: Build the docker-compose stack
