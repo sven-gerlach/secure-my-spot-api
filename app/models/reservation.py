@@ -66,7 +66,7 @@ class Reservation(models.Model):
     stripe_payment_intent_id = models.CharField(
         max_length=200,
         help_text="Stripe payment intent id issued by Stripe for setting up a payment intent",
-        blank=True
+        blank=True,
     )
 
     def __str__(self):

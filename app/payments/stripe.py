@@ -2,8 +2,10 @@
 Module for processing all Stripe related payments processing tasks
 """
 
-import stripe
 import os
+
+import stripe
+
 from utils.payments import get_total_reservation_fee
 
 
@@ -19,7 +21,7 @@ def create_payment_intent(reservation_id, user_id):
         currency="usd",
         amount=int(get_total_reservation_fee(reservation_id) * 100),
         automatic_payment_methods={"enabled": True},
-        receipt_email=user_id
+        receipt_email=user_id,
     )
 
     print(intent)

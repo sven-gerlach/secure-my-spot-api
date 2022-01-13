@@ -207,8 +207,7 @@ class ReservationViewUnauth(APIView):
 
         # create Stripe payment intent
         payment_intent_id, client_secret = create_payment_intent(
-            reservation_id=reservation.id,
-            user_id=reservation.email
+            reservation_id=reservation.id, user_id=reservation.email
         )
 
         # add payment_intent_id to reservation resource
