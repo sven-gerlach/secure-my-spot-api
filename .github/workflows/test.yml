@@ -50,7 +50,7 @@ jobs:
       REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
       # Stripe vars
-      STRIPE_API_TEST_KEY: ${{ secrets.STRIPE_PASSWORD }}
+      STRIPE_API_TEST_KEY: ${{ secrets.STRIPE_API_TEST_KEY }}
 
     steps:
       - uses: actions/checkout@v1
