@@ -14,7 +14,7 @@ class TestReservationViews:
     Testing reservation views
     """
 
-    def test_create_reservation_view_unauth_user(self, client, parking_spot):
+    def test_create_reservation_view_unauth_user(self, client, parking_spot, monkeypatch):
         path = f"/reservation-unauth/{parking_spot.id}/"
         data = {"reservation": {"reservation_length": 10, "email": "test@test.com"}}
 

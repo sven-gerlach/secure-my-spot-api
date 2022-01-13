@@ -30,6 +30,9 @@ services:
       - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
 
+      # Stripe settings
+      - STRIPE_API_TEST_KEY
+
   db:
     environment:
       - POSTGRES_USER
@@ -59,6 +62,9 @@ services:
       - RABBITMQ_DEFAULT_USER
       - RABBITMQ_DEFAULT_PASS
       - REDIS_PASSWORD
+
+      # Stripe settings
+      - STRIPE_API_TEST_KEY
 
   broker:
     environment:
