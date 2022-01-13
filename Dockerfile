@@ -37,6 +37,9 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
+ARG STRIPE_API_TEST_KEY
+ENV STRIPE_API_TEST_KEY $STRIPE_API_TEST_KEY
+
 # collectsttic has to be run during build-time. If it is run at run-time static files will not
 # persist on Heroku. However, at build-time settings.py doesn't have access to the django secret
 # key stored as an env on heroku. To get around this issue the settings.py file uses a default
