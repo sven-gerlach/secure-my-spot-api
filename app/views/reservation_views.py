@@ -21,6 +21,7 @@ from utils.send_mail import (
 # import custom modules
 from ..models.parking_spot import ParkingSpot
 from ..models.reservation import Reservation
+from ..payments.stripe import create_payment_intent
 from ..serializers.reservation_serializer import ReservationSerializer
 from ..tasks.tasks import unreserve_parking_spot
 
@@ -176,7 +177,9 @@ class ReservationViewUnauth(APIView):
     def post(self, request, parking_spot_id):
         """
         Create a new reservation resource associated with an unauthenticated user's email and a
-        parking spot
+        parking spot. Once the reservation resource is created, create a Stripe payment intent.
+        Add the payment intent id to the reservation resource. Set the parking spot status to
+        reserved. Return the reservation resource to the client.
         """
 
         # setup the components that make up the data object that needs serializing
@@ -202,7 +205,19 @@ class ReservationViewUnauth(APIView):
         # otherwise save the new reservation
         reservation = serializer.save()
 
-        # and set the related parking spot status to reserved=true
+        # create Stripe payment intent
+        payment_intent_id, client_secret = create_payment_intent(
+            reservation_id=reservation.id,
+            user_id=reservation.email
+        )
+
+        # add payment_intent_id to reservation resource
+        data = {"stripe_payment_intent_id": payment_intent_id}
+        serializer = ReservationSerializer(reservation, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # set the related parking spot status to reserved=true
         parking_spot = get_object_or_404(ParkingSpot, id=parking_spot_id)
         parking_spot.reserved = True
         parking_spot.save()
@@ -214,16 +229,13 @@ class ReservationViewUnauth(APIView):
             eta=time_now + time_delta,
         )
 
-        # save key / value pair of reservation_id / task_id
+        # save key / value pair of reservation_id / task_id to Redis cache
         cache.set(serializer.data["id"], task.task_id)
 
         # todo: queue a task which sends an email 5min prior to the expiry of the reservation,
         #  providing the user with a link which allows them to extend the reservation
 
-        # declare the response variable
-        response = serializer.data
-
-        # send confirmation email to user
+        # send reservation confirmation email to user
         # pass datetime format instead of stringified time from response object
         send_reservation_confirmation_mail(
             user_mail_address=reservation.email,
@@ -234,7 +246,10 @@ class ReservationViewUnauth(APIView):
             end_time=reservation.end_time,
         )
 
-        # send the response
+        # declare the response variable
+        response = serializer.data
+
+        # send the response to the client
         return Response(data=response)
 
     def get(self, request, reservation_id, email):
@@ -307,7 +322,7 @@ class ReservationViewUnauth(APIView):
         # save reservation_id / task_id key / value pair in Redis cache
         cache.set(serializer.data["id"], task.task_id)
 
-        # send a email to user, confirming amended reservation details
+        # send email to user, confirming amended reservation details
         send_reservation_amendment_confirmation_mail(
             user_mail_address=reservation.email,
             parking_spot_id=reservation.parking_spot.id,
