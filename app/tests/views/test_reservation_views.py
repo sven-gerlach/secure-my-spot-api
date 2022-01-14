@@ -19,7 +19,7 @@ class TestReservationViews:
     # monkey-patching the Stripe's create_payment_intent function prevents setting up payment
     # intents for every test run
     @mock.patch(
-        "app.views.reservation_views.stripe.create_payment_intent",
+        "app.views.reservation_views.create_payment_intent",
         return_value=("id", "client_secret"),
     )
     def test_create_reservation_view_unauth_user(
