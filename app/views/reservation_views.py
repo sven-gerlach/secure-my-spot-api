@@ -21,7 +21,7 @@ from utils.send_mail import (
 # import custom modules
 from ..models.parking_spot import ParkingSpot
 from ..models.reservation import Reservation
-from ..payments.stripe import create_payment_intent
+from ..payments import stripe
 from ..serializers.reservation_serializer import ReservationSerializer
 from ..tasks.tasks import unreserve_parking_spot
 
@@ -206,7 +206,7 @@ class ReservationViewUnauth(APIView):
         reservation = serializer.save()
 
         # create Stripe payment intent
-        payment_intent_id, client_secret = create_payment_intent(
+        payment_intent_id, client_secret = stripe.create_payment_intent(
             reservation_id=reservation.id, user_id=reservation.email
         )
 
