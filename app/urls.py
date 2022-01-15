@@ -9,12 +9,12 @@ from .views.parking_spot_views import (
     GetAvailableParkingSpotsFilterView,
     GetAvailableParkingSpotsView,
 )
+from .views.payment_views import PaymentView
 from .views.reservation_views import (
     GetExpiredReservationsAuth,
     ReservationViewAuth,
     ReservationViewUnauth,
 )
-from .views.payment_views import PaymentView
 
 urlpatterns = [
     # auth routes
@@ -84,5 +84,5 @@ urlpatterns = [
         "create-payment-intent/",
         PaymentView.as_view(),
         name="api-create-payment-intent",
-    )
+    ),
 ]

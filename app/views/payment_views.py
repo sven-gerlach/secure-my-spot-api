@@ -2,11 +2,15 @@
 Module for creating Stripe payment intent
 """
 
+import os
+
+import stripe
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+
 # Import Django / rest-framework modules
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
 
 # Import Django models / serializers
 from app.models.reservation import Reservation
@@ -14,9 +18,6 @@ from app.serializers.reservation_serializer import ReservationSerializer
 
 # Import utility modules
 from utils.payments import get_total_reservation_fee
-import stripe
-import os
-
 
 # set secret test API key
 stripe.api_key = os.getenv("STRIPE_API_TEST_KEY")
@@ -53,7 +54,7 @@ class PaymentView(APIView):
             # send a response signalling the authorisation issue
             return JsonResponse(
                 {"authorisation": "The provided email and reservation_id do not match"},
-                status=401
+                status=401,
             )
 
         # add payment_intent_id to reservation resource

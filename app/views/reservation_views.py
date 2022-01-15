@@ -12,6 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from secure_my_spot.celeryconf import app
+
 # import utils
 from utils.send_mail import (
     send_reservation_amendment_confirmation_mail,
@@ -21,10 +23,8 @@ from utils.send_mail import (
 # import custom modules
 from ..models.parking_spot import ParkingSpot
 from ..models.reservation import Reservation
-from ..payments.stripe import create_payment_intent
 from ..serializers.reservation_serializer import ReservationSerializer
 from ..tasks.tasks import unreserve_parking_spot
-from secure_my_spot.celeryconf import app
 
 
 class ReservationViewAuth(APIView):
@@ -146,7 +146,7 @@ class ReservationViewAuth(APIView):
         # todo: this feature does not work at the moment because the worker gets shut down
         #  automatically by Heroku
         # todo: retry with updated import statement
-        # source: https://stackoverflow.com/questions/8920643/cancel-an-already-executing-task-with-celery
+        # https://stackoverflow.com/questions/8920643/cancel-an-already-executing-task-with-celery
         # app.control.revoke(task_id=task_id, terminate=True)
 
         # set new task with new end_time param
