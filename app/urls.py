@@ -14,6 +14,7 @@ from .views.reservation_views import (
     ReservationViewAuth,
     ReservationViewUnauth,
 )
+from .views.payment_views import PaymentView
 
 urlpatterns = [
     # auth routes
@@ -78,4 +79,10 @@ urlpatterns = [
         ReservationViewUnauth.as_view(),
         name="api-update-reservation-unauth",
     ),
+    # setup a new Stripe payment intent
+    path(
+        "create-payment-intent/",
+        PaymentView.as_view(),
+        name="api-create-payment-intent",
+    )
 ]

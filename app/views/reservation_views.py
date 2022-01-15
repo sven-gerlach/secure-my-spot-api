@@ -24,6 +24,7 @@ from ..models.reservation import Reservation
 from ..payments.stripe import create_payment_intent
 from ..serializers.reservation_serializer import ReservationSerializer
 from ..tasks.tasks import unreserve_parking_spot
+from secure_my_spot.celeryconf import app
 
 
 class ReservationViewAuth(APIView):
@@ -144,6 +145,8 @@ class ReservationViewAuth(APIView):
         # revoke existing task to reset availability of reserved parking spot
         # todo: this feature does not work at the moment because the worker gets shut down
         #  automatically by Heroku
+        # todo: retry with updated import statement
+        # source: https://stackoverflow.com/questions/8920643/cancel-an-already-executing-task-with-celery
         # app.control.revoke(task_id=task_id, terminate=True)
 
         # set new task with new end_time param
@@ -155,7 +158,7 @@ class ReservationViewAuth(APIView):
         # save reservation_id / task_id key / value pair in Redis cache
         cache.set(serializer.data["id"], task.task_id)
 
-        # send a email to user, confirming amended reservation details
+        # send email to user, confirming amended reservation details
         send_reservation_amendment_confirmation_mail(
             user_mail_address=reservation.email,
             parking_spot_id=reservation.parking_spot.id,
@@ -205,17 +208,6 @@ class ReservationViewUnauth(APIView):
         # otherwise save the new reservation
         reservation = serializer.save()
 
-        # create Stripe payment intent
-        payment_intent_id, client_secret = create_payment_intent(
-            reservation_id=reservation.id, user_id=reservation.email
-        )
-
-        # add payment_intent_id to reservation resource
-        data = {"stripe_payment_intent_id": payment_intent_id}
-        serializer = ReservationSerializer(reservation, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
         # set the related parking spot status to reserved=true
         parking_spot = get_object_or_404(ParkingSpot, id=parking_spot_id)
         parking_spot.reserved = True
@@ -233,6 +225,9 @@ class ReservationViewUnauth(APIView):
 
         # todo: queue a task which sends an email 5min prior to the expiry of the reservation,
         #  providing the user with a link which allows them to extend the reservation
+
+        # todo: queue a task which deletes this reservation resource in [5] minutes. This task will
+        #  need to be deleted if payment for the reservation has been processed successfully.
 
         # send reservation confirmation email to user
         # pass datetime format instead of stringified time from response object
@@ -305,12 +300,12 @@ class ReservationViewUnauth(APIView):
         serializer.save()
 
         # retrieve task_id associated with reservation_id from Redis cache
-        cache.get(serializer.data["id"])
+        task_id = cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
         # todo: this feature does not work at the moment because the worker gets shut down
         #  automatically by Heroku
-        # app.control.revoke(task_id=task_id)
+        app.control.revoke(task_id=task_id)
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
