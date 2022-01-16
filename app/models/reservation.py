@@ -52,7 +52,7 @@ class Reservation(models.Model):
     """
 
     # todo: set reservation id as a UUID instead of using the generically created id or create a
-    # separate reservation_id
+    #  separate reservation_id
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     email = models.EmailField(help_text="email of the user")
@@ -60,9 +60,14 @@ class Reservation(models.Model):
     rate = models.DecimalField(
         help_text="hourly rate in USD with 2 decimals", decimal_places=2, max_digits=5
     )
-    paid = models.BooleanField(default=False)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    paid = models.BooleanField(default=False)
+    stripe_payment_intent_id = models.CharField(
+        max_length=200,
+        help_text="Stripe payment intent id issued by Stripe for setting up a payment intent",
+        blank=True,
+    )
 
     def __str__(self):
         """

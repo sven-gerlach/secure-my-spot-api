@@ -9,6 +9,7 @@ from .views.parking_spot_views import (
     GetAvailableParkingSpotsFilterView,
     GetAvailableParkingSpotsView,
 )
+from .views.payment_views import PaymentView
 from .views.reservation_views import (
     GetExpiredReservationsAuth,
     ReservationViewAuth,
@@ -77,5 +78,11 @@ urlpatterns = [
         "update-reservation-unauth/<int:reservation_id>/<str:email>/",
         ReservationViewUnauth.as_view(),
         name="api-update-reservation-unauth",
+    ),
+    # setup a new Stripe payment intent
+    path(
+        "create-payment-intent/",
+        PaymentView.as_view(),
+        name="api-create-payment-intent",
     ),
 ]
