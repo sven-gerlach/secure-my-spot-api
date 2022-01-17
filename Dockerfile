@@ -36,6 +36,7 @@ RUN pipenv install --system --deploy --pre
 
 # copy project
 COPY . .
+COPY /celery /var/run/
 
 # collectsttic has to be run during build-time. If it is run at run-time static files will not
 # persist on Heroku. However, at build-time settings.py doesn't have access to the django secret
