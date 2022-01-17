@@ -20,4 +20,4 @@ run:
   celery-worker:
     image: web
     command:
-      - celery -A secure_my_spot.celeryconf worker --loglevel=INFO --statedb=/var/run/celery/worker.state
+      - celery -A secure_my_spot.celeryconf worker --loglevel=INFO
