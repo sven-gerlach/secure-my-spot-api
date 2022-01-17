@@ -12,9 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from secure_my_spot.celeryconf import app
-
 # import utils
+# from secure_my_spot.celeryconf import app
 from utils.send_mail import (
     send_reservation_amendment_confirmation_mail,
     send_reservation_confirmation_mail,
@@ -299,7 +298,7 @@ class ReservationViewUnauth(APIView):
         serializer.save()
 
         # retrieve task_id associated with reservation_id from Redis cache
-        task_id = cache.get(serializer.data["id"])
+        cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
         # todo: this feature does not work at the moment because the worker gets shut down
