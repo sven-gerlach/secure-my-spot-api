@@ -258,7 +258,7 @@ class ReservationViewUnauth(APIView):
         if reservation.user:
             return Response(
                 {
-                    "detail": "This reservation belongs to an authenticated account. "
+                    "error": "This reservation belongs to an authenticated account. "
                     "Please login to review this reservation."
                 },
                 status=401,

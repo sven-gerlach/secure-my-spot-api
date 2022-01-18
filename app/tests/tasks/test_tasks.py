@@ -21,9 +21,6 @@ class TestTasks:
         parking_spot_id = reservation_unauth_user.parking_spot.id
         reservation_id = reservation_unauth_user.id
 
-        print("parking_spot_id: ", parking_spot_id)
-        print("reservation_id: ", reservation_id)
-
         # call method to be tested
         unreserve_parking_spot(parking_spot_id, reservation_id)
 
