@@ -84,7 +84,9 @@ class TestSignUpView:
 
         # call the view with the request item
         response = SignUpView.as_view()(request)
-        # response.render()
+
+        # render response
+        response.render()
 
         # test assertions
         assert response.status_code == 400
@@ -108,7 +110,9 @@ class TestSignUpView:
 
         # call the view with the request item
         response = SignUpView.as_view()(request)
-        # response.render()
+
+        # render response
+        response.render()
 
         # test assertions
         assert response.status_code == 400
@@ -139,6 +143,9 @@ class TestSignUpView:
         # call the view with the request item
         response = SignUpView.as_view()(request)
 
+        # render response
+        response.render()
+
         # test assertions
         assert response.status_code == 400
         assert json.loads(response.content) == {"password": ["This field is required."]}
@@ -165,7 +172,9 @@ class TestSignUpView:
 
         # test assertions
         assert response.status_code == 400
-        assert json.loads(response.content) == {"password": ["Passwords don't match."]}
+        assert json.loads(response.content) == {
+            "password_error": ["Passwords do not match"]
+        }
 
     def test_signupview_user_already_exists(self):
         """Missing email http response code of 400 and data for email=["user with this email
@@ -192,6 +201,9 @@ class TestSignUpView:
 
         # call the sign-up view with the request item
         response = SignUpView.as_view()(request)
+
+        # render the response first
+        response.render()
 
         # test assertions
         assert response.status_code == 400
@@ -435,7 +447,7 @@ class TestChangePw:
         # test assertions
         assert response.status_code == 401
         assert json.loads(response.content) == {
-            "detail": "Invalid token header. No credentials " "provided."
+            "detail": "Invalid token header. No credentials provided."
         }
 
     def test_changepwview_passwords_dont_match(self):
@@ -479,7 +491,9 @@ class TestChangePw:
 
         # test assertions
         assert response.status_code == 400
-        assert json.loads(response.content) == {"detail": "Passwords don't match"}
+        assert json.loads(response.content) == {
+            "password_error": "Passwords do not match"
+        }
 
     def test_changepwview_missing_new_passwords(self):
         """
@@ -519,4 +533,6 @@ class TestChangePw:
 
         # test assertions
         assert response.status_code == 400
-        assert json.loads(response.content) == {"detail": "No new passwords provided"}
+        assert json.loads(response.content) == {
+            "password_error": "No new passwords provided"
+        }

@@ -35,17 +35,32 @@ class SignUpView(APIView):
         # if password_confirmation does not match the provided password, return 400 http error
         # with a meaningful error message
         if data.get("password") != data.get("password_confirmation"):
-            return JsonResponse({"password": ["Passwords don't match."]}, status=400)
+            return JsonResponse(
+                {"password_error": ["Passwords do not match"]}, status=400
+            )
 
         # serialize data provided and create a new user object
         serializer = UserSerializer(data=data)
 
         # verify that new user object is valid and save the new user to the database if it is or
         # return http status 400 with error message otherwise
-        if serializer.is_valid():
-            serializer.save()
-            return Response(status=201)
-        return JsonResponse(serializer.errors, status=400)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # retrieve / create token
+        serializer = AuthTokenSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data["user"]
+        token, created = Token.objects.get_or_create(user=user)
+
+        if not created:
+            # see post method in SignInView for more detail
+            token.delete()
+            token = Token.objects.create(user=user)
+            token.save()
+            user.save(update_fields=["last_login"])
+
+        return Response({"email": user.email, "token": token.key}, status=201)
 
 
 class SignInView(ObtainAuthToken):
@@ -108,6 +123,10 @@ class ChangePw(APIView):
                 user.save()
                 return Response(status=204)
             else:
-                return JsonResponse({"detail": "Passwords don't match"}, status=400)
+                return JsonResponse(
+                    {"password_error": "Passwords do not match"}, status=400
+                )
         else:
-            return JsonResponse({"detail": "No new passwords provided"}, status=400)
+            return JsonResponse(
+                {"password_error": "No new passwords provided"}, status=400
+            )
