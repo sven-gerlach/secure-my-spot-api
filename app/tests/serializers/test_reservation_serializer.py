@@ -134,7 +134,7 @@ class TestReservationSerializer:
         )
 
         # assertions
-        assert serializer.is_valid() is False
+        assert serializer.is_valid() is True
 
     def test_validate_parking_spot_method_unavailable(self, user, parking_spot):
         """

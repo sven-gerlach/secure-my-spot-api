@@ -117,9 +117,15 @@ class ChangePw(APIView):
         """
         user = request.user
         data = request.data["credentials"]
-        if data["password"] and data["password_confirmation"]:
-            if data.get("password") == data.get("password_confirmation"):
-                user.set_password(data["password"])
+
+        # confirm that user is correctly authenticated
+        serializer = AuthTokenSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+
+        # validate new password
+        if data["new_password"] and data["new_password_confirmed"]:
+            if data.get("new_password") == data.get("new_password_confirmed"):
+                user.set_password(data["new_password"])
                 user.save()
                 return Response(status=204)
             else:

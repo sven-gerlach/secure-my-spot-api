@@ -62,7 +62,7 @@ class ReservationSerializer(serializers.ModelSerializer):
                 )
         else:
             if attrs.get("end_time"):
-                if attrs["end_time"] <= self.instance.start_time:
+                if attrs["end_time"] < self.instance.start_time:
                     raise serializers.ValidationError(
                         "The end_time must be strictly greater / later than the start_time"
                     )

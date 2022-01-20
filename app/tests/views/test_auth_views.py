@@ -418,8 +418,10 @@ class TestChangePw:
             reverse("api-change-pw"),
             {
                 "credentials": {
-                    "password": "a new password",
-                    "password_confirmation": "a new password",
+                    "email": credentials["credentials"]["email"],
+                    "password": credentials["credentials"]["password"],
+                    "new_password": "a new password",
+                    "new_password_confirmed": "a new password",
                 }
             },
             format="json",
@@ -482,8 +484,10 @@ class TestChangePw:
             reverse("api-change-pw"),
             {
                 "credentials": {
-                    "password": "a new password",
-                    "password_confirmation": "a new different password",
+                    "email": credentials["credentials"]["email"],
+                    "password": credentials["credentials"]["password"],
+                    "new_password": "a new password",
+                    "new_password_confirmed": "a new different password",
                 }
             },
             format="json",
@@ -527,7 +531,14 @@ class TestChangePw:
         client.credentials(HTTP_AUTHORIZATION="TOKEN " + f"{token_obj.key}")
         response = client.patch(
             reverse("api-change-pw"),
-            {"credentials": {"password": "", "password_confirmation": ""}},
+            {
+                "credentials": {
+                    "email": credentials["credentials"]["email"],
+                    "password": credentials["credentials"]["password"],
+                    "new_password": "",
+                    "new_password_confirmed": "",
+                }
+            },
             format="json",
         )
 
