@@ -246,6 +246,8 @@ LOGGING = {
 }
 
 # Celery / RabbitMQ / Redis settings
+CELERY_TASK_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json", "msgpack"]
 if os.getenv("ENV") == "development":
     # Celery settings
     # broker -> Rabbitmq
