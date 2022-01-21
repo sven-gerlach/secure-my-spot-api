@@ -314,7 +314,7 @@ class ReservationViewUnauth(APIView):
         print("============= task.status =============")
         print(task.status)
         print("============= task.revoke() =============")
-        task.revoke()
+        task.revoke(wait=False)
         print("============= task.result =============")
         print(task.result)
         print("============= task.state =============")
