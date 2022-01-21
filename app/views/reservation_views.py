@@ -298,12 +298,29 @@ class ReservationViewUnauth(APIView):
         serializer.save()
 
         # retrieve task_id associated with reservation_id from Redis cache
-        cache.get(serializer.data["id"])
+        task_id = cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
         # todo: this feature does not work at the moment because the worker gets shut down
         #  automatically by Heroku
         # app.control.revoke(task_id=task_id)
+        task = unreserve_parking_spot.AsyncResult(task_id)
+        print("============= task object =============")
+        print(dir(task))
+        print("============= task.result =============")
+        print(task.result)
+        print("============= task.state =============")
+        print(task.state)
+        print("============= task.status =============")
+        print(task.status)
+        print("============= task.revoke() =============")
+        task.revoke()
+        print("============= task.result =============")
+        print(task.result)
+        print("============= task.state =============")
+        print(task.state)
+        print("============= task.status =============")
+        print(task.status)
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
