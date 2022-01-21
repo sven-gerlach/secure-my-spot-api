@@ -298,29 +298,31 @@ class ReservationViewUnauth(APIView):
         serializer.save()
 
         # retrieve task_id associated with reservation_id from Redis cache
-        task_id = cache.get(serializer.data["id"])
+        cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
         # todo: this feature does not work at the moment because the worker gets shut down
         #  automatically by Heroku
+        # 1) this is the direct way
         # app.control.revoke(task_id=task_id)
-        task = unreserve_parking_spot.AsyncResult(task_id)
-        print("============= task object =============")
-        print(dir(task))
-        print("============= task.result =============")
-        print(task.result)
-        print("============= task.state =============")
-        print(task.state)
-        print("============= task.status =============")
-        print(task.status)
-        print("============= task.revoke() =============")
-        task.revoke(terminate=True, wait=True, timeout=10)
-        print("============= task.result =============")
-        print(task.result)
-        print("============= task.state =============")
-        print(task.state)
-        print("============= task.status =============")
-        print(task.status)
+        # 2) task.revoke() actually invokes app.control.revoke()
+        # task = unreserve_parking_spot.AsyncResult(task_id)
+        # print("============= task object =============")
+        # print(dir(task))
+        # print("============= task.result =============")
+        # print(task.result)
+        # print("============= task.state =============")
+        # print(task.state)
+        # print("============= task.status =============")
+        # print(task.status)
+        # print("============= task.revoke() =============")
+        # task.revoke(terminate=True, wait=True, timeout=10)
+        # print("============= task.result =============")
+        # print(task.result)
+        # print("============= task.state =============")
+        # print(task.state)
+        # print("============= task.status =============")
+        # print(task.status)
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
