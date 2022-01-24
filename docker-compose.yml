@@ -35,7 +35,7 @@ services:
     # todo: auto-reload should not be used for production
     # command: python manage.py celery_autoload
     # statedb: https://docs.celeryproject.org/en/stable/userguide/workers.html#persistent-revokes
-    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
+    command: celery -A secure_my_spot.celeryconf worker --concurrency=1 --loglevel=INFO
     depends_on:
       - db
       - broker
