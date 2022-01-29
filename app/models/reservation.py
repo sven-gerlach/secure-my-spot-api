@@ -63,9 +63,9 @@ class Reservation(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     paid = models.BooleanField(default=False)
-    stripe_payment_intent_id = models.CharField(
+    stripe_setup_intent_id = models.CharField(
         max_length=200,
-        help_text="Stripe payment intent id issued by Stripe for setting up a payment intent",
+        help_text="issued by Stripe for setting up a setup intent",
         blank=True,
     )
 

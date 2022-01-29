@@ -20,7 +20,7 @@ class TestParkingSpotModel:
     A test suite for testing the reservation model
     """
 
-    def test_create_valid_reservation_unauth_user(self, reservation_unauth_user):
+    def test_create_valid_reservation_unauth_user(self, reservation_unauth):
         # assertions
         assert Reservation.objects.count() == 1
         assert ParkingSpot.objects.count() == 1
@@ -43,29 +43,27 @@ class TestParkingSpotModel:
         # assertions
         assert reservation.user is None
 
-    def test_delete_foreign_key_parking_spot(self, reservation_unauth_user):
+    def test_delete_foreign_key_parking_spot(self, reservation_unauth):
         # delete the parking spot instance
-        parking_spot = ParkingSpot.objects.get(
-            id=reservation_unauth_user.parking_spot.id
-        )
+        parking_spot = ParkingSpot.objects.get(id=reservation_unauth.parking_spot.id)
 
         with pytest.raises(ProtectedError):
             parking_spot.delete()
 
-    def test_method__str__(self, reservation_unauth_user):
+    def test_method__str__(self, reservation_unauth):
         expiration_time = "{:02d}:{:02d}:{:02d}".format(
-            reservation_unauth_user.end_time.hour,
-            reservation_unauth_user.end_time.minute,
-            reservation_unauth_user.end_time.second,
+            reservation_unauth.end_time.hour,
+            reservation_unauth.end_time.minute,
+            reservation_unauth.end_time.second,
         )
 
         # assertions
         assert (
-            reservation_unauth_user.__str__()
-            == f"Reservation {reservation_unauth_user.id} for parking spot "
-            f"{reservation_unauth_user.parking_spot.id}, associated with user "
-            f"{reservation_unauth_user.email}, expires at {expiration_time}"
+            reservation_unauth.__str__()
+            == f"Reservation {reservation_unauth.id} for parking spot "
+            f"{reservation_unauth.parking_spot.id}, associated with user "
+            f"{reservation_unauth.email}, expires at {expiration_time}"
         )
 
-    def test_method_duration(self, reservation_unauth_user):
-        assert reservation_unauth_user.duration == 10
+    def test_method_duration(self, reservation_unauth):
+        assert reservation_unauth.duration == 10

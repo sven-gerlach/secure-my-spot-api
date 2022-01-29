@@ -25,7 +25,7 @@ class ReservationSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "paid",
-            "stripe_payment_intent_id",
+            "stripe_setup_intent_id",
         ]
 
     def create(self, validated_data):
@@ -40,8 +40,8 @@ class ReservationSerializer(serializers.ModelSerializer):
         """
         instance.paid = validated_data.get("paid", instance.paid)
         instance.end_time = validated_data.get("end_time", instance.end_time)
-        instance.stripe_payment_intent_id = validated_data.get(
-            "stripe_payment_intent_id", instance.stripe_payment_intent_id
+        instance.stripe_setup_intent_id = validated_data.get(
+            "stripe_setup_intent_id", instance.stripe_setup_intent_id
         )
         instance.save()
         return instance

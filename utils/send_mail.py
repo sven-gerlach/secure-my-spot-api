@@ -7,16 +7,17 @@ import pytz
 from django.core.mail import send_mail
 from decimal import Decimal
 from app.models.reservation import Reservation
-from utils.payments import get_total_reservation_fee
+from utils.payments import get_total_reservation_fee, get_stripe_payment_method_object
 
 
 def send_reservation_confirmation_mail(
         user_mail_address: str,
-        parking_spot_id: str,
+        parking_spot_id: int,
         rate: Decimal,
         reservation_id: float,
         start_time: datetime,
-        end_time: datetime
+        end_time: datetime,
+        last4card: str,
 ):
     """
     Send an email to the user, confirming their reservation.
@@ -49,13 +50,13 @@ def send_reservation_confirmation_mail(
     Parking Spot ID: {parking_spot_id}
     Reservation ID: {reservation_id}
     Rate / hour (USD): {rate}
-    Start Time: {start_time_est.strftime(fmt)}
-    End Time: {end_time_est.strftime(fmt)}
+    Start Time*: {start_time_est.strftime(fmt)}
+    End Time*: {end_time_est.strftime(fmt)}
     Reservation Fee (USD): {reservation_fee}
-    Payment Details: [xxxx-xxxx-xxxx-1234]
+    Payment Details: xxxx-xxxx-xxxx-{last4card}
     Payment Processed: not yet
     
-    Note: all times are New York Time (EST)
+    * New York Time (EST)
     
     Kindest regards,
     
@@ -132,12 +133,15 @@ def send_reservation_has_ended_mail(reservation_id):
     reservation = Reservation.objects.get(id=reservation_id)
     reservation_fee = get_total_reservation_fee(reservation_id)
 
+    # retrieve payment method associated with this reservation
+    payment_method = get_stripe_payment_method_object(reservation_id)
+
     # todo: add card details to email message and personalise email for authenticated users
     message = f"""
     Dear User,
     
     Your reservation of parking spot {reservation.parking_spot.id} has expired. The total 
-    reservation fee of USD {reservation_fee} will be charged to the card ending in [xxxx]
+    reservation fee of USD {reservation_fee} will be charged to the card ending in {payment_method.card["last4"]}
     immediately.
     
     Thank you for your business. We look forward to helping you find parking in New York City soon.

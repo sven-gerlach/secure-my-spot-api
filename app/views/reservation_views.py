@@ -95,6 +95,7 @@ class ReservationViewAuth(APIView):
             reservation_id=response["id"],
             start_time=data["start_time"],
             end_time=data["end_time"],
+            last4card="[to come]",
         )
 
         # send the response
@@ -168,6 +169,24 @@ class ReservationViewAuth(APIView):
 
         return Response(data=serializer.data, status=200)
 
+    def delete(self, request, reservation_id):
+        """
+        This end-point is called if a reservation was made but the payment process was not
+        completed on the front-end side, usually because the user navigated away from the
+        Stripe payments page or the payments process failed in another way.
+        """
+
+        reservation = get_object_or_404(
+            Reservation, id=reservation_id, email=request.user.email
+        )
+        # reset parking spot availability
+        reservation.parking_spot.reserved = False
+
+        # delete reservation
+        reservation.delete()
+
+        return Response(status=204)
+
 
 class ReservationViewUnauth(APIView):
     """
@@ -204,7 +223,7 @@ class ReservationViewUnauth(APIView):
         serializer.is_valid(raise_exception=True)
 
         # otherwise save the new reservation
-        reservation = serializer.save()
+        serializer.save()
 
         # set the related parking spot status to reserved=true
         parking_spot = get_object_or_404(ParkingSpot, id=parking_spot_id)
@@ -220,23 +239,6 @@ class ReservationViewUnauth(APIView):
 
         # save key / value pair of reservation_id / task_id to Redis cache
         cache.set(serializer.data["id"], task.task_id)
-
-        # todo: queue a task which sends an email 5min prior to the expiry of the reservation,
-        #  providing the user with a link which allows them to extend the reservation
-
-        # todo: queue a task which deletes this reservation resource in [5] minutes. This task will
-        #  need to be deleted if payment for the reservation has been processed successfully.
-
-        # send reservation confirmation email to user
-        # pass datetime format instead of stringified time from response object
-        send_reservation_confirmation_mail(
-            user_mail_address=reservation.email,
-            parking_spot_id=reservation.parking_spot.id,
-            rate=reservation.rate,
-            reservation_id=reservation.id,
-            start_time=reservation.start_time,
-            end_time=reservation.end_time,
-        )
 
         # declare the response variable
         response = serializer.data
@@ -298,7 +300,7 @@ class ReservationViewUnauth(APIView):
         serializer.save()
 
         # retrieve task_id associated with reservation_id from Redis cache
-        task_id = cache.get(serializer.data["id"])
+        cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
         # todo: this feature does not work at the moment because the worker gets shut down
@@ -306,23 +308,23 @@ class ReservationViewUnauth(APIView):
         # 1) this is the direct way
         # app.control.revoke(task_id=task_id)
         # 2) task.revoke() actually invokes app.control.revoke()
-        task = unreserve_parking_spot.AsyncResult(task_id)
-        print("============= task object =============")
-        print(dir(task))
-        print("============= task.result =============")
-        print(task.result)
-        print("============= task.state =============")
-        print(task.state)
-        print("============= task.status =============")
-        print(task.status)
-        print("============= task.revoke() =============")
-        print(task.revoke())
-        print("============= task.result =============")
-        print(task.result)
-        print("============= task.state =============")
-        print(task.state)
-        print("============= task.status =============")
-        print(task.status)
+        # task = unreserve_parking_spot.AsyncResult(task_id)
+        # print("============= task object =============")
+        # print(dir(task))
+        # print("============= task.result =============")
+        # print(task.result)
+        # print("============= task.state =============")
+        # print(task.state)
+        # print("============= task.status =============")
+        # print(task.status)
+        # print("============= task.revoke() =============")
+        # print(task.revoke())
+        # print("============= task.result =============")
+        # print(task.result)
+        # print("============= task.state =============")
+        # print(task.state)
+        # print("============= task.status =============")
+        # print(task.status)
 
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
@@ -334,17 +336,39 @@ class ReservationViewUnauth(APIView):
         cache.set(serializer.data["id"], task.task_id)
 
         # send email to user, confirming amended reservation details
-        send_reservation_amendment_confirmation_mail(
-            user_mail_address=reservation.email,
-            parking_spot_id=reservation.parking_spot.id,
-            rate=reservation.rate,
-            reservation_id=reservation.id,
-            start_time=reservation.start_time,
-            end_time=reservation.end_time,
-        )
+        # if end_time is within the next two minutes, do not send an amendment confirmation email,
+        # instead just rely on expiration email
+        if end_time - datetime.datetime.now() > datetime.timedelta(minutes=2):
+            send_reservation_amendment_confirmation_mail(
+                user_mail_address=reservation.email,
+                parking_spot_id=reservation.parking_spot.id,
+                rate=reservation.rate,
+                reservation_id=reservation.id,
+                start_time=reservation.start_time,
+                end_time=reservation.end_time,
+            )
 
         # return response to client
         return Response(data=serializer.data, status=200)
+
+    def delete(self, request, reservation_id, email):
+        """
+        This end-point is called if a reservation was made but the payment process was not
+        completed on the front-end side, usually because the user navigated away from the
+        Stripe payments page or the payments process failed in another way.
+        """
+
+        reservation = get_object_or_404(Reservation, id=reservation_id, email=email)
+
+        # reset parking spot availability
+        parking_spot = ParkingSpot.objects.get(id=reservation.parking_spot.id)
+        parking_spot.reserved = False
+        parking_spot.save()
+
+        # delete reservation
+        reservation.delete()
+
+        return Response(status=204)
 
 
 class GetExpiredReservationsAuth(APIView):

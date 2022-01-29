@@ -40,7 +40,7 @@ def parking_spot():
 
 
 @pytest.fixture
-def reservation_unauth_user():
+def reservation_unauth():
     """
     Create and return a reservation instance in form of a django query object. Note: this instance
     does not include a reference to a user instance. It does include a reference to a parking spot
