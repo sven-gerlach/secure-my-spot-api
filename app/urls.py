@@ -9,7 +9,7 @@ from .views.parking_spot_views import (
     GetAvailableParkingSpotsFilterView,
     GetAvailableParkingSpotsView,
 )
-from .views.payment_views import PaymentViewUnauth
+from .views.payment_views import PaymentViewAuth, PaymentViewUnauth
 from .views.reservation_views import (
     GetExpiredReservationsAuth,
     ReservationViewAuth,
@@ -91,17 +91,28 @@ urlpatterns = [
         ReservationViewUnauth.as_view(),
         name="api-delete-reservation-unauth",
     ),
-    # todo: create both payment routes for authorised users too
+    # setup a new Stripe SetupIntent for authenticated users
+    path(
+        "create-payment-intent-auth/<int:reservation_id>/",
+        PaymentViewAuth.as_view(),
+        name="api-create-payment-intent-auth",
+    ),
+    # send reservation email for authenticated users
+    path(
+        "confirm-successful-setup-intent-auth/<int:reservation_id>/",
+        PaymentViewAuth.as_view(),
+        name="api-confirm-successful-setup-intent-auth",
+    ),
     # setup a new Stripe SetupIntent for unauthenticated users
     path(
-        "create-payment-intent-unauth/",
+        "create-payment-intent-unauth/<int:reservation_id>/<str:email>/",
         PaymentViewUnauth.as_view(),
-        name="api-create-payment-intent",
+        name="api-create-payment-intent-unauth",
     ),
-    # send reservation email
+    # send reservation email for unauthenticated users
     path(
         "confirm-successful-setup-intent-unauth/<int:reservation_id>/<str:email>/",
         PaymentViewUnauth.as_view(),
-        name="api-confirm-successful-setup-intent",
+        name="api-confirm-successful-setup-intent-unauth",
     ),
 ]

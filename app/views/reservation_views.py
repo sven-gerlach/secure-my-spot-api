@@ -13,11 +13,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 # import utils
-# from secure_my_spot.celeryconf import app
-from utils.send_mail import (
-    send_reservation_amendment_confirmation_mail,
-    send_reservation_confirmation_mail,
-)
+from utils.payments import get_stripe_payment_method_object
+from utils.send_mail import send_reservation_amendment_confirmation_mail
 
 # import custom modules
 from ..models.parking_spot import ParkingSpot
@@ -79,24 +76,9 @@ class ReservationViewAuth(APIView):
         # save key / value pair of reservation_id / task_id
         cache.set(serializer.data["id"], task.task_id)
 
-        # todo: queue a task which sends an email 5min prior to the expiry of the reservation,
-        #  providing the user with a link which allows them to extend the reservation
-
         # declare the response variable such that the email or user key can be removed before
         # sending a JSON response
         response = serializer.data
-
-        # send confirmation email to user
-        # pass datetime format instead of stringified time from response object
-        send_reservation_confirmation_mail(
-            user_mail_address=response["email"],
-            parking_spot_id=response["parking_spot"],
-            rate=rate,
-            reservation_id=response["id"],
-            start_time=data["start_time"],
-            end_time=data["end_time"],
-            last4card="[to come]",
-        )
 
         # send the response
         return Response(data=response)
@@ -158,14 +140,21 @@ class ReservationViewAuth(APIView):
         cache.set(serializer.data["id"], task.task_id)
 
         # send email to user, confirming amended reservation details
-        send_reservation_amendment_confirmation_mail(
-            user_mail_address=reservation.email,
-            parking_spot_id=reservation.parking_spot.id,
-            rate=reservation.rate,
-            reservation_id=reservation.id,
-            start_time=reservation.start_time,
-            end_time=reservation.end_time,
-        )
+        # if end_time is within the next two minutes, do not send an amendment confirmation email,
+        # instead just rely on expiration email
+        if end_time - datetime.datetime.now() > datetime.timedelta(minutes=1):
+            payment_method = get_stripe_payment_method_object(reservation_id)
+
+            # send email to user, confirming amended reservation details
+            send_reservation_amendment_confirmation_mail(
+                user_mail_address=reservation.email,
+                parking_spot_id=reservation.parking_spot.id,
+                rate=reservation.rate,
+                reservation_id=reservation.id,
+                start_time=reservation.start_time,
+                end_time=reservation.end_time,
+                last4card=payment_method.card["last4"],
+            )
 
         return Response(data=serializer.data, status=200)
 
@@ -302,9 +291,7 @@ class ReservationViewUnauth(APIView):
         # retrieve task_id associated with reservation_id from Redis cache
         cache.get(serializer.data["id"])
 
-        # revoke existing task to reset availability of reserved parking spot
-        # todo: this feature does not work at the moment because the worker gets shut down
-        #  automatically by Heroku
+        # revoking existing task, using task.revoke() crashes the worker on Heroku
         # 1) this is the direct way
         # app.control.revoke(task_id=task_id)
         # 2) task.revoke() actually invokes app.control.revoke()
@@ -338,7 +325,8 @@ class ReservationViewUnauth(APIView):
         # send email to user, confirming amended reservation details
         # if end_time is within the next two minutes, do not send an amendment confirmation email,
         # instead just rely on expiration email
-        if end_time - datetime.datetime.now() > datetime.timedelta(minutes=2):
+        if end_time - datetime.datetime.now() > datetime.timedelta(minutes=1):
+            payment_method = get_stripe_payment_method_object(reservation.id)
             send_reservation_amendment_confirmation_mail(
                 user_mail_address=reservation.email,
                 parking_spot_id=reservation.parking_spot.id,
@@ -346,6 +334,7 @@ class ReservationViewUnauth(APIView):
                 reservation_id=reservation.id,
                 start_time=reservation.start_time,
                 end_time=reservation.end_time,
+                last4card=payment_method.card["last4"],
             )
 
         # return response to client

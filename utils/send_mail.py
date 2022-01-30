@@ -39,24 +39,22 @@ def send_reservation_confirmation_mail(
     end_time_est = end_time.astimezone(est_tz)
     fmt = "%H:%M"
 
-    # todo: add card details and personalise email for authenticated users
     message = f"""
     Dear User,
     
     This email confirms your reservation of a parking spot in New York City. Please note the 
-    reservation details below. We will send you another email 5min before your reservation 
-    expires to remind you and to give you the option to extend your reservation.
+    reservation details below.
     
     Parking Spot ID: {parking_spot_id}
     Reservation ID: {reservation_id}
     Rate / hour (USD): {rate}
-    Start Time*: {start_time_est.strftime(fmt)}
-    End Time*: {end_time_est.strftime(fmt)}
+    Start Time: {start_time_est.strftime(fmt)}
+    End Time: {end_time_est.strftime(fmt)}
     Reservation Fee (USD): {reservation_fee}
     Payment Details: xxxx-xxxx-xxxx-{last4card}
     Payment Processed: not yet
     
-    * New York Time (EST)
+    Note: all times are New York Time (EST)
     
     Kindest regards,
     
@@ -75,9 +73,10 @@ def send_reservation_amendment_confirmation_mail(
         user_mail_address: str,
         parking_spot_id: str or int,
         rate: Decimal,
-        reservation_id: float,
+        reservation_id: int,
         start_time: datetime,
-        end_time: datetime
+        end_time: datetime,
+        last4card: str,
 ):
     """
     Send email to user confirming the amended reservation details
@@ -95,10 +94,7 @@ def send_reservation_amendment_confirmation_mail(
         Dear User,
 
         This email confirms your amended reservation of a parking spot in 
-        New York City. Please note the reservation details below. 
-        
-        We will send you another email 5min before your reservation expires 
-        to remind you and to give you the option to extend your reservation.
+        New York City. Please note the reservation details below.
 
         Parking Spot ID: {parking_spot_id}
         Reservation ID: {reservation_id}
@@ -106,7 +102,7 @@ def send_reservation_amendment_confirmation_mail(
         Start Time: {start_time_est.strftime(fmt)}
         End Time: {end_time_est.strftime(fmt)}
         Reservation Fee (USD): {reservation_fee}
-        Payment Details: [xxxx-xxxx-xxxx-1234]
+        Payment Details: xxxx-xxxx-xxxx-{last4card}
         Payment Processed: not yet
 
         Note: all times are New York Time (EST)
@@ -136,11 +132,10 @@ def send_reservation_has_ended_mail(reservation_id):
     # retrieve payment method associated with this reservation
     payment_method = get_stripe_payment_method_object(reservation_id)
 
-    # todo: add card details to email message and personalise email for authenticated users
     message = f"""
     Dear User,
     
-    Your reservation of parking spot {reservation.parking_spot.id} has expired. The total 
+    Your reservation of parking spot {reservation.parking_spot.id} has now ended. The total 
     reservation fee of USD {reservation_fee} will be charged to the card ending in {payment_method.card["last4"]}
     immediately.
     
@@ -152,7 +147,7 @@ def send_reservation_has_ended_mail(reservation_id):
     """
 
     send_mail(
-        subject="Reservation Expiration",
+        subject="Reservation Has Ended",
         message=message,
         from_email="Secure My Spot <donotreply@secure-my-spot.com>",
         recipient_list=[reservation.email]

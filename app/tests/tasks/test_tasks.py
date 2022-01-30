@@ -22,11 +22,6 @@ class TestTasks:
         parking_spot_id = reservation_unauth.parking_spot.id
         reservation_id = reservation_unauth.id
 
-        print("=========================================")
-        print(parking_spot_id)
-        print(reservation_id)
-        print("=========================================")
-
         # set parking spot reserved field to true
         parking_spot = ParkingSpot.objects.get(id=parking_spot_id)
         parking_spot.reserved = True
