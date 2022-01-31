@@ -119,7 +119,7 @@ support for PostgreSQL.
 
 ## Links
 ### Back-end
-- [Deployed app](https://secure-my-spot-api.herokuapp.com)
+- [Deployed app](https://secure-my-spot-api.herokuapp.com/admin/)
 - [Github repo](https://github.com/sven-gerlach/secure-my-spot-api)
 - [Kanban](https://github.com/sven-gerlach/secure-my-spot-api/projects/1)
 ### Front-end
