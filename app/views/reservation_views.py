@@ -90,7 +90,8 @@ class ReservationViewAuth(APIView):
         """
 
         active_reservations = Reservation.objects.filter(paid=False, user=request.user)
-        serializer = ReservationSerializer(active_reservations, many=True)
+        sorted_active_reservations = active_reservations.order_by("-start_time")
+        serializer = ReservationSerializer(sorted_active_reservations, many=True)
         return Response(serializer.data)
 
     def patch(self, request, reservation_id):
@@ -374,5 +375,6 @@ class GetExpiredReservationsAuth(APIView):
         """
 
         expired_reservations = Reservation.objects.filter(paid=True, user=request.user)
-        serializer = ReservationSerializer(expired_reservations, many=True)
+        sorted_expired_reservations = expired_reservations.order_by("-start_time")
+        serializer = ReservationSerializer(sorted_expired_reservations, many=True)
         return Response(serializer.data)
