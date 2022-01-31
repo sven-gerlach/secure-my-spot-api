@@ -251,6 +251,8 @@ CELERY_ACCEPT_CONTENT = ["json", "msgpack"]
 if os.getenv("ENV") == "development":
     # Celery settings
     # broker -> Rabbitmq
+    # development RabbitMQ monitor: http://localhost:15672/
+    # deployed RabbitMQ monitor: https://jaguar.rmq.cloudamqp.com/#/queues
     rabbit_user = os.getenv("RABBITMQ_DEFAULT_USER")
     rabbit_password = os.getenv("RABBITMQ_DEFAULT_PASS")
     CELERY_BROKER_URL = f"amqp://{rabbit_user}:{rabbit_password}@broker//"

@@ -89,7 +89,7 @@ class SignInView(ObtainAuthToken):
             # wouldn't update
             # source: https://code.djangoproject.com/ticket/22981
             user.save(update_fields=["last_login"])
-        return JsonResponse({"email": user.email, "token": token.key}, status=201)
+        return JsonResponse({"email": user.email, "token": token.key}, status=200)
 
 
 class SignOutView(APIView):
@@ -101,7 +101,7 @@ class SignOutView(APIView):
         """Delete the user's token."""
         token = request.auth
         token.delete()
-        return Response(status=200)
+        return Response(status=204)
 
 
 # todo: write tests for ChangePw view
