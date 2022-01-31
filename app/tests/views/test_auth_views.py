@@ -238,7 +238,7 @@ class TestSignInView:
         response = SignInView.as_view()(request)
 
         # test assertions
-        assert response.status_code == 201
+        assert response.status_code == 200
         assert json.loads(response.content) == {
             "email": user.email,
             "token": Token.objects.get(user=user).key,
@@ -352,7 +352,7 @@ class TestSignOutView:
         response = SignOutView.as_view()(request)
 
         # test assertions
-        assert response.status_code == 200
+        assert response.status_code == 204
         with pytest.raises(ObjectDoesNotExist):
             Token.objects.get(user=user)
 
