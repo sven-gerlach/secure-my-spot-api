@@ -28,45 +28,46 @@
   main branch are automatically deployed to Heroku
 
 ## Technologies used for the Front- and Back-End
-| Technology                | Front-End | Back-End |
-|:--------------------------|:---------:|:--------:|
-| Axios                     |     x     |          |
-| Black                     |           |    x     |
-| Bootstrap                 |     x     |          |
-| Camelcase                 |     x     |          |
-| Celery                    |           |    x     |
-| Coverage                  |     x     |    x     |
-| Crypto.js                 |     x     |          |
-| CSS/SCSS                  |     x     |          |
-| Dotenv                    |     x     |          |
-| Django                    |           |    x     |
-| Django Rest Framework     |           |    x     |
-| Factory Boy               |           |    x     |
-| Faker                     |     x     |    x     |
-| Flake8                    |           |    x     |
-| Google Maps Api           |     x     |          |
-| Gunicorn                  |           |    x     |
-| Heroku                    |           |    x     |
-| HTML5                     |     x     |          |
-| Husky                     |     x     |          |
-| iSort                     |           |    x     |
-| JavaScript                |     x     |          |
-| Jest                      |     x     |          |
-| Lodash                    |     x     |          |
-| Logrocket                 |     x     |          |
-| Luxon                     |     x     |          |
-| Model Bakery              |           |    x     |
-| Moment                    |     x     |          |
-| Pipenv                    |           |    x     |
-| PostgreSQL                |           |    x     |
-| Pytest                    |           |    x     |
-| Redis                     |           |    x     |
-| React                     |     x     |          |
-| React Router-Dom          |     x     |          |
-| TypeScript                |     x     |          |
-| Stripe Api                |     x     |    x     |
-| Styled Components         |     x     |          |
-| Whitenoise                |           |    x     |
+| Technology            | Front-End | Back-End |
+|:----------------------|:---------:|:--------:|
+| Axios                 |     x     |          |
+| Black                 |           |    x     |
+| Bootstrap             |     x     |          |
+| Camelcase             |     x     |          |
+| Celery                |           |    x     |
+| Coverage              |     x     |    x     |
+| Crypto.js             |     x     |          |
+| CSS/SCSS              |     x     |          |
+| Docker                |     x     |    x     |
+| Dotenv                |     x     |          |
+| Django                |           |    x     |
+| Django Rest Framework |           |    x     |
+| Factory Boy           |           |    x     |
+| Faker                 |     x     |    x     |
+| Flake8                |           |    x     |
+| Google Maps Api       |     x     |          |
+| Gunicorn              |           |    x     |
+| Heroku                |           |    x     |
+| HTML5                 |     x     |          |
+| Husky                 |     x     |          |
+| iSort                 |           |    x     |
+| JavaScript            |     x     |          |
+| Jest                  |     x     |          |
+| Lodash                |     x     |          |
+| Logrocket             |     x     |          |
+| Luxon                 |     x     |          |
+| Model Bakery          |           |    x     |
+| Moment                |     x     |          |
+| Pipenv                |           |    x     |
+| PostgreSQL            |           |    x     |
+| Pytest                |           |    x     |
+| Redis                 |           |    x     |
+| React                 |     x     |          |
+| React Router-Dom      |     x     |          |
+| TypeScript            |     x     |          |
+| Stripe Api            |     x     |    x     |
+| Styled Components     |     x     |          |
+| Whitenoise            |           |    x     |
 
 
 ## Set-up & Installation for Local Development
