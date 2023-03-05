@@ -22,35 +22,29 @@ from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Determine if we are on local dev or production
-if os.getenv("ENV") == "development":
-    # from the .env file as the database name
+environment = os.getenv('DOPPLER_CONFIG')
+if environment == "dev":
     DB = {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": os.environ.get("DB_PORT"),
+        "NAME": os.getenv('POSTGRES_DB'),
+        "USER": os.getenv('POSTGRES_USER'),
+        "PASSWORD": os.getenv('POSTGRES_PASSWORD'),
+        "HOST": 'db',
+        "PORT": '5432',
     }
     # Set debug to true
     DEBUG = True
-    # Only allow locally running client at port 3000 for CORS
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:3000",
-    ]
-else:
-    # If we are on production, use the dj_database_url package
-    # to locate the database based on Heroku setup
-    DATABASE_URL = os.environ.get("DATABASE_URL")
-
+elif environment == 'prod':
     # setting SSL required to True causes the test runner on Gitlab CI to fail
     DB = dj_database_url.config(conn_max_age=500)
     # Set debug to false
     DEBUG = False
-    # Only allow the `CLIENT_ORIGIN` for CORS
-    CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
+else:
+    raise Exception(f'{environment} is not an acceptable value for DOPPLER_CONFIG. It must be either "dev" or "prod".')
+
+# Only allow the `CLIENT_ORIGIN` for CORS
+CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -60,9 +54,12 @@ else:
 # this work-around allows collectstatic to work during container build when secret key is not yet
 # available
 # https://stackoverflow.com/questions/59719175/where-to-run-collectstatic-when-deploying-django-app-to-heroku-using-docker
-SECRET_KEY = os.environ.get("SECRET_KEY", default=get_random_secret_key())
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default=get_random_secret_key())
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 INSTALLED_APPS = [
     "django_extensions",
@@ -118,7 +115,7 @@ def show_toolbar(request):
     return True
 
 
-if os.getenv("ENV") == "development":
+if os.getenv("DOPPLER_CONFIG") == "dev":
     DEBUG_TOOLBAR_CONFIG = {
         "SHOW_TOOLBAR_CALLBACK": show_toolbar,
     }
@@ -195,7 +192,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 # https://devcenter.heroku.com/articles/django-assets
@@ -248,7 +244,7 @@ LOGGING = {
 # Celery / RabbitMQ / Redis settings
 CELERY_TASK_SERIALIZER = "json"
 CELERY_ACCEPT_CONTENT = ["json", "msgpack"]
-if os.getenv("ENV") == "development":
+if os.getenv("DOPPLER_CONFIG") == "dev":
     # Celery settings
     # broker -> Rabbitmq
     # development RabbitMQ monitor: http://localhost:15672/

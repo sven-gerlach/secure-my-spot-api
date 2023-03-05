@@ -8,7 +8,7 @@ version: "3.8"
 services:
   web:
     environment:
-      - ENV
+      - DOPPLER_CONFIG
 
       # db variables
       - DB_NAME
@@ -35,13 +35,11 @@ services:
 
   db:
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
 
   worker:
     environment:
-      - ENV
+      - DOPPLER_CONFIG
 
       # db variables
       - DB_NAME

@@ -37,19 +37,5 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
-# collectsttic has to be run during build-time. If it is run at run-time static files will not
-# persist on Heroku. However, at build-time settings.py doesn't have access to the django secret
-# key stored as an env on heroku. To get around this issue the settings.py file uses a default
-# secret key as a fall-back option.
-# https://stackoverflow.com/questions/59719175/where-to-run-collectstatic-when-deploying-django-app-to-heroku-using-docker
-RUN python manage.py collectstatic --noinput
-
-# Heroku strongly recommends running the container as a non-root user as that is exactly how
-# Heroku wil run the created container for deployment
-# However, setting a non-root user prevents access to GITHUB_WORKSPACE
-# https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
-#RUN adduser -D generic_user
-#USER generic_user
-
 # run gunicorn
 CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT

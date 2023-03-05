@@ -20,7 +20,7 @@ jobs:
     if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
     runs-on: ubuntu-latest
     env:
-      ENV: "development"
+      DOPPLER_CONFIG: "dev"
 
       # db variables for django
       DB_NAME: "secure_my_spot_dev"

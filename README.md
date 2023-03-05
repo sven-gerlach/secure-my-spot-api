@@ -39,7 +39,6 @@
 | Crypto.js                |     x     |          |
 | CSS/SCSS                 |     x     |          |
 | Docker                   |     x     |    x     |
-| Dotenv                   |     x     |          |
 | Django                   |           |    x     |
 | Django Rest Framework    |           |    x     |
 | Factory Boy              |           |    x     |
@@ -72,43 +71,27 @@
 
 
 ## Set-up & Installation for Local Development
-1. Fork and clone the repo
-2. Run `pipenv install`
-3. Create `.env` file, placing it inside the project root directory (same level as Dockerfile), 
-   and declare the following environment variables:
-   - local development var
-     - ENV=development
-   - db variables for django
-     - DB_NAME
-     - DB_USER
-     - DB_PASSWORD 
-     - DB_HOST="db"
-     - DB_PORT="5432"
-     - SECRET
-   - db var for postgres db docker service
-     - POSTGRES_USER
-     - POSTGRES_PASSWORD
-     - POSTGRES_DB
-   - python settings
-     - PYTHONUNBUFFERED="1"
-     - PYTHONDONTWRITEBYTECODE="1"
-   - Rabbitmq vars 
-     - RABBITMQ_DEFAULT_USER
-     - RABBITMQ_DEFAULT_PASS
-   - Redis vars 
-     - REDIS_PASSWORD
-   - EMAIL server settings
-     - EMAIL_USER
-     - EMAIL_PASSWORD
-   - Stripe keys
-     - STRIPE_API_TEST_KEY
-4. Start the Docker container with `docker-compose up -d --build` (Docker must be 
-   installed)
-5. The app is running on `localhost:8000/admin/`
+1. Clone this repo into your preferred local directory
+2. Ensure pip, pipenv, and pyenv are installed locally (install pyenv with brew, pipenv with pip,
+   and pip with `python -m ensurepip --upgrade`)
+> Use the following links for more detail on how to install these packages: 
+>- [pip](https://pip.pypa.io/en/stable/installation/)
+>- [pipenv](https://pipenv.pypa.io/en/latest/index.html#install-pipenv-today)
+>- [pyenv](https://github.com/pyenv/pyenv#homebrew-in-macos)
+3. Run `pipenv install` in the project root directory to install all dependent packages
+4. Install the Doppler CLI and authenticate according to these [instructions](https://docs.doppler.com/docs/install-cli)
+5. Run the Doppler setup process in the root directory with `doppler setup`
+6. Start the Postgres docker container with `doppler run -- docker-compose up -d --build`
+7. Check containers are running normally by reviewing log statements with `docker logs [container_id]`
+8. Run `pipenv shell` to initiate the environment
+9. Ensure the database has all the tables setup by running `docker exec [db_container_id] python manage.py migrate`
+10. Confirm there are no outstanding migrations with `docker exec [db_container_id] python manage.py showmigrations`
+11. Open the browser to review the [SPA](http://localhost:3000) and the [API](http://localhost:3001)
+
 
 ## Systems Design Considerations
-1. Data is mostly well structured, factual, and numeric -> *relational db*
-2. Data volume is limited (fixed number of parkings spaces that can be booked across a finite 
+1. Data is mostly well-structured, factual, and numeric -> *relational db*
+2. Data volume is limited (fixed number of parking spaces that can be booked across a finite 
    number of times per unit of time) -> *relational db*
 3. Dependency on real time data processing (avoid double booking a parking spot) -> 
    *non-relational db*
@@ -125,7 +108,7 @@ support for PostgreSQL.
 - [Github repo](https://github.com/sven-gerlach/secure-my-spot-api)
 - [Kanban](https://github.com/sven-gerlach/secure-my-spot-api/projects/1)
 ### Front-end
-- [Deployed app](https://secure-my-spot-client.herokuapp.com)
+- [Deployed app](https://main.d105uookrugx2t.amplifyapp.com/)
 - [Github repo](https://github.com/sven-gerlach/secure-my-spot-client)
 - [Kanban](https://github.com/sven-gerlach/secure-my-spot-client/projects/1)
 
