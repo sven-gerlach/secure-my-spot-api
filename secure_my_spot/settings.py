@@ -56,10 +56,7 @@ CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
 # https://stackoverflow.com/questions/59719175/where-to-run-collectstatic-when-deploying-django-app-to-heroku-using-docker
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default=get_random_secret_key())
 
-ALLOWED_HOSTS = []
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+ALLOWED_HOSTS = ["localhost", "ec2-35-174-184-12.compute-1.amazonaws.com"]
 
 INSTALLED_APPS = [
     "django_extensions",
@@ -251,7 +248,7 @@ if os.getenv("DOPPLER_CONFIG") == "dev":
     # deployed RabbitMQ monitor: https://jaguar.rmq.cloudamqp.com/#/queues
     rabbit_user = os.getenv("RABBITMQ_DEFAULT_USER")
     rabbit_password = os.getenv("RABBITMQ_DEFAULT_PASS")
-    CELERY_BROKER_URL = f"amqp://{rabbit_user}:{rabbit_password}@broker//"
+    CELERY_BROKER_URL = f"amqp://{rabbit_user}:{rabbit_password}@broker:5672//"
 
     # backend -> Redis
     redis_password = os.getenv("REDIS_PASSWORD")

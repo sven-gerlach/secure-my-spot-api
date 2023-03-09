@@ -11,18 +11,19 @@ services:
   # django service
   api:
     build: .
-#    image: api-img:latest
-    command: python manage.py runserver 0.0.0.0:8000
+    image: api
+    container_name: api
+    command: sh run_start_script.sh
     ports:
-      - 3001:8000
+      - "3001:8000"
     depends_on:
       - db
-      - celery_worker
+      - celery
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
-      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       EMAIL_USER: ${EMAIL_USER}
@@ -30,13 +31,18 @@ services:
       STRIPE_API_TEST_KEY: ${STRIPE_API_TEST_KEY}
       DOPPLER_CONFIG: ${DOPPLER_CONFIG}
       CLIENT_ORIGIN: ${CLIENT_ORIGIN}
+#      DATABASE_URL: ${DATABASE_URL}
+#      CLOUDAMQP_URL: ${CLOUDAMQP_URL}
+#      REDIS_URL: ${REDIS_URL}
     networks:
       - main_network
+    volumes:
+      - .:/app
 
   # Database postgres service
   db:
-    container_name: postgres
     image: postgres
+    container_name: postgres
     restart: always
     ports:
       - "5432:5432"
@@ -46,46 +52,61 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     networks:
       - main_network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
 
   # Celery service
-  celery_worker:
-    container_name: celery
+  celery:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: celery
+    image: celery
     # todo: auto-reload should not be used for production
     # command: python manage.py celery_autoload
     # statedb: https://docs.celeryproject.org/en/stable/userguide/workers.html#persistent-revokes
     command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     depends_on:
       - db
-      - rabbit-broker
+      - broker
       - redis
     restart: always
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_DB: ${POSTGRES_DB}
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-      REDIS_PASSWORD: ${REDIS_PASSWORD}
       EMAIL_USER: ${EMAIL_USER}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
       STRIPE_API_TEST_KEY: ${STRIPE_API_TEST_KEY}
-      DOPPLER_CONFIG: ${DOPPLER_CONFIG}
       CLIENT_ORIGIN: ${CLIENT_ORIGIN}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      DOPPLER_CONFIG: ${DOPPLER_CONFIG}
+      DATABASE_URL: ${DATABASE_URL}
+      CLOUDAMQP_URL: ${CLOUDAMQP_URL}
+      REDIS_URL: ${REDIS_URL}
+      # DATABASE_URL: ${DATABASE_URL}
+      # CLOUDAMQP_URL: ${CLOUDAMQP_URL}
+      # REDIS_URL: ${REDIS_URL}
     networks:
       - main_network
+    volumes:
+      - .:/app
 
   # Broker service provided by RabbitMQ
-  rabbit-broker:
+  broker:
     image: rabbitmq:3-management
+    container_name: rabbit
     restart: on-failure
     ports:
       - "5672:5672"  # We forward this port because it's useful for debugging
       - "15672:15672"  # Here, we can access RabbitMQ management plugin
     networks:
       - main_network
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
 
   # Backend storage service for async results provided by Redis
   redis:
@@ -101,3 +122,6 @@ services:
 
 networks:
   main_network:
+
+volumes:
+  postgres_data:

@@ -37,5 +37,9 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
-# run gunicorn
-CMD gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:$PORT
+# expose port 8000
+EXPOSE 8000
+
+RUN adduser --disabled-password --no-create-home app
+
+USER app
