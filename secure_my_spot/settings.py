@@ -56,7 +56,8 @@ CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
 # https://stackoverflow.com/questions/59719175/where-to-run-collectstatic-when-deploying-django-app-to-heroku-using-docker
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", default=get_random_secret_key())
 
-ALLOWED_HOSTS = ["localhost", "ec2-35-174-184-12.compute-1.amazonaws.com"]
+allowed_hosts = os.getenv("ALLOWED_HOSTS")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',')]
 
 INSTALLED_APPS = [
     "django_extensions",
