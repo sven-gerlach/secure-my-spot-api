@@ -8,6 +8,8 @@ FROM python:3.8-alpine
 LABEL maintainer_name="Sven Gerlach" \
       maintainer_email="svengerlach@me.com"
 
+ENV PYTHONUNBUFFERED=1
+
 # set work directory
 # Github Actions recommends not to set WORKDIR
 # https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#workdir
@@ -37,9 +39,18 @@ RUN pipenv install --system --deploy --pre
 # copy project
 COPY . .
 
-# expose port 8000
-EXPOSE 8000
+# expose port 3001
+EXPOSE 3001
 
-RUN adduser --disabled-password --no-create-home app
+# create static folder manually such that the ownership can be changed to the "app" user
+# failung to do that will result in a permission denied error upon executing the collectstatic command
+RUN adduser --disabled-password --no-create-home app && \
+    mkdir static && \
+    chown -R app:app static
 
 USER app
+
+# adding /scripts to PATH ensures that scripts can be executed without prepending the path to the script
+ENV PATH="/scripts:${PATH}"
+
+CMD ["sh", "scripts/run_dev.sh"]

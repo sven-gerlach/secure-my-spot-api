@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  # django service
+  api:
+    build: .
+    command: ["sh", "scripts/run_prod.sh"]
+    restart: always
+    depends_on:
+      - celery
+    ports:
+      - "80:3001"
+    environment:
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      STRIPE_API_TEST_KEY: ${STRIPE_API_TEST_KEY}
+      DOPPLER_CONFIG: ${DOPPLER_CONFIG}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN}
+      DATABASE_URL: ${DATABASE_URL}
+      CLOUDAMQP_URL: ${CLOUDAMQP_URL}
+      REDIS_URL: ${REDIS_URL}
+    volumes:
+      - static_data:/static
+
+  # Celery service
+  celery:
+    build: .
+    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
+    restart: always
+    environment:
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      STRIPE_API_TEST_KEY: ${STRIPE_API_TEST_KEY}
+      DOPPLER_CONFIG: ${DOPPLER_CONFIG}
+      CLIENT_ORIGIN: ${CLIENT_ORIGIN}
+      DATABASE_URL: ${DATABASE_URL}
+      CLOUDAMQP_URL: ${CLOUDAMQP_URL}
+      REDIS_URL: ${REDIS_URL}
+
+volumes:
+  static_data:

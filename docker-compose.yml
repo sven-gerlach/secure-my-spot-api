@@ -13,9 +13,9 @@ services:
     build: .
     image: api
     container_name: api
-    command: sh run_start_script.sh
+    command: ["sh", "scripts/run_dev.sh"]
     ports:
-      - "3001:8000"
+      - "3001:3001"
     depends_on:
       - db
       - celery
@@ -63,9 +63,9 @@ services:
     container_name: celery
     image: celery
     # todo: auto-reload should not be used for production
-    # command: python manage.py celery_autoload
     # statedb: https://docs.celeryproject.org/en/stable/userguide/workers.html#persistent-revokes
-    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
+    command: python manage.py celery_autoload
+#    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     depends_on:
       - db
       - broker
