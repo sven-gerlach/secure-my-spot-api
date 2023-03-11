@@ -19,6 +19,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       CLOUDAMQP_URL: ${CLOUDAMQP_URL}
       REDIS_URL: ${REDIS_URL}
+      DOPPLER_TOKEN: ${DOPPLER_TOKEN}
     volumes:
       - static_data:/static
 
@@ -36,6 +37,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       CLOUDAMQP_URL: ${CLOUDAMQP_URL}
       REDIS_URL: ${REDIS_URL}
+      DOPPLER_TOKEN: ${DOPPLER_TOKEN}
 
 volumes:
   static_data:

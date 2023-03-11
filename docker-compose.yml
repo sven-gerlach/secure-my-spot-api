@@ -31,9 +31,7 @@ services:
       STRIPE_API_TEST_KEY: ${STRIPE_API_TEST_KEY}
       DOPPLER_CONFIG: ${DOPPLER_CONFIG}
       CLIENT_ORIGIN: ${CLIENT_ORIGIN}
-#      DATABASE_URL: ${DATABASE_URL}
-#      CLOUDAMQP_URL: ${CLOUDAMQP_URL}
-#      REDIS_URL: ${REDIS_URL}
+      DOPPLER_TOKEN: ${DOPPLER_TOKEN}
     networks:
       - main_network
     volumes:
@@ -86,9 +84,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       CLOUDAMQP_URL: ${CLOUDAMQP_URL}
       REDIS_URL: ${REDIS_URL}
-      # DATABASE_URL: ${DATABASE_URL}
-      # CLOUDAMQP_URL: ${CLOUDAMQP_URL}
-      # REDIS_URL: ${REDIS_URL}
+      DOPPLER_TOKEN: ${DOPPLER_TOKEN}
     networks:
       - main_network
     volumes:
