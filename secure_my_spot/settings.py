@@ -44,7 +44,8 @@ else:
     raise Exception(f'{environment} is not an acceptable value for DOPPLER_CONFIG. It must be either "dev" or "prod".')
 
 # Only allow the `CLIENT_ORIGIN` for CORS
-CORS_ALLOWED_ORIGINS = [os.getenv("CLIENT_ORIGIN")]
+client_origins = os.getenv("CLIENT_ORIGIN")
+CORS_ALLOWED_ORIGINS = [origin.strip() for origin in client_origins.split(',')]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
