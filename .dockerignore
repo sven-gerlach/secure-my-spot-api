@@ -22,5 +22,3 @@ build/
 .git/
 *.sqlite3
 node_modules/
-*.lock
-*Dockerfile*
