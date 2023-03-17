@@ -319,7 +319,6 @@ class TestSignInView:
 class TestSignOutView:
     """test sign out view"""
 
-    # todo: rather convoluted way of testing sign-out -> investigate if there is a better way
     def test_signoutview(self):
         """Successful sign-out results in client receiving a response status code of 200 and the
         deletion of the client's token from the db."""
@@ -356,7 +355,6 @@ class TestSignOutView:
         with pytest.raises(ObjectDoesNotExist):
             Token.objects.get(user=user)
 
-    # todo: investigate why this test only runs with static files collected in staticfiles?
     def test_signoutview_invalid_token(self):
         """An unauthorised attempt to sign out with an invalid token results in the client
         receiving a 401 status code and a json response {"detail": "Invalid token."}."""
@@ -369,7 +367,6 @@ class TestSignOutView:
         assert response.status_code == 401
         assert json.loads(response.content) == {"detail": "Invalid token."}
 
-    # todo: investigate why this test only runs with static files collected in staticfiles?
     def test_signoutview_missing_token(self):
         """An unauthenticated attempt to sign out with a missing token results in the client
         receiving a 401 status code."""

@@ -33,24 +33,29 @@ RUN apk update && apk add \
 RUN pip install \
     pipenv \
     psycopg2
-COPY Pipfile Pipfile.lock ./
+COPY ../Pipfile Pipfile.lock ./
 RUN pipenv install --system --deploy --pre
 
 # copy project
-COPY . .
-
-# expose port 3001
-EXPOSE 3001
+COPY .. .
 
 # create static folder manually such that the ownership can be changed to the "app" user
-# failung to do that will result in a permission denied error upon executing the collectstatic command
+# failing to do that will result in a permission denied error upon executing the collectstatic command
 RUN adduser --disabled-password --no-create-home app && \
     mkdir static && \
     chown -R app:app static
+
+# create log and pid file directories
+RUN mkdir -pv /var/log/gunicorn && \
+    mkdir -pv /var/run/gunicorn && \
+    touch /var/log/gunicorn/dev.log && \
+    touch /var/run/gunicorn/dev.pid && \
+    chown -cR app:app /var/log/gunicorn && \
+    chown -cR app:app /var/run/gunicorn
 
 USER app
 
 # adding /scripts to PATH ensures that scripts can be executed without prepending the path to the script
 ENV PATH="/scripts:${PATH}"
 
-CMD ["sh", "scripts/run_dev.sh"]
+CMD ["sh", "scripts/run_prod.sh"]

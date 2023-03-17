@@ -12,4 +12,4 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 
 # start production server
-gunicorn secure_my_spot.wsgi:application --bind 0.0.0.0:3001
+gunicorn -c config/gunicorn/prod.py

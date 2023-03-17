@@ -23,7 +23,7 @@ class Command(BaseCommand):
             cls.run("celery -A phoenix worker --loglevel=info --pool=solo")
         else:
             cls.run("pkill celery")
-            cls.run("celery -A secure_my_spot.celeryconf worker --loglevel=INFO")
+            cls.run("celery -A secure_my_spot.celeryconf worker -c 2 --loglevel=INFO")
 
     @staticmethod
     def run(cmd):

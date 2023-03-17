@@ -10,10 +10,14 @@ version: "3.8"
 services:
   # django service
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.python
     image: api
     container_name: api
     command: ["sh", "scripts/run_dev.sh"]
+    expose:
+      - 3000
     ports:
       - "3001:3001"
     depends_on:
@@ -57,13 +61,12 @@ services:
   celery:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: docker/Dockerfile.python
     container_name: celery
     image: celery
-    # todo: auto-reload should not be used for production
+    # auto-reload should not be used for production
     # statedb: https://docs.celeryproject.org/en/stable/userguide/workers.html#persistent-revokes
     command: python manage.py celery_autoload
-#    command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     depends_on:
       - db
       - broker
@@ -81,9 +84,6 @@ services:
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
       REDIS_PASSWORD: ${REDIS_PASSWORD}
       DOPPLER_CONFIG: ${DOPPLER_CONFIG}
-      DATABASE_URL: ${DATABASE_URL}
-      CLOUDAMQP_URL: ${CLOUDAMQP_URL}
-      REDIS_URL: ${REDIS_URL}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     networks:
       - main_network

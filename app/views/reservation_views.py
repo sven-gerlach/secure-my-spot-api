@@ -126,8 +126,7 @@ class ReservationViewAuth(APIView):
         cache.get(serializer.data["id"])
 
         # revoke existing task to reset availability of reserved parking spot
-        # todo: this feature does not work at the moment because the worker gets shut down
-        #  automatically by Heroku
+        # this feature did not work because the worker got shut down automatically by Heroku
         # https://stackoverflow.com/questions/8920643/cancel-an-already-executing-task-with-celery
         # app.control.revoke(task_id=task_id, terminate=True)
 

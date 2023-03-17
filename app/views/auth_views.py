@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 class SignUpView(APIView):
     """Sign-up view"""
 
-    # todo: add email verification to acc creation process
     def post(self, request):
         """
         Create and save a new user in the database
@@ -80,7 +79,6 @@ class SignInView(ObtainAuthToken):
         if not created:
             # If the token was not newly created then delete existing token and replace with a
             # new one. This forces the creation of a new token everytime the user logs in.
-            # todo: add a time component such that tokens are automatically renewed after e.g. 24h
             token.delete()
             token = Token.objects.create(user=user)
             token.save()
@@ -104,7 +102,6 @@ class SignOutView(APIView):
         return Response(status=204)
 
 
-# todo: write tests for ChangePw view
 class ChangePw(APIView):
     """Change the password of an authenticated user."""
 

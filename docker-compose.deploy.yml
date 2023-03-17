@@ -1,15 +1,50 @@
 version: "3.8"
 
 services:
+  # certbot
+  certbot:
+    build:
+      context: ./docker/certbot
+      dockerfile: Dockerfile.certbot
+    command: echo "Skipping..."
+    environment:
+      - DOMAIN=${DOMAIN}
+      - EMAIL=${ACME_DEFAULT_EMAIL}
+    volumes:
+      - certbot-web:/vol/www
+      - certbot-certs:/etc/letsencrypt
+    depends_on:
+      - proxy
+
+  # nginx
+  proxy:
+    build:
+      context: ./docker/proxy
+      dockerfile: Dockerfile.nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certbot-web:/vol/www
+      - proxy-dhparams:/vol/proxy
+      - certbot-certs:/etc/letsencrypt
+    environment:
+      - DOMAIN=${DOMAIN}
+    depends_on:
+      - api
+
   # django service
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.python
     command: ["sh", "scripts/run_prod.sh"]
     restart: always
     depends_on:
       - celery
     ports:
-      - "80:3001"
+      - "3001:3001"
     environment:
       EMAIL_USER: ${EMAIL_USER}
       EMAIL_PASSWORD: ${EMAIL_PASSWORD}
@@ -20,12 +55,12 @@ services:
       CLOUDAMQP_URL: ${CLOUDAMQP_URL}
       REDIS_URL: ${REDIS_URL}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
-    volumes:
-      - static_data:/static
 
   # Celery service
   celery:
-    build: .
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.python
     command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     restart: always
     environment:
@@ -40,4 +75,6 @@ services:
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
 
 volumes:
-  static_data:
+  certbot-web:
+  proxy-dhparams:
+  certbot-certs:

@@ -51,9 +51,6 @@ class Reservation(models.Model):
     end_time: record the end time of the reservation
     """
 
-    # todo: set reservation id as a UUID instead of using the generically created id or create a
-    #  separate reservation_id
-
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     email = models.EmailField(help_text="email of the user")
     parking_spot = models.ForeignKey(ParkingSpot, on_delete=models.PROTECT)

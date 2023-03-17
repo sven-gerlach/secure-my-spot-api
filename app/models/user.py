@@ -70,7 +70,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     AbstractUser class.
     """
 
-    # todo: add user's number plate information
     email = models.EmailField(verbose_name="email address", max_length=255, unique=True)
     name = models.CharField(max_length=50, blank=True)
     surname = models.CharField(max_length=50, blank=True)

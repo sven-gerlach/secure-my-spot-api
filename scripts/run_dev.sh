@@ -9,4 +9,4 @@ python manage.py wait_for_db
 python manage.py migrate
 
 # start development server
-python manage.py runserver 0.0.0.0:3001
+gunicorn -c config/gunicorn/dev.py

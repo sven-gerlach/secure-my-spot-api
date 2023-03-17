@@ -1,0 +1,15 @@
+FROM nginx:alpine
+
+COPY ./nginx/* /etc/nginx
+COPY ./run.sh /run.sh
+
+ENV APP_HOST=api
+ENV APP_PORT=3001
+
+RUN apk add --no-cache openssl && \
+    chmod +x /run.sh
+
+VOLUME /vol/static
+VOLUME /vol/www
+
+CMD ["sh", "/run.sh"]
