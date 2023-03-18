@@ -17,14 +17,14 @@ export proxy_add_x_forwarded_for=\$proxy_add_x_forwarded_for
 export scheme=\$scheme
 
 # if fullchain.pem already exists then ssl has already been set up and nginx.tsl.conf ought to be run
-# otherwise run nginx.default.conf
+# otherwise run default.conf.tpl
 echo "checking for fullchain.pem"
 if [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
   echo "No SSL certificate, enabling HTTP only..."
-  envsubst < /etc/nginx/nginx.default.conf > /etc/nginx/conf.d/default.conf
+  envsubst < /etc/nginx/default.conf.tpl > /etc/nginx/conf.d/default.conf
 else
   echo "SSL certificate exists, enabling HTTPS..."
-  envsubst < /etc/nginx/nginx.ssl.conf > /etc/nginx/conf.d/default.conf
+  envsubst < /etc/nginx/default-ssl.conf.tpl > /etc/nginx/conf.d/default.conf
 fi
 
 nginx -g 'daemon off;'

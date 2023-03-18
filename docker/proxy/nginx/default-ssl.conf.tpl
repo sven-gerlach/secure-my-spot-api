@@ -12,7 +12,7 @@ server {
 }
 
 server {
-    listen 443;
+    listen 443 ssl;
     server_name ${DOMAIN};
 
     ssl_certificate         /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
@@ -29,7 +29,7 @@ server {
     }
 
     location / {
-        proxy_pass              http://${APP_HOST}:${APP_PORT};
+        proxy_pass              ${APP_HOST}:${APP_PORT};
         proxy_set_header        Host $host;
         proxy_set_header        X-Real-IP $remote_addr;
         proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
