@@ -20,11 +20,11 @@ export scheme=\$scheme
 # otherwise run nginx.conf
 echo "checking for fullchain.pem"
 if [ ! -f "/etc/letsencrypt/live/${DOMAIN}/fullchain.pem" ]; then
-  echon "No SSL certificate, enabling HTTP only..."
-  envsubst < /etc/nginx/nginx.conf > etc/nginx/conf.d/default.conf
+  echo "No SSL certificate, enabling HTTP only..."
+  envsubst < /etc/nginx/nginx.conf > /etc/nginx/conf.d/default.conf
 else
   echo "SSL certificate exists, enabling HTTPS..."
-  envsubst < /etc/nginx/nginx.ssl.conf > etc/nginx/conf.d/default.conf
+  envsubst < /etc/nginx/nginx.ssl.conf > /etc/nginx/conf.d/default.conf
 fi
 
 nginx -g 'daemon off;'
