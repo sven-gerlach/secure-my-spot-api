@@ -31,6 +31,7 @@ services:
       - certbot-web:/vol/www
       - proxy-dhparams:/vol/proxy
       - certbot-certs:/etc/letsencrypt
+      - static-files:/vol/static
     environment:
       - DOMAIN=${DOMAIN}
     depends_on:
@@ -61,6 +62,8 @@ services:
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
     networks:
       - main-network
+    volumes:
+      - static-files:/app/static
 
   # Celery service
   celery:
@@ -88,3 +91,4 @@ volumes:
   certbot-web:
   proxy-dhparams:
   certbot-certs:
+  static-files:
