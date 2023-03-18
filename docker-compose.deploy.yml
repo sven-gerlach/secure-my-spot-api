@@ -15,6 +15,8 @@ services:
       - certbot-certs:/etc/letsencrypt
     depends_on:
       - proxy
+    networks:
+      - main-network
 
   # nginx
   proxy:
@@ -33,6 +35,8 @@ services:
       - DOMAIN=${DOMAIN}
     depends_on:
       - api
+    networks:
+      - main-network
 
   # django service
   api:
@@ -73,6 +77,10 @@ services:
       CLOUDAMQP_URL: ${CLOUDAMQP_URL}
       REDIS_URL: ${REDIS_URL}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+
+networks:
+  main-network:
+    driver: bridge
 
 volumes:
   certbot-web:
