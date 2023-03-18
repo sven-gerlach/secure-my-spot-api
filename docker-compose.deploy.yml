@@ -59,6 +59,8 @@ services:
       CLOUDAMQP_URL: ${CLOUDAMQP_URL}
       REDIS_URL: ${REDIS_URL}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+    networks:
+      - main-network
 
   # Celery service
   celery:
