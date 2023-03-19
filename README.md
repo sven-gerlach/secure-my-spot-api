@@ -1,6 +1,6 @@
 # Secure-My-Spot: Back-End
 
-## \#TLDR
+## TLDR
 - This application offers a convenient way for users to locate, reserve, and pay for on-street 
   parking in New York City
 - The app is a Dockerised Django / PostgreSQL back-end application
@@ -27,7 +27,7 @@
   GitHub is automatically and fully tested and any successful pull requests or pushes into the 
   main branch are automatically deployed to Heroku
 
-## Technologies used for the Front- and Back-End
+## Technologies and Packages used for the Front- and Back-End
 | Technology               | Front-End | Back-End |
 |:-------------------------|:---------:|:--------:|
 | Axios                    |     x     |          |
@@ -70,24 +70,99 @@
 | Whitenoise               |           |    x     |
 
 
+## Stack Overview
+### Local Development Stack
+This stack is defined in the [docker-compose.dev.yml](./docker-compose.dev.yml) file.
+```mermaid
+graph LR
+  API[API]
+  RQ[RabbitMQ]
+  RR[Redis Results Backend]
+  PG[(PostgreSQL)]
+  subgraph CELERY [Celery]
+    direction LR
+    W1[Worker 1]
+    W2[Worker 2]
+    Wn[Worker n]
+  end
+
+  API --- RQ
+  RQ --- CELERY
+  API --- PG
+  CELERY --- RR
+  PG --- CELERY
+```
+
+### Deployed Stack
+The stack inside the AWS EC2 instance is defined in the [docker-compose.deploy.yml](./docker-compose.deploy.yml) file. Redis is an instance on [Redis Cloud](https://app.redislabs.com/#/login). The RabbitMQ queue is an instance on [CloudAMQP](https://customer.cloudamqp.com/instance). The PostgreSQL database is hosted on AWS RDS.
+```mermaid
+graph LR
+    C[Client]
+    PG[PostgreSQL]
+    subgraph AWS [AWS EC2]
+        direction LR
+        P[Proxy]
+        CB[Certbot]
+        API[API]
+        subgraph CELERY [Celery]
+            direction LR
+            W1[Worker 1]
+            W2[Worker 2]
+            Wn[Worker n]
+        end
+    end
+    RQ[RabbitMQ]
+    RR[(Redis Celery Results Store)]
+
+    C -- HTTPS ---> P
+    P -- HTTP ---> API
+    API --- RQ
+    RQ --- CELERY
+    CELERY --- RR
+    API --- PG
+    PG --- CELERY
+```
+
 ## Set-up & Installation for Local Development
 1. Clone this repo into your preferred local directory
 2. Ensure pip, pipenv, and pyenv are installed locally (install pyenv with brew, pipenv with pip,
    and pip with `python -m ensurepip --upgrade`)
-> Use the following links for more detail on how to install these packages: 
->- [pip](https://pip.pypa.io/en/stable/installation/)
->- [pipenv](https://pipenv.pypa.io/en/latest/index.html#install-pipenv-today)
->- [pyenv](https://github.com/pyenv/pyenv#homebrew-in-macos)
-3. Run `pipenv install` in the project root directory to install all dependent packages
-4. Install the Doppler CLI and authenticate according to these [instructions](https://docs.doppler.com/docs/install-cli)
-5. Run the Doppler setup process in the root directory with `doppler setup`
-6. Start the Postgres docker container with `doppler run -- docker-compose up -d --build`
-7. Check containers are running normally by reviewing log statements with `docker logs [container_id]`
-8. Run `pipenv shell` to initiate the environment
-9. Ensure the database has all the tables setup by running `docker exec [db_container_id] python manage.py migrate`
-10. Confirm there are no outstanding migrations with `docker exec [db_container_id] python manage.py showmigrations`
-11. Open the browser to review the [SPA](http://localhost:3000) and the [API](http://localhost:3001)
+    > Use the following links for more detail on how to install these packages: 
+    >- [pip](https://pip.pypa.io/en/stable/installation/)
+    >- [pipenv](https://pipenv.pypa.io/en/latest/index.html#install-pipenv-today)
+    >- [pyenv](https://github.com/pyenv/pyenv#homebrew-in-macos)
+3. Ensure docker and docker-compose are installed in the local environment 
+4. Run `pipenv install` in the project root directory to install all dependent packages
+5. Install the Doppler CLI and authenticate according to these [instructions](https://docs.doppler.com/docs/install-cli)
+6. Run the Doppler setup process in the root directory with `doppler setup`
+7. Start the Postgres docker container with `doppler run -- docker-compose up -d --build`
+8. Check containers are running normally by reviewing log statements with `docker logs [container_id]`
+9. Run `pipenv shell` to initiate the environment (some IDE command lines will do this automatically)
+10. Ensure the database has all the tables setup by running `docker exec [db_container_id] python manage.py migrate`
+11. Confirm there are no outstanding migrations with `docker exec [db_container_id] python manage.py showmigrations`
+12. Open the browser to review the [SPA](http://localhost:3000) and the [API](http://localhost:3001)
 
+## Deployment
+Below is a high-level summary of all deploy steps. Most of them only need to be applied once for the initial deployment.
+1. Create EC2 instance
+2. Create an elastic IP and associate it with the EC2 instance
+3. Check DNS and verify that:
+   1. AWS DNS is set up as the DNS server on Google Cloud (Google provides the domain sigmagamma.app)
+   2. Route53 hosted zone sigmagamma.app has an A-record pointing to the EC2 elastic IP
+4. Create key pair and store locally
+5. Amend associated security group to allow access via SSH (22), HTTP (80) and HTTPS (443)
+6. SSH into EC2 instance via `ssh -i /path/to/private-key.pem [EC2 Public IPv4 Address]`
+7. Install docker, docker-compose, doppler, and git
+8. Clone main branch into EC2 instance
+9. Verify Redis Cloud, PostgreSQL AWS RDS, and RabbitMQ Cloud instances are running
+10. Verify the environment variables stored in the Doppler prod config environment are correct
+11. Run certify-init.sh `doppler run --token 'see Doppler secure-my-spot-api prod config' -- docker-compose -f docker-compose.deploy.yml run --rm certbot /opt/certify-init.sh`
+12. Stop all containers `doppler run --token 'token' -- docker-compose -f docker-compose.deploy.yml down`
+13. Restart all containers `doppler run --token 'token' -- docker-compose -f docker-compose.deploy.yml up -d --build`
+
+>**Note 1**: this [article](https://londonappdeveloper.com/django-docker-deployment-with-https-using-letsencrypt/) and this accompanying [YouTube](https://www.youtube.com/watch?v=3_ZJWlf25bY) video explain in detail how the containers can be configured to allow for HTTPS traffic. 
+
+>**Note 2**: verify a cronjob is registered with `crontab -l`. A script needs to run once a week that runs the "certbot renew" command inside the certbot container. The command this cronjob runs is `doppler run --scope /home/ec2-user/secure-my-spot-api -- docker-compose -f docker-compose.deploy.yml run --rm certbot sh -c "certbot renew"` and essentially ensures that the https certificate with LetsEncrypt is renewed when needed (once a quarter). 
 
 ## Systems Design Considerations
 1. Data is mostly well-structured, factual, and numeric -> *relational db*
