@@ -37,6 +37,19 @@ elif environment == 'prod':
     DB = dj_database_url.config(conn_max_age=500)
     # Set debug to false
     DEBUG = False
+    # Use the X-Forwarded-Proto header to determine if a request is secure
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # Set the cookie domains and same-site attribute
+    SESSION_COOKIE_DOMAIN = os.getenv('CSRF_COOKIE_DOMAIN')
+    CSRF_COOKIE_DOMAIN = os.getenv('CSRF_COOKIE_DOMAIN')
+    SESSION_COOKIE_SAMESITE = 'None'
+    CSRF_COOKIE_SAMESITE = 'None'
+
+    # Set the Secure attribute for cookies
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 else:
     raise Exception(f'{environment} is not an acceptable value for DOPPLER_CONFIG. It must be either "dev" or "prod".')
 
