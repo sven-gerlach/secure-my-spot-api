@@ -7,7 +7,7 @@ server {
     }
 
     location / {
-        return 301 https://$host$request_uri;
+        rewrite ^ https://$host$request_uri? permanent;
     }
 }
 
