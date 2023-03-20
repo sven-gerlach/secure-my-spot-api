@@ -48,7 +48,7 @@ elif environment == 'prod':
     # Set the Secure attribute for cookies
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
+    # SECURE_SSL_REDIRECT = True
 else:
     raise Exception(f'{environment} is not an acceptable value for DOPPLER_CONFIG. It must be either "dev" or "prod".')
 
