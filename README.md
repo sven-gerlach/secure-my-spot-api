@@ -226,6 +226,9 @@ support for PostgreSQL.
 ## ERD
 ![ERD Image](./development/ERD.PNG)
 
+## Unresolved Issues
+- [ ] When an admin enters their credentials into the [api's admin UI](https://secure-my-spot.api.sigmagamma.app/admin), the user sees an error ERR_TOO_MANY_REDIRECTS before they see the admin UI. When clicking on any path exposed in the admin UI, the user is beeing redirected to the log-in feature. The sessionID is stored in the db and in the browser cookie. Also, this error only ocurs in the production environment. It is likely caused by some mis-configuration of the nginx proxy and django's setting.py.
+
 ## Next Steps
 - [ ] Replace polling of back-end with a websocket design that allows for bi-directional 
   communication between the front- and the back-end
