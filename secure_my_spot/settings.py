@@ -220,30 +220,44 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # statements and any logging statements are printed to the console and can be read by listening
 # to "docker-compose logs -f"
 # https://odwyer.software/blog/logging-to-standard-output-with-django
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "verbose": {
-            "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+BASE_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         },
     },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "verbose",
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'verbose',
         },
     },
-    "loggers": {
-        "": {
-            "handlers": ["console"],
-            "level": "DEBUG",
-            "propagate": True,
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
+        'app': {
+            'handlers': ['console'],
+            'propagate': True,
         },
     },
 }
+
+if environment == "dev":
+    LOGGING = BASE_LOGGING
+    LOGGING['loggers']['django']['level'] = 'DEBUG'
+    LOGGING['loggers']['app']['level'] = 'DEBUG'
+elif environment == 'prod':
+    LOGGING = BASE_LOGGING
+    LOGGING['loggers']['django']['level'] = 'INFO'
+    LOGGING['loggers']['app']['level'] = 'INFO'
+else:
+    raise Exception(f'{environment} is not an acceptable value for DOPPLER_CONFIG. It must be either "dev" or "prod".')
 
 # Celery / RabbitMQ / Redis settings
 CELERY_TASK_SERIALIZER = "json"
