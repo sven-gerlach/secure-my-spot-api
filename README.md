@@ -13,8 +13,8 @@
 - Custom in-app Stripe payments and processing flow, using setup intent and payment intent objects
 - Reservation of parking spots is only confirmed upon successful completion of Stripe payment 
   processing whereby card details are collected for later charging
-- Celery, RabbitMQ, and Redis are used to set up tasks that need to be executed at the end of 
-  the reservation period 
+- Celery, RabbitMQ, and Redis are used to queue and process tasks that need to be executed at the end of 
+  the reservation period, including payment processing with final bill amount, sending email to users confirming the end of the reservation period, changing a live reservation and all of its future queued processes
 - Users can change the reservation length or end a reservation at any time, either case results 
   in an email sent to the user to confirm any amendments to the reservation
 - At the end of the reservation period the message broker pushes end-of-reservation tasks to 
@@ -23,51 +23,51 @@
   backend, and using the Stripe setup intent and the customer's payment details to charge the 
   full amount
 - Pytest has been used for unit testing / test-driven-development
-- CD / CI pipeline is set up using GitHub workflows such that any branch that is pushed to 
-  GitHub is automatically and fully tested and any successful pull requests or pushes into the 
-  main branch are automatically deployed to Heroku
+- A custom AWS EC2 instance has been set up to run the dockerised deployment environment, consisting of a Nginx reverse proxy, the django api, and a number of celery workers
+- The deployed environment utilises cloud services, including RabbitMQ as the task queue manager, Redis as the task queue results storage, and an AWS RDS PostgreSQL instance (the dockerised development environment uses docker images for these three services instead)
 
 ## Technologies and Packages used for the Front- and Back-End
-| Technology               | Front-End | Back-End |
-|:-------------------------|:---------:|:--------:|
-| Axios                    |     x     |          |
-| Black                    |           |    x     |
-| Bootstrap                |     x     |          |
-| Camelcase                |     x     |          |
-| Celery                   |           |    x     |
-| Coverage                 |     x     |    x     |
-| Crypto.js                |     x     |          |
-| CSS/SCSS                 |     x     |          |
-| Docker                   |     x     |    x     |
-| Django                   |           |    x     |
-| Django Rest Framework    |           |    x     |
-| Factory Boy              |           |    x     |
-| Faker                    |     x     |    x     |
-| Flake8                   |           |    x     |
-| Google Maps Api          |     x     |          |
-| Gunicorn                 |           |    x     |
-| Heroku                   |           |    x     |
-| HTML5                    |     x     |          |
-| Husky                    |     x     |          |
-| iSort                    |           |    x     |
-| JavaScript               |     x     |          |
-| Jest                     |     x     |          |
-| Lodash                   |     x     |          |
-| Logrocket                |     x     |          |
-| Luxon                    |     x     |          |
-| Model Bakery             |           |    x     |
-| Moment                   |     x     |          |
-| Nginx                    |     x     |          |
-| Pipenv                   |           |    x     |
-| PostgreSQL               |           |    x     |
-| Pytest                   |           |    x     |
-| Redis                    |           |    x     |
-| React                    |     x     |          |
-| React Router-Dom         |     x     |          |
-| TypeScript               |     x     |          |
-| Stripe Api               |     x     |    x     |
-| Styled Components        |     x     |          |
-| Whitenoise               |           |    x     |
+| Technology              | Front-End | Back-End |
+|:------------------------|:---------:|:--------:|
+| Axios                   |     x     |          |
+| Black                   |           |    x     |
+| Bootstrap               |     x     |          |
+| Camelcase               |     x     |          |
+| Celery                  |           |    x     |
+| Certbot / Let's Encrypt |           |    x     |
+| Coverage                |     x     |    x     |
+| Crypto.js               |     x     |          |
+| CSS/SCSS                |     x     |          |
+| Docker                  |     x     |    x     |
+| Django                  |           |    x     |
+| Django Rest Framework   |           |    x     |
+| Factory Boy             |           |    x     |
+| Faker                   |     x     |    x     |
+| Flake8                  |           |    x     |
+| Google Maps Api         |     x     |          |
+| Gunicorn                |           |    x     |
+| Heroku                  |           |    x     |
+| HTML5                   |     x     |          |
+| Husky                   |     x     |          |
+| iSort                   |           |    x     |
+| JavaScript              |     x     |          |
+| Jest                    |     x     |          |
+| Lodash                  |     x     |          |
+| Logrocket               |     x     |          |
+| Luxon                   |     x     |          |
+| Model Bakery            |           |    x     |
+| Moment                  |     x     |          |
+| Nginx                   |     x     |    x     |
+| Pipenv                  |           |    x     |
+| PostgreSQL              |           |    x     |
+| Pytest                  |           |    x     |
+| Redis                   |           |    x     |
+| React                   |     x     |          |
+| React Router-Dom        |     x     |          |
+| TypeScript              |     x     |          |
+| Stripe Api              |     x     |    x     |
+| Styled Components       |     x     |          |
+| Whitenoise              |           |    x     |
 
 
 ## Stack Overview
@@ -114,8 +114,8 @@ graph LR
     RQ[RabbitMQ]
     RR[(Redis Celery Results Store)]
 
-    C -- HTTPS ---> P
-    P -- HTTP ---> API
+    C -- HTTPS --- P
+    P -- HTTP --- API
     API --- RQ
     RQ --- CELERY
     CELERY --- RR
@@ -179,11 +179,11 @@ support for PostgreSQL.
 
 ## Links
 ### Back-end
-- [Deployed app](https://secure-my-spot-api.herokuapp.com/admin/)
+- [Deployed app](https://secure-my-spot.api.sigmagamma.com)
 - [Github repo](https://github.com/sven-gerlach/secure-my-spot-api)
 - [Kanban](https://github.com/sven-gerlach/secure-my-spot-api/projects/1)
 ### Front-end
-- [Deployed app](https://main.d105uookrugx2t.amplifyapp.com/)
+- [Deployed app](https://www.secure-my-spot-spa.sigmagamma.app)
 - [Github repo](https://github.com/sven-gerlach/secure-my-spot-client)
 - [Kanban](https://github.com/sven-gerlach/secure-my-spot-client/projects/1)
 
