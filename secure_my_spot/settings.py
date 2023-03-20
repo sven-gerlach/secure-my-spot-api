@@ -47,7 +47,7 @@ elif environment == 'prod':
     CSRF_COOKIE_SAMESITE = 'None'
 
     # Set the Secure attribute for cookies
-    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = False
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
 else:
