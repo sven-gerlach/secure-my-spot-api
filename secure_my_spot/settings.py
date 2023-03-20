@@ -33,7 +33,6 @@ if environment == "dev":
     # Set debug to true
     DEBUG = True
 elif environment == 'prod':
-    # setting SSL required to True causes the test runner on Gitlab CI to fail
     DB = dj_database_url.config(conn_max_age=500)
     # Set debug to false
     DEBUG = False
@@ -47,7 +46,7 @@ elif environment == 'prod':
     CSRF_COOKIE_SAMESITE = 'None'
 
     # Set the Secure attribute for cookies
-    SESSION_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
 else:
