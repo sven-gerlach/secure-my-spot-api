@@ -143,6 +143,7 @@ graph LR
 12. Open the browser to review the [SPA](http://localhost:3000) and the [API](http://localhost:3001)
 
 ## Deployment
+### Option: AWS
 Below is a high-level summary of all deploy steps. Most of them only need to be applied once for the initial deployment.
 1. Create EC2 instance
 2. Create an elastic IP and associate it with the EC2 instance
@@ -163,6 +164,16 @@ Below is a high-level summary of all deploy steps. Most of them only need to be 
 >**Note 1**: this [article](https://londonappdeveloper.com/django-docker-deployment-with-https-using-letsencrypt/) and this accompanying [YouTube](https://www.youtube.com/watch?v=3_ZJWlf25bY) video explain in detail how the containers can be configured to allow for HTTPS traffic. 
 
 >**Note 2**: verify a cronjob is registered with `crontab -l`. A script needs to run once a week that runs the "certbot renew" command inside the certbot container. The command this cronjob runs is `doppler run --scope /home/ec2-user/secure-my-spot-api -- docker-compose -f docker-compose.deploy.yml run --rm certbot sh -c "certbot renew"` and essentially ensures that the https certificate with LetsEncrypt is renewed when needed (once a quarter). 
+
+### Render
+#### Postgres
+The PG db is deployed with [Neon](https://console.neon.tech/app/projects).
+
+#### RabbitMQ Queue
+The RabbitMQ queue is hosted by [CloudAMQP](https://customer.cloudamqp.com/instance).
+
+#### Redis
+We use [Upstash](https://console.upstash.com/) for our Redis cloud instance.
 
 ## Systems Design Considerations
 1. Data is mostly well-structured, factual, and numeric -> *relational db*
