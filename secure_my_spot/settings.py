@@ -140,11 +140,14 @@ WSGI_APPLICATION = "secure_my_spot.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+db_endpoint = os.getenv("DB_ENDPOINT")
+db_password = os.getenv("DB_PASSWORD")
+
 DB = {
     "ENGINE": "django.db.backends.postgresql",
     "NAME": os.getenv('DB_NAME'),
     "USER": os.getenv('DB_USER'),
-    "PASSWORD": os.getenv('DB_PASSWORD'),
+    "PASSWORD": f"{db_endpoint}${db_password}" if db_password else db_endpoint,
     "HOST": os.getenv('DB_HOST'),
     "PORT": os.getenv('DB_PORT'),
     "OPTIONS": json.loads(os.getenv('DB_OPTIONS')),
