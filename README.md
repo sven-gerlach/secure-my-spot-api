@@ -135,7 +135,7 @@ graph LR
 4. Run `pipenv install` in the project root directory to install all dependent packages
 5. Install the Doppler CLI and authenticate according to these [instructions](https://docs.doppler.com/docs/install-cli)
 6. Run the Doppler setup process in the root directory with `doppler setup`
-7. Start the Postgres docker container with `doppler run -- docker-compose up -d --build`
+7. Start the Postgres docker container with `doppler run -- docker-compose -f docker-compose.dev.yml up -d --build`
 8. Check containers are running normally by reviewing log statements with `docker logs [container_id]`
 9. Run `pipenv shell` to initiate the environment (some IDE command lines will do this automatically)
 10. Ensure the database has all the tables setup by running `docker exec [db_container_id] python manage.py migrate`
@@ -166,6 +166,8 @@ Below is a high-level summary of all deploy steps. Most of them only need to be 
 >**Note 2**: verify a cronjob is registered with `crontab -l`. A script needs to run once a week that runs the "certbot renew" command inside the certbot container. The command this cronjob runs is `doppler run --scope /home/ec2-user/secure-my-spot-api -- docker-compose -f docker-compose.deploy.yml run --rm certbot sh -c "certbot renew"` and essentially ensures that the https certificate with LetsEncrypt is renewed when needed (once a quarter). 
 
 ### Render
+1. Generate requirements.txt with `pipenv requirements > requirements.txt`. When running the build command `pip install -r requirements.txt` on Render it may be necessary to manually adjust some package versions in the requirements.txt file. 
+
 #### Postgres
 The PG db is deployed with [Neon](https://console.neon.tech/app/projects).
 
