@@ -5,6 +5,9 @@ set -e
 # Waiting for db connection to be established
 python manage.py wait_for_db
 
+# make migrations
+python manage.py makemigrations
+
 # Run db migrations
 python manage.py migrate
 
