@@ -15,6 +15,7 @@ import sys
 from pathlib import Path
 
 import dj_database_url
+import psycopg2
 from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -149,7 +150,8 @@ DB = {
     "PORT": os.getenv('DB_PORT'),
     "OPTIONS": json.loads(os.getenv('DB_OPTIONS')),
 }
-
+print("psycopg2 version:", psycopg2.__version__)
+print("libpq version:", psycopg2._psycopg.libpq_version())
 print(DB)
 DATABASES = {"default": DB}
 
