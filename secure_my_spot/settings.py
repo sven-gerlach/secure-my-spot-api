@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import json
 import os
 import sys
 from pathlib import Path
@@ -147,7 +147,7 @@ DB = {
     "PASSWORD": os.getenv('DB_PASSWORD'),
     "HOST": os.getenv('DB_HOST'),
     "PORT": os.getenv('DB_PORT'),
-    "OPTIONS": os.getenv('DB_OPTIONS')
+    "OPTIONS": json.loads(os.getenv('DB_OPTIONS')),
 }
 
 print(DB)
