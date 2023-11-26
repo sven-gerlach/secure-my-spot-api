@@ -22,18 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Determine if we are on local dev or production
 environment = os.getenv('DOPPLER_CONFIG')
 if environment == "dev":
-    DB = {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv('POSTGRES_DB'),
-        "USER": os.getenv('POSTGRES_USER'),
-        "PASSWORD": os.getenv('POSTGRES_PASSWORD'),
-        "HOST": 'db',
-        "PORT": '5432',
-    }
     # Set debug to true
     DEBUG = True
 elif environment == 'prod':
-    DB = dj_database_url.config(conn_max_age=500)
     # Set debug to false
     DEBUG = False
     # Use the X-Forwarded-Proto header to determine if a request is secure
@@ -149,7 +140,17 @@ WSGI_APPLICATION = "secure_my_spot.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+DB = {
+    "ENGINE": "django.db.backends.postgresql",
+    "NAME": os.getenv('DB_NAME'),
+    "USER": os.getenv('DB_USER'),
+    "PASSWORD": os.getenv('DB_PASSWORD'),
+    "HOST": os.getenv('DB_HOST'),
+    "PORT": os.getenv('DB_PORT'),
+    "OPTIONS": os.getenv('DB_OPTIONS')
+}
 
+print(DB)
 DATABASES = {"default": DB}
 
 # defines the custom user model
