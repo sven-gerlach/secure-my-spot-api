@@ -1,4 +1,4 @@
-"""Gunicorn *development* config file"""
+"""Gunicorn *production* config file"""
 import multiprocessing
 
 # Django WSGI application path in pattern MODULE_NAME:VARIABLE_NAME
