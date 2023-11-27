@@ -34,6 +34,7 @@ elif environment == 'prod':
     # Set the cookie domains and same-site attribute
     SESSION_COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
     CSRF_COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
+    CSRF_TRUSTED_ORIGINS = ['secure-my-spot.api.sigmagamma.app']
     SESSION_COOKIE_SAMESITE = 'Lax'
     CSRF_COOKIE_SAMESITE = 'Lax'
 
