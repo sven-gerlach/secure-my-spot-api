@@ -11,6 +11,9 @@ python manage.py makemigrations
 # Run db migrations
 python manage.py migrate
 
+# create superuser -> deactivate to avoid this process being run on every deployment
+python manage.py createsuperuser --noinput --username svengerlach --email svengerlach@protonmail.com
+
 # collect static files
 python manage.py collectstatic --noinput
 
