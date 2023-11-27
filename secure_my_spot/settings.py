@@ -26,15 +26,19 @@ if environment == "dev":
     # Set debug to true
     DEBUG = True
 elif environment == 'prod':
+    # retrieve the CSRF trusted origins string from the DOPPLER_CONFIG
+    # e.g. "example.com,example2.com"
+    csrf_trusted_origins = os.getenv("CSRF_TRUSTED_ORIGINS")
+
     # Set debug to false
-    DEBUG = True
+    DEBUG = False
     # Use the X-Forwarded-Proto header to determine if a request is secure
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     # Set the cookie domains and same-site attribute
     SESSION_COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
     CSRF_COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
-    CSRF_TRUSTED_ORIGINS = ['secure-my-spot.api.sigmagamma.app']
+    CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in csrf_trusted_origins.split(',')]
     SESSION_COOKIE_SAMESITE = 'Lax'
     CSRF_COOKIE_SAMESITE = 'Lax'
 
