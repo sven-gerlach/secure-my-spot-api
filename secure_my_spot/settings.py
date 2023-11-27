@@ -27,7 +27,7 @@ if environment == "dev":
     DEBUG = True
 elif environment == 'prod':
     # Set debug to false
-    DEBUG = False
+    DEBUG = True
     # Use the X-Forwarded-Proto header to determine if a request is secure
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
