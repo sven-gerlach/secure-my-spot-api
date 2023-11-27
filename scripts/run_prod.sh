@@ -12,7 +12,7 @@ python manage.py makemigrations
 python manage.py migrate
 
 # create superuser -> deactivate to avoid this process being run on every deployment
-python manage.py createsuperuser --noinput --username svengerlach --email svengerlach@protonmail.com
+python manage.py createsuperuser --noinput --email svengerlach@protonmail.com
 
 # collect static files
 python manage.py collectstatic --noinput
