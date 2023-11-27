@@ -29,7 +29,7 @@ elif environment == 'prod':
     # Set debug to false
     DEBUG = False
     # Use the X-Forwarded-Proto header to determine if a request is secure
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
     # Set the cookie domains and same-site attribute
     SESSION_COOKIE_DOMAIN = os.getenv('COOKIE_DOMAIN')
