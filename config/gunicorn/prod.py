@@ -1,4 +1,8 @@
-"""Gunicorn *production* config file"""
+"""
+Gunicorn *production* config file
+NOTE: This config for the gunicron production environment is not used on Render. It should be used if NGINX is used
+as a proxy for production environments.
+"""
 import multiprocessing
 
 # Django WSGI application path in pattern MODULE_NAME:VARIABLE_NAME

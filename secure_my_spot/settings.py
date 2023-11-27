@@ -150,9 +150,6 @@ DB = {
     "PORT": os.getenv('DB_PORT'),
     "OPTIONS": json.loads(os.getenv('DB_OPTIONS')),
 }
-print("psycopg2 version:", psycopg2.__version__)
-print("libpq version:", psycopg2._psycopg.libpq_version())
-print(DB)
 DATABASES = {"default": DB}
 
 # defines the custom user model

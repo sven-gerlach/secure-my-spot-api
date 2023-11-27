@@ -15,4 +15,5 @@ python manage.py migrate
 python manage.py collectstatic --noinput
 
 # start production server
+# if using an NGINX proxy, use the following command: gunicorn -c config/gunicorn/prod.py
 gunicorn secure_my_spot.wsgi:application
