@@ -30,7 +30,6 @@ class RequestLogging:
         print("====================OUTGOING RESPONSE=====================")
         print(f"Time: {datetime.now(): %H:%M}")
         print(f"Content: {response.content}")
-        print(f"Headers: {response.headers}")
         print(f"Status Code: {response.status_code}")
         print("===========================END============================")
 
