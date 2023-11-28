@@ -12,7 +12,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: docker/Dockerfile.python
+      dockerfile: docker/Dockerfile
     image: api
     container_name: api
     command: ["sh", "scripts/run_dev.sh"]
@@ -24,7 +24,7 @@ services:
       - db
       - celery
     environment:
-      DB_HOST: ${DB_HOST
+      DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
       DB_OPTIONS: ${DB_OPTIONS}
       DB_PASSWORD: ${DB_PASSWORD}
@@ -64,7 +64,7 @@ services:
   celery:
     build:
       context: .
-      dockerfile: docker/Dockerfile.python
+      dockerfile: docker/Dockerfile
     container_name: celery
     image: celery
     # auto-reload should not be used for production
@@ -76,7 +76,7 @@ services:
       - redis
     restart: always
     environment:
-      DB_HOST: ${DB_HOST
+      DB_HOST: ${DB_HOST}
       DB_NAME: ${DB_NAME}
       DB_OPTIONS: ${DB_OPTIONS}
       DB_PASSWORD: ${DB_PASSWORD}

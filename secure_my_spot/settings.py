@@ -13,9 +13,6 @@ import json
 import os
 import sys
 from pathlib import Path
-
-import dj_database_url
-import psycopg2
 from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -146,6 +143,8 @@ WSGI_APPLICATION = "secure_my_spot.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+db_options = os.environ.get("DATABASE_OPTIONS")
+
 DB = {
     "ENGINE": "django.db.backends.postgresql",
     "NAME": os.getenv('DB_NAME'),
@@ -153,8 +152,11 @@ DB = {
     "PASSWORD": os.getenv('DB_PASSWORD'),
     "HOST": os.getenv('DB_HOST'),
     "PORT": os.getenv('DB_PORT'),
-    "OPTIONS": json.loads(os.getenv('DB_OPTIONS')),
 }
+
+if db_options:
+    DB["OPTIONS"] = json.loads(db_options)
+
 DATABASES = {"default": DB}
 
 # defines the custom user model

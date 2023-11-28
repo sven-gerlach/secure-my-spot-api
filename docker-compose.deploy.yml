@@ -43,7 +43,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.python
+      dockerfile: ./docker/Dockerfile
     command: ["sh", "scripts/run_prod.sh"]
     restart: always
     depends_on:
@@ -69,7 +69,7 @@ services:
   celery:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.python
+      dockerfile: ./docker/Dockerfile
     command: celery -A secure_my_spot.celeryconf worker --loglevel=INFO
     restart: always
     environment:

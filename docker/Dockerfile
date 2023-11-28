@@ -2,7 +2,7 @@
 # https://testdriven.io/blog/dockerizing-django-with-postgres-gunicorn-and-nginx/
 
 # pull official base image
-FROM python:3.8-alpine
+FROM python:3.9
 
 # add maintainer / contact details to container in form of key=value metadata
 LABEL maintainer_name="Sven Gerlach" \
@@ -16,25 +16,18 @@ ENV PYTHONUNBUFFERED=1
 # not clear at all how else to set the working directory
 WORKDIR /app
 
-# install psycopg2 (needs to be installed manually rather than through executing the Pipfile
-RUN apk update && apk add \
-    gcc \
-    libc-dev \
-    python3-dev \
-    musl-dev \
-    postgresql-dev \
-    vim \
-    # install bash (alpine ships with ash)
-    # access bash with "docker exec -it <container-name> /bin/bash"
-    bash --no-cache --upgrade
+# install poetry
+RUN pip install poetry
 
-# source: https://jonathanmeier.io/using-pipenv-with-docker/
-# install pipenv and install dependencies
-RUN pip install \
-    pipenv \
-    psycopg2
-COPY ../Pipfile Pipfile.lock ./
-RUN pipenv install --system --deploy --pre
+# copy poetry files
+COPY ../pyproject.toml ../poetry.lock ./
+
+# Project initialization:
+# --no-root: Do not install the root package (the project itself).
+# --no-dev: Do not install the dev dependencies.
+# --no-interaction: Do not ask any interactive question.
+RUN poetry config virtualenvs.create false \
+    && poetry install --only main --no-interaction --no-ansi
 
 # copy project
 COPY .. .
