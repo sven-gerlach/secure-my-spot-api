@@ -14,6 +14,20 @@ import os
 import sys
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
+# settings.py
+import sentry_sdk
+
+# initialise Sentry SDK
+sentry_sdk.init(
+    dsn="https://6b777737dfad5f23925928c9624805e5@o549443.ingest.sentry.io/4506318127235072",
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
