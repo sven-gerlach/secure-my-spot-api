@@ -73,6 +73,10 @@ class ReservationViewAuth(APIView):
             countdown=float(reservation_duration * 60),
         )
 
+        print("============= task object START =============")
+        print(dir(task))
+        print("============= task object END =============")
+
         # save key / value pair of reservation_id / task_id
         cache.set(serializer.data["id"], task.task_id)
 
@@ -135,6 +139,10 @@ class ReservationViewAuth(APIView):
             args=[reservation.parking_spot.id, reservation.id],
             eta=reservation.end_time,
         )
+
+        print("============= task object START =============")
+        print(dir(task))
+        print("============= task object END =============")
 
         # save reservation_id / task_id key / value pair in Redis cache
         cache.set(serializer.data["id"], task.task_id)
@@ -226,6 +234,10 @@ class ReservationViewUnauth(APIView):
             eta=time_now + time_delta,
         )
 
+        print("============= task object START =============")
+        print(dir(task))
+        print("============= task object END =============")
+
         # save key / value pair of reservation_id / task_id to Redis cache
         cache.set(serializer.data["id"], task.task_id)
 
@@ -291,33 +303,15 @@ class ReservationViewUnauth(APIView):
         # retrieve task_id associated with reservation_id from Redis cache
         cache.get(serializer.data["id"])
 
-        # revoking existing task, using task.revoke() crashes the worker on Heroku
-        # 1) this is the direct way
-        # app.control.revoke(task_id=task_id)
-        # 2) task.revoke() actually invokes app.control.revoke()
-        # task = unreserve_parking_spot.AsyncResult(task_id)
-        # print("============= task object =============")
-        # print(dir(task))
-        # print("============= task.result =============")
-        # print(task.result)
-        # print("============= task.state =============")
-        # print(task.state)
-        # print("============= task.status =============")
-        # print(task.status)
-        # print("============= task.revoke() =============")
-        # print(task.revoke())
-        # print("============= task.result =============")
-        # print(task.result)
-        # print("============= task.state =============")
-        # print(task.state)
-        # print("============= task.status =============")
-        # print(task.status)
-
         # set new task with new end_time param
         task = unreserve_parking_spot.apply_async(
             args=[reservation.parking_spot.id, reservation.id],
             eta=reservation.end_time,
         )
+
+        print("============= task object START =============")
+        print(dir(task))
+        print("============= task object END =============")
 
         # save reservation_id / task_id key / value pair in Redis cache
         cache.set(serializer.data["id"], task.task_id)
