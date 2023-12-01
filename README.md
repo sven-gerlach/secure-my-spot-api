@@ -58,7 +58,7 @@
 | Model Bakery            |           |    x     |
 | Moment                  |     x     |          |
 | Nginx                   |     x     |    x     |
-| Pipenv                  |           |    x     |
+| Poetry                  |           |    x     |
 | PostgreSQL              |           |    x     |
 | Pytest                  |           |    x     |
 | Redis                   |           |    x     |
@@ -125,26 +125,28 @@ graph LR
 
 ## Set-up & Installation for Local Development
 1. Clone this repo into your preferred local directory
-2. Ensure pip, pipenv, and pyenv are installed locally (install pyenv with brew, pipenv with pip,
+2. Ensure pip, pipx, poetry and pyenv are installed locally (install pyenv and poetry with brew,
    and pip with `python -m ensurepip --upgrade`)
     > Use the following links for more detail on how to install these packages: 
     >- [pip](https://pip.pypa.io/en/stable/installation/)
-    >- [pipenv](https://pipenv.pypa.io/en/latest/index.html#install-pipenv-today)
+    >- [poetry](https://python-poetry.org/docs/)
     >- [pyenv](https://github.com/pyenv/pyenv#homebrew-in-macos)
 3. Ensure docker and docker-compose are installed in the local environment 
-4. Run `pipenv install` in the project root directory to install all dependent packages
+4. Run `poetry install` in the project root directory to install all dependent packages
 5. Install the Doppler CLI and authenticate according to these [instructions](https://docs.doppler.com/docs/install-cli)
 6. Run the Doppler setup process in the root directory with `doppler setup`
 7. Start the Postgres docker container with `doppler run -- docker-compose -f docker-compose.dev.yml up -d --build`
 8. Check containers are running normally by reviewing log statements with `docker logs [container_id]`
-9. Run `pipenv shell` to initiate the environment (some IDE command lines will do this automatically)
-10. Ensure the database has all the tables setup by running `docker exec [db_container_id] python manage.py migrate`
-11. Confirm there are no outstanding migrations with `docker exec [db_container_id] python manage.py showmigrations`
-12. Open the browser to review the [SPA](http://localhost:3000) and the [API](http://localhost:3001)
+9. Ensure the database has all the tables setup by running `docker exec [db_container_id] python manage.py migrate`
+10. Confirm there are no outstanding migrations with `docker exec [db_container_id] python manage.py showmigrations`
+11. Open the browser to review the [SPA](http://localhost:3000) and the [API](http://localhost:3001)
+
+### Why Docker
+Docker was chosen to better orchestrate the development environment which includes the Django app, a Postgres db instance, a RabbitMQ queue, a Celery worker, and a Redis instance. Docker allows for the creation of a single docker-compose file that defines all the services and their dependencies. This allows for a more streamlined development process and ensures that all developers are working with the same environment.
 
 ## Deployment
-### Option: AWS
-Below is a high-level summary of all deploy steps. Most of them only need to be applied once for the initial deployment.
+### Option 1: AWS
+Below is a high-level summary of all deploy steps. Most of them only need to be applied once for the initial deployment. This is a fairly complicated setup process and it is recommended to use the Render deployment option instead.
 1. Create EC2 instance
 2. Create an elastic IP and associate it with the EC2 instance
 3. Check DNS and verify that:
@@ -165,17 +167,29 @@ Below is a high-level summary of all deploy steps. Most of them only need to be 
 
 >**Note 2**: verify a cronjob is registered with `crontab -l`. A script needs to run once a week that runs the "certbot renew" command inside the certbot container. The command this cronjob runs is `doppler run --scope /home/ec2-user/secure-my-spot-api -- docker-compose -f docker-compose.deploy.yml run --rm certbot sh -c "certbot renew"` and essentially ensures that the https certificate with LetsEncrypt is renewed when needed (once a quarter). 
 
-### Render
-1. Generate requirements.txt with `pipenv requirements > requirements.txt`. When running the build command `pip install -r requirements.txt` on Render it may be necessary to manually adjust some package versions in the requirements.txt file. 
+### Option 2: Render
+1. Add a new web service for the Django app (Render)
+2. Add a new Postgres database instance (Neon)
+3. Add a new Redis instance (Upstash) 
+4. Add a new RabbitMQ instance (CloudAMQP)
+5. Add a new Celery worker process (Render)
+
+>**Note**: the worker process costs $7/month and hence has not been implemented in the deployed app. This means that the end-of-reservation tasks are not executed automatically.
+
+#### Django App
+The Django app is deployed with [Render](https://render.com/).
 
 #### Postgres
-The PG db is deployed with [Neon](https://console.neon.tech/app/projects).
+The Postgres database is deployed with [Neon](https://console.neon.tech/app/projects).
+
+#### Redis
+We use [Upstash](https://console.upstash.com/) for our Redis cloud instance.
 
 #### RabbitMQ Queue
 The RabbitMQ queue is hosted by [CloudAMQP](https://customer.cloudamqp.com/instance).
 
-#### Redis
-We use [Upstash](https://console.upstash.com/) for our Redis cloud instance.
+#### Celery Worker
+The Celery worker should be deployed with [Render](https://render.com/). Howeever, for cost reasons, this has not been implemented in the deployed app. This means that the end-of-reservation tasks are not executed automatically.
 
 ## Systems Design Considerations
 1. Data is mostly well-structured, factual, and numeric -> *relational db*
